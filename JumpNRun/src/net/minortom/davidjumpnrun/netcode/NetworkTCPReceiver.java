@@ -27,10 +27,16 @@ public class NetworkTCPReceiver extends Thread{
                     if(packageContent[1].startsWith("AUTH")){
                         String type = packageContent[1].split("-")[1];
                         if(type.equals("OK")){
-                            sconn.pubId = new Integer(packageContent[2]);
+                            sconn.pubId = packageContent[2];
                             sconn.token = packageContent[3];
                             game.networkManager.serverConnection.currentConnState = ConnState.CONNECTED;
                             System.out.println("CONNECTED " + sconn.pubId + " " + sconn.token);
+                        }
+                    } else if (packageContent[1].startsWith("MAP")){
+                        String type = packageContent[1].split("-")[1];
+                        if(type.equals("LISTOK")){
+                            String[] maps = packageContent[2].split(",");
+                            game.networkManager.mapSelectionDone(maps);
                         }
                     }
                 } catch (Exception e){

@@ -102,6 +102,7 @@ public class CreateGameScreen extends VBox {
         chooseMapBt = new Button("ERR");
         chooseMapBt.setOnAction((ActionEvent e) -> {
             game.networkManager.openMapSelection();
+            game.networkManager.mapSelectionScreen.userRequest();
             mapselected = true;
             unlockOk();
         });

@@ -10,8 +10,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import jumpnrun.JumpNRun;
 
 public class ServerConnection {
@@ -20,7 +18,7 @@ public class ServerConnection {
     private String hostName;
     private int hostPort;
     
-    public int pubId;
+    public String pubId;
     public String token;
     
     public ConnState currentConnState;

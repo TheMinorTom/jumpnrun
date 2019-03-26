@@ -4,6 +4,7 @@
  */
 package net.minortom.davidjumpnrun.netcode;
 
+import javafx.application.Platform;
 import net.minortom.davidjumpnrun.netcode.screens.LoginScreen;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -28,7 +29,7 @@ public class NetworkManager extends VBox {
     JoinGameScreen joinGameScreen;
     CreateGameScreen createGameScreen;
     WaitScreen waitScreen;
-    ChooseMapScreen mapSelectionScreen;
+    public ChooseMapScreen mapSelectionScreen;
     public ServerConnection serverConnection;
     
     Button backBt, loginBt, joinGameBt, createGameBt;
@@ -111,8 +112,13 @@ public class NetworkManager extends VBox {
     }
     
     public void mapSelectionDone(String[] maps){
-        JumpNRun.scene.setRoot(mapSelectionScreen);
-        mapSelectionScreen.updateStrings(maps);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                JumpNRun.scene.setRoot(mapSelectionScreen);
+                mapSelectionScreen.updateStrings(maps);
+            }
+        });
     }
     
     public void setWaitScreenText(String text){
