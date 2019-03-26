@@ -1,10 +1,10 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * This File is licensed under the MIT License. You should have already received a copy located at LICENSE.txt
+ * Copyright 2019 MinorTom <mail in license file>
  */
 package net.minortom.davidjumpnrun.netcode.screens;
 
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -20,8 +20,10 @@ public class ChooseMapScreen extends VBox {
         this.game = game;
         
         backBt = new Button("ERR");
-        
-        updateStrings();
+        backBt.setOnAction((ActionEvent e) -> {
+            game.networkManager.openCreateGameScreen();
+            game.networkManager.creteGameScreenSetMap("Test");
+        });
         
         setAlignment(Pos.CENTER_LEFT);
         setSpacing(50);
@@ -29,7 +31,7 @@ public class ChooseMapScreen extends VBox {
         getChildren().addAll(backBt);
     }
     
-    public void updateStrings(){
+    public void updateStrings(String[] maps){
         backBt.setFont(game.language.getFont());
         backBt.setText(game.language.backBt);
     }

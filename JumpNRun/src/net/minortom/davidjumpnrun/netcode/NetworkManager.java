@@ -41,6 +41,7 @@ public class NetworkManager extends VBox {
         joinGameScreen = new JoinGameScreen(game);
         createGameScreen = new CreateGameScreen(game);
         waitScreen = new WaitScreen(game);
+        mapSelectionScreen = new ChooseMapScreen(game);
         
         backBt = new Button("ERR");
         backBt.setOnAction((ActionEvent e) -> {
@@ -105,8 +106,13 @@ public class NetworkManager extends VBox {
     }
     
     public void openMapSelection(){
+        openWaitScreen();
+        setWaitScreenText(game.language.WaitServerAnswer);
+    }
+    
+    public void mapSelectionDone(String[] maps){
         JumpNRun.scene.setRoot(mapSelectionScreen);
-        mapSelectionScreen.updateStrings();
+        mapSelectionScreen.updateStrings(maps);
     }
     
     public void setWaitScreenText(String text){
@@ -122,5 +128,9 @@ public class NetworkManager extends VBox {
         try {
             serverConnection.end();
         } catch (Exception e) {}
+    }
+
+    public void creteGameScreenSetMap(String name) {
+        createGameScreen.setMapName(name);
     }
 }

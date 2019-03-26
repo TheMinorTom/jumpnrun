@@ -24,9 +24,10 @@ public class CreateGameScreen extends VBox {
     
     private RadioButton endlessBt, timeBt, deathsBt;
     private Button backBt, okBt, chooseMapBt, skinBt;
-    private TextField timeTF, deathsTF;
-    private Label timeLbl, deathsLbl;
-    private HBox timeBox, deathsBox, btBox;
+    private TextField timeTF, deathsTF, playersTF, nameTF;
+    private Label timeLbl, deathsLbl, playersLbl, nameLbl, mapNameLbl, players2Lbl;
+    private HBox timeBox, deathsBox, btBox, playersBox, mapBox;
+    
     private double timeLimit;   //In seconds
     private double deathLimit;
     
@@ -95,6 +96,9 @@ public class CreateGameScreen extends VBox {
         okBt = new Button("Ok");
         okBt.setDisable(true);
         
+        // The following sections are licensed under the MIT License. You should have already received a copy located at ../net/minortom/LICENSE.txt
+        // Copyright 2019 MinorTom <mail in license file>
+        
         chooseMapBt = new Button("ERR");
         chooseMapBt.setOnAction((ActionEvent e) -> {
             game.networkManager.openMapSelection();
@@ -108,6 +112,30 @@ public class CreateGameScreen extends VBox {
             unlockOk();
         });
         
+        playersTF = new TextField();
+        
+        nameTF = new TextField();
+        
+        mapNameLbl = new Label();
+        
+        playersLbl = new Label("ERR");
+        
+        players2Lbl = new Label("ERR");
+        
+        nameLbl = new Label("ERR");
+        
+        playersBox = new HBox(playersLbl, playersTF, players2Lbl);
+        playersBox.setAlignment(Pos.CENTER_LEFT);
+        playersBox.setSpacing(20);
+        playersBox.setPadding(new Insets(0, 0, 0, 0));
+        
+        mapBox = new HBox(chooseMapBt, mapNameLbl);
+        mapBox.setAlignment(Pos.CENTER_LEFT);
+        mapBox.setSpacing(20);
+        mapBox.setPadding(new Insets(0, 0, 0, 0));
+        
+        // End licensed sections
+        
         btBox = new HBox(backBt, okBt);
         btBox.setAlignment(Pos.CENTER_LEFT);
         btBox.setSpacing(100);
@@ -118,7 +146,7 @@ public class CreateGameScreen extends VBox {
         setAlignment(Pos.CENTER_LEFT);
         setSpacing(50);
         setPadding(new Insets(0, 0, 0, 150));
-        getChildren().addAll(timeBox, deathsBox, endlessBt, chooseMapBt, skinBt, btBox);
+        getChildren().addAll(nameLbl, nameTF, playersBox, timeBox, deathsBox, endlessBt, mapBox, skinBt, btBox);
     }
     
     public void updateStrings(){
@@ -132,8 +160,6 @@ public class CreateGameScreen extends VBox {
         deathsLbl.setFont(defaultFont);
         backBt.setFont(defaultFont);
         okBt.setFont(defaultFont);
-        chooseMapBt.setFont(defaultFont);
-        skinBt.setFont(defaultFont);
         
         backBt.setText(game.language.backBt);
         endlessBt.setText(game.language.ChoGmEndlessBt);
@@ -142,8 +168,6 @@ public class CreateGameScreen extends VBox {
         deathsBt.setText(game.language.ChoGmDeathsBt);
         deathsLbl.setText(game.language.ChoGmDeathsLbl);
         okBt.setText(game.language.ChoGmOkBt);
-        chooseMapBt.setText(game.language.CreateGChooseMapBt);
-        skinBt.setText(game.language.GSkinBt);
         
         okBt.setOnAction((ActionEvent e) -> {
             if (timeBt.isSelected()) {
@@ -161,17 +185,49 @@ public class CreateGameScreen extends VBox {
             } else if (endlessBt.isSelected()) {
                 
             }
-            
+            try {
+                int z = Integer.parseInt(playersTF.getText());
+            } catch (NumberFormatException n) {
+                deathsTF.setText(game.language.ChoGmErrOnlyWholeNumbers);
+            }
             game.networkManager.openWaitScreen();
             game.networkManager.setWaitScreenText(game.language.WaitServerAnswer);
             
         });
+        
+        // The following sections are licensed under the MIT License. You should have already received a copy located at ../net/minortom/LICENSE.txt
+        // Copyright 2019 MinorTom <mail in license file>
+        
+        chooseMapBt.setFont(defaultFont);
+        skinBt.setFont(defaultFont);
+        playersTF.setFont(defaultFont);
+        nameTF.setFont(defaultFont);
+        mapNameLbl.setFont(defaultFont);
+        playersLbl.setFont(defaultFont);
+        players2Lbl.setFont(defaultFont);
+        nameLbl.setFont(defaultFont);
+        
+        chooseMapBt.setText(game.language.CreateGChooseMapBt);
+        skinBt.setText(game.language.GSkinBt);
+        playersLbl.setText(game.language.CreateGPlayersLbl);
+        players2Lbl.setText(game.language.CreateGPlayers2Lbl);
+        nameLbl.setText(game.language.CreateGNameLbl);
+        
+        // End licensed sections
     }
+    
+    // The following sections are licensed under the MIT License. You should have already received a copy located at ../net/minortom/LICENSE.txt
+    // Copyright 2019 MinorTom <mail in license file>
     
     private void unlockOk(){
         if (toggleschanged&&mapselected&&skinchosen){
             okBt.setDisable(false);
         }
     }
+
+    public void setMapName(String name) {
+        mapNameLbl.setText(name);
+    }
     
+    // End licensed sections
 }

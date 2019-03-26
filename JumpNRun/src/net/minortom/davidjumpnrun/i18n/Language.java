@@ -76,6 +76,9 @@ public class Language implements Serializable {
     
     // Create Game Screen
     public transient String CreateGChooseMapBt;
+    public transient String CreateGNameLbl;
+    public transient String CreateGPlayersLbl;
+    public transient String CreateGPlayers2Lbl;
     
     // Map Choose Menu
     

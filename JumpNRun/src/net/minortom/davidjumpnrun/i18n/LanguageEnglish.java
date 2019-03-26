@@ -73,6 +73,9 @@ public class LanguageEnglish extends Language{
         
         // Create Game Screen
         this.CreateGChooseMapBt = "Choose a Map";
+        this.CreateGNameLbl = "Public Name (Used for joining)";
+        this.CreateGPlayersLbl = "Player Count:";
+        this.CreateGPlayers2Lbl = " Players";
         
         // Map Choose Menu
         
