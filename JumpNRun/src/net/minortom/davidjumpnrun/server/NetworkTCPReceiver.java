@@ -37,7 +37,17 @@ public class NetworkTCPReceiver extends Thread{
                     } else if (packageContent[1].startsWith("MAP")){
                         String type = packageContent[1].split("-")[1];
                         if(type.equals("LISTREQ")){
-                            String toPrint = server.keyword + server.infoSeperator + "MAP-LISTOK" + server.infoSeperator + "test,test2,test3";
+                            String[] maps = MapHelper.listMaps();
+                            String lmaps;
+                            lmaps = maps[0];
+                            for(String currMap : maps){
+                                if (currMap.equals(maps[0]) ){
+                                    continue;
+                                }
+                                lmaps += ",";
+                                lmaps += currMap;
+                            }
+                            String toPrint = server.keyword + server.infoSeperator + "MAP-LISTOK" + server.infoSeperator + lmaps;
                             tcpServ.out.println(toPrint);
                         }
                     }

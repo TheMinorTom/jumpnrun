@@ -40,6 +40,6 @@ public class Server {
     }
     
     public String getMapFolder(){
-        return ConfigManager.getStorageLocation() + "maps/";
+        return ConfigManager.getStorageLocation() + "worlds/";
     }
 }

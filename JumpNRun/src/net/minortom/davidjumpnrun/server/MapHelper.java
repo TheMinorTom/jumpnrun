@@ -11,7 +11,16 @@ import java.util.HashMap;
 
 public class MapHelper {
     public static String[] listMaps(){
-        throw new UnsupportedOperationException();
+        HashMap<String, Map> maps = getMapCfgFile();
+        String[] ret = new String[maps.size()];
+        
+        int i = 0;
+        for(java.util.Map.Entry<String, Map> oneMap : maps.entrySet()) {
+            ret[i] = oneMap.getValue().name;
+            i++;
+        }
+        
+        return ret;
     }
     
     public static String getMapDesc(String map){
@@ -42,6 +51,8 @@ public class MapHelper {
             
         }
         
+        System.out.println(everything);
+        
         String[] tempArr = everything.split("\n");
         HashMap<String, Map> retMap = new HashMap<>();
         
@@ -50,6 +61,6 @@ public class MapHelper {
             retMap.put(tempArrM[1], new Map(tempArrM[0],tempArrM[1],tempArrM[2],tempArrM[3]));
         }
         
-        throw new UnsupportedOperationException();
+        return retMap;
     }
 }
