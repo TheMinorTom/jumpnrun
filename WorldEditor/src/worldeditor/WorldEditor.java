@@ -13,7 +13,8 @@ import java.util.Vector;
  * @author User
  */
 public class WorldEditor {
-    public final static String blocksPath = "file:src/blocks/";
+    public static final String configFolderName = "davidjumpnrun";
+    public final static String blocksPath = getStorageLocation() + "sprites/blocks/";
     public static Block[] blocks = new Block[]{new Block("Air", "" , "" ,false),
         new Block("LEAVE_SOLID", blocksPath, "Leave.bmp", true),
         new Block("LEAVE_NONSOLID", blocksPath, "Leave.bmp", false),
@@ -43,7 +44,19 @@ public class WorldEditor {
         blocks = b;
     }
     
-    
+    public static String getStorageLocation(){
+        String OS = (System.getProperty("os.name")).toUpperCase();
+        if(OS.contains("WIN")){
+            return System.getenv("AppData") + "/" + configFolderName + "/";
+        } else if (OS.contains("LIN")){
+            return System.getenv("HOME") + "/.local/share/" + configFolderName + "/";
+        } else if (OS.contains("MAC")){
+            return System.getProperty("user.home") + "/Library/Application Support/" + configFolderName + "/";
+        } else {
+            return "";
+        }
+        
+    }
     
     
     

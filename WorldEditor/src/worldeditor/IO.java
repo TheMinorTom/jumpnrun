@@ -6,11 +6,14 @@
 package worldeditor;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Vector;
+import javafx.scene.control.Alert;
 
 /**
  *
@@ -270,6 +273,19 @@ public class IO {
         }
 
         return world;
+    }
+    
+    public static InputStream getFileStream(String uri) {
+
+        try {
+            InputStream in = new FileInputStream(uri);
+            return in;
+        } catch(FileNotFoundException e){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("File at " + uri + " not found! Check if all resources are saved correctly in the programm's AppData directory");
+            alert.showAndWait();
+            return null;
+        }
     }
 
 }
