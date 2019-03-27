@@ -18,6 +18,7 @@ public class Language implements Serializable {
     
     //Multiple uses:
     public transient String backBt;
+    public transient String okBt;
     
     // Language names
     public transient String langEN;
@@ -81,6 +82,15 @@ public class Language implements Serializable {
     public transient String CreateGPlayers2Lbl;
     
     // Map Choose Menu
+    
+    // Skin Schoose Menu
+    public transient String SkinColorBlue;
+    public transient String SkinColorGreen;
+    public transient String SkinColorOrange;
+    public transient String SkinColorYellow;
+    public transient String SkinColorRed;
+    public transient String SkinChooseDefaultHeading;
+    
     
     // Wait Screen
     public transient String WaitServerAnswer;

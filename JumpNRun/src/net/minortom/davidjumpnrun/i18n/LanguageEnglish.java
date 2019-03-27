@@ -15,6 +15,7 @@ public class LanguageEnglish extends Language{
         
         // Multiple uses
         this.backBt = "Back";
+        this.okBt = "Ok";
         
         // Language names
         this.langEN = "English";
@@ -78,6 +79,14 @@ public class LanguageEnglish extends Language{
         this.CreateGPlayers2Lbl = " Players";
         
         // Map Choose Menu
+        
+        //Skin Choose Menu
+        this.SkinColorBlue = "Blue";
+        this.SkinColorGreen = "Green";
+        this.SkinColorOrange = "Orange";
+        this.SkinColorYellow = "Yellow";
+        this.SkinColorRed = "Red";
+        this.SkinChooseDefaultHeading = "Choose your skin!";
         
         // Wait Screen
         this.WaitServerAnswer = "Waiting for the Server";
