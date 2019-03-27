@@ -18,6 +18,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import worldeditor.Block;
+import worldeditor.IO;
 
 /**
  *
@@ -26,7 +27,7 @@ import worldeditor.Block;
 public class Protagonist extends ImageView implements Updatable{
 
     private Image image;
-    private static final String spritePath = "/sprites/SpielfigurGes.png";
+    private static final String spritePath = JumpNRun.sourcePath + "sprites/SpielfigurGes.png";
     private double xPos, yPos, xSpeed, ySpeed, xSpawn, ySpawn;
     private boolean intersects;
     private boolean goesRight;
@@ -76,7 +77,7 @@ public class Protagonist extends ImageView implements Updatable{
         
         powerup = null;
         
-        image = new Image(spritePath);
+        image = new Image(IO.getFileStream(spritePath));
 
         setImage(image);
         resetAnimation();

@@ -10,6 +10,7 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
+import worldeditor.IO;
 
 /**
  *
@@ -17,11 +18,11 @@ import javafx.scene.shape.Rectangle;
  */
 public class Pitchfork extends ImageView{
     
-    private final static String imageSource = "/sprites/pitchforkGes.png";
+    private final static String imageSource = JumpNRun.sourcePath + "sprites/pitchforkGes.png";
     private boolean facingLeft;
     Pitchfork()
     {
-        setImage(new Image(imageSource));
+        setImage(new Image(IO.getFileStream(imageSource)));
         setVisible(false);
         facingLeft = true;
         setViewport(AnimationState.LEFT.getRect());

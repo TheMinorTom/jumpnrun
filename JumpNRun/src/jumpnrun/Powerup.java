@@ -8,16 +8,17 @@ package jumpnrun;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import worldeditor.IO;
 
 /**
  *
  * @author Norbert
  */
 public class Powerup extends ImageView{
-        private final static String imageSource = "/sprites/icons.png";
+        private final static String imageSource = JumpNRun.sourcePath + "sprites/icons.png";
         private IconViewport iconViewport;
     public Powerup (IconViewport viewPort) {
-        setImage(new Image(imageSource));
+        setImage(new Image(IO.getFileStream(imageSource)));
         setViewport(viewPort.getRect());
         iconViewport = viewPort;
         

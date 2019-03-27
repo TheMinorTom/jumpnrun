@@ -6,6 +6,8 @@
 package jumpnrun;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -24,7 +26,9 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import static javafx.scene.input.DataFormat.URL;
 import static javafx.scene.input.KeyCode.*;
 import javafx.scene.input.KeyEvent;
@@ -41,14 +45,15 @@ import net.minortom.davidjumpnrun.i18n.LanguageEnglish;
 import net.minortom.davidjumpnrun.i18n.LanguageGerman;
 import net.minortom.davidjumpnrun.netcode.NetworkManager;
 
-
 /**
  *
  * @author Norbert
  */
 public class JumpNRun extends Application {
 
-    private static final String blocksDirPath = "/sprites/blocks/";
+    public static final String sourcePath = ConfigManager.getStorageLocation();
+    private static final String blocksDirPath = sourcePath + "sprites/blocks/";
+    private static String worldPath = sourcePath + "worlds/world.david";
 
     private static final double spawnY = 100;
     public static final double spawnXDist = 350;
@@ -73,34 +78,35 @@ public class JumpNRun extends Application {
     public NetworkManager networkManager;
     public Language language;
     public Configuration config;
-    
+
     @Override
     public void start(Stage primaryStage) throws IOException {
-        
+
         new SkinChooseMenu(this);
-        
+
         // The following sections are licensed under the MIT License. You should have already received a copy located at ../net/minortom/LICENSE.txt
         // Copyright 2019 MinorTom <mail in license file>
         //Language Selection default
-        if(null == Language.defaultLang()){
+        if (null == Language.defaultLang()) {
             language = new Language(this);
-        } else
-        switch (Language.defaultLang()) {
-            case "EN":
-                language = new LanguageEnglish(this);
-                break;
-            case "DE":
-                language = new LanguageGerman(this);
-                break;
-            default:
-                language = new Language(this);
-                break;
+        } else {
+            switch (Language.defaultLang()) {
+                case "EN":
+                    language = new LanguageEnglish(this);
+                    break;
+                case "DE":
+                    language = new LanguageGerman(this);
+                    break;
+                default:
+                    language = new Language(this);
+                    break;
+            }
         }
-        
+
         ConfigManager.game = this;
         config = ConfigManager.loadConfiguration();
-        
-        if(config == null){
+
+        if (config == null) {
             ConfigManager.info(language.JNRCfgDirCorrectPopTitle, ""
                     + language.JNRCfgDirCorrectPopText1
                     + ConfigManager.getStorageLocation()
@@ -111,16 +117,16 @@ public class JumpNRun extends Application {
         }
         language = config.gameLanguage;
         language = Language.setNewLangNC(language, language);
-        
+
         networkManager = new NetworkManager(this);
         // End licensed sections
-        
+
         primStage = primaryStage;
         mainMenu = new MainMenu(this);
         chooseGamemodeScene = new ChooseGamemodeMenu(this);
         winScreen = new WinScreen(this);
         scene = new Scene(mainMenu);
-        
+
         primaryStage.setTitle("Jump-N-Run");
         primaryStage.setScene(scene);
         primaryStage.setMaximized(true);
@@ -138,12 +144,13 @@ public class JumpNRun extends Application {
 
     public void initGame() {
         updatables = new Vector();
-        InputStream in = this.getClass().getResourceAsStream("/worlds/world.david");
         summonTimer = 0;
         summonTime = 5;
         powerupCollects = new Vector();
 
-        worldVector = IO.openWorld(in, blocksDirPath);
+        InputStream worldIn = IO.getFileStream(worldPath);
+
+        worldVector = IO.openWorld(worldIn, blocksDirPath);
         protagonist1 = new Protagonist(1, A, D, W, C, V, B, spawnXDist, spawnY);
         protagonist2 = new Protagonist(2, LEFT, RIGHT, UP, P, O, I, getWidth() - spawnXDist - Protagonist.width, spawnY);
         updatables.add(protagonist1);
@@ -229,31 +236,29 @@ public class JumpNRun extends Application {
         loop.stop();
         if (protagonist1.getDeaths() < protagonist2.getDeaths()) {
             ((WinScreen) winScreen).setWinner(1);
-        } else if (protagonist1.getDeaths() > protagonist2.getDeaths()){
+        } else if (protagonist1.getDeaths() > protagonist2.getDeaths()) {
             ((WinScreen) winScreen).setWinner(2);
         } else {
-            ((WinScreen)winScreen).setWinner(-1);
+            ((WinScreen) winScreen).setWinner(-1);
         }
         scene.setRoot(winScreen);
     }
 
     public void openChooseGamemodeMenu() {
         scene.setRoot(chooseGamemodeScene);
-        ((ChooseGamemodeMenu) chooseGamemodeScene).updateStrings();
     }
 
     public void openMainMenu() {
         scene.setRoot(mainMenu);
-        ((MainMenu) mainMenu).updateStrings();
     }
-    
+
     // The following function is licensed under the MIT License. You should have already received a copy located at ../net/minortom/LICENSE.txt
     // Copyright 2019 MinorTom <mail in license file>
     public void openNetworkScreen() {
         scene.setRoot(networkManager);
         networkManager.updateStrings();
     }
-    
+
     public static void addUpdatable(Updatable u) {
         updatables.add(u);
     }
@@ -354,4 +359,5 @@ public class JumpNRun extends Application {
         System.exit(0);
     }
 
+    
 }

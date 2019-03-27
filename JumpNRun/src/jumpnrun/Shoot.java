@@ -11,6 +11,7 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import worldeditor.Block;
+import worldeditor.IO;
 
 /**
  *
@@ -20,10 +21,10 @@ public class Shoot extends ImageView implements Updatable{
 
     double xPos, yPos, xSpd, ySpd, breakAccX, gravAccY;
 
-    private final static String imageSource = "/sprites/ShootGes.png";
+    private final static String imageSource = JumpNRun.sourcePath + "sprites/ShootGes.png";
 
     public Shoot(double x, double y, double xSpeed, double ySpeed, boolean facingRight) {
-        Image image = new Image(imageSource);
+        Image image = new Image(IO.getFileStream(imageSource));
         setImage(image);
         setRotationAxis(new Point3D(xPos, yPos, 0));
         setRotate(calcRotation(xSpd, ySpd));

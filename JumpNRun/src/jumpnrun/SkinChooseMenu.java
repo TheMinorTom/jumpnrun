@@ -25,7 +25,7 @@ public class SkinChooseMenu extends VBox {
     private File[] imageFiles;
 
     public SkinChooseMenu(JumpNRun game) {
-        protDir = new File("./src/sprites/protagonist");
+        protDir = new File(JumpNRun.sourcePath + "sprites/protagonist");
         imageFiles = protDir.listFiles();
         paths = new String[imageFiles.length];
 
