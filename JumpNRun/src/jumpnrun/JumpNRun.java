@@ -64,13 +64,14 @@ public class JumpNRun extends Application {
     private static Vector<Shoot> shoots;
     private static Vector<PowerupCollect> powerupCollects;
 
+    
     private Protagonist protagonist1, protagonist2;
     private static GameLoop loop;
     private static Stage primStage;
     public static Scene scene;
     private static double summonTimer, summonTime;
     private static Vector<Updatable> updatables;
-    private static Parent mainMenu, gameScene, chooseGamemodeScene, winScreen;
+    private static Parent mainMenu, gameScene, chooseGamemodeScreen, winScreen, chooseSkinScreen;
     private Gamemode currGamemode;
     private static int deathLimit;
     private static double timeLimit;
@@ -78,35 +79,34 @@ public class JumpNRun extends Application {
     public NetworkManager networkManager;
     public Language language;
     public Configuration config;
-
+    
     @Override
     public void start(Stage primaryStage) throws IOException {
+        
 
-        new SkinChooseMenu(this);
-
+        
         // The following sections are licensed under the MIT License. You should have already received a copy located at ../net/minortom/LICENSE.txt
         // Copyright 2019 MinorTom <mail in license file>
         //Language Selection default
-        if (null == Language.defaultLang()) {
+        if(null == Language.defaultLang()){
             language = new Language(this);
-        } else {
-            switch (Language.defaultLang()) {
-                case "EN":
-                    language = new LanguageEnglish(this);
-                    break;
-                case "DE":
-                    language = new LanguageGerman(this);
-                    break;
-                default:
-                    language = new Language(this);
-                    break;
-            }
+        } else
+        switch (Language.defaultLang()) {
+            case "EN":
+                language = new LanguageEnglish(this);
+                break;
+            case "DE":
+                language = new LanguageGerman(this);
+                break;
+            default:
+                language = new Language(this);
+                break;
         }
-
+        
         ConfigManager.game = this;
         config = ConfigManager.loadConfiguration();
-
-        if (config == null) {
+        
+        if(config == null){
             ConfigManager.info(language.JNRCfgDirCorrectPopTitle, ""
                     + language.JNRCfgDirCorrectPopText1
                     + ConfigManager.getStorageLocation()
@@ -117,16 +117,18 @@ public class JumpNRun extends Application {
         }
         language = config.gameLanguage;
         language = Language.setNewLangNC(language, language);
-
+        
         networkManager = new NetworkManager(this);
         // End licensed sections
-
+        
         primStage = primaryStage;
         mainMenu = new MainMenu(this);
-        chooseGamemodeScene = new ChooseGamemodeMenu(this);
+        chooseGamemodeScreen = new ChooseGamemodeMenu(this);
         winScreen = new WinScreen(this);
-        scene = new Scene(mainMenu);
-
+        chooseSkinScreen = new SkinChooseMenu(this);
+        ((SkinChooseMenu)chooseSkinScreen).updateStrings();
+        scene = new Scene(chooseSkinScreen);
+        
         primaryStage.setTitle("Jump-N-Run");
         primaryStage.setScene(scene);
         primaryStage.setMaximized(true);
@@ -236,29 +238,31 @@ public class JumpNRun extends Application {
         loop.stop();
         if (protagonist1.getDeaths() < protagonist2.getDeaths()) {
             ((WinScreen) winScreen).setWinner(1);
-        } else if (protagonist1.getDeaths() > protagonist2.getDeaths()) {
+        } else if (protagonist1.getDeaths() > protagonist2.getDeaths()){
             ((WinScreen) winScreen).setWinner(2);
         } else {
-            ((WinScreen) winScreen).setWinner(-1);
+            ((WinScreen)winScreen).setWinner(-1);
         }
         scene.setRoot(winScreen);
     }
 
     public void openChooseGamemodeMenu() {
-        scene.setRoot(chooseGamemodeScene);
+        scene.setRoot(chooseGamemodeScreen);
+        ((ChooseGamemodeMenu) chooseGamemodeScreen).updateStrings();
     }
 
     public void openMainMenu() {
         scene.setRoot(mainMenu);
+        ((MainMenu) mainMenu).updateStrings();
     }
-
+    
     // The following function is licensed under the MIT License. You should have already received a copy located at ../net/minortom/LICENSE.txt
     // Copyright 2019 MinorTom <mail in license file>
     public void openNetworkScreen() {
         scene.setRoot(networkManager);
         networkManager.updateStrings();
     }
-
+    
     public static void addUpdatable(Updatable u) {
         updatables.add(u);
     }

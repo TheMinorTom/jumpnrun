@@ -622,6 +622,10 @@ public class Protagonist extends ImageView implements Updatable{
 
     }
     
+    public static Rectangle2D getMidViewport() {
+        return CostumeViewport.MID.getRect();
+    }
+    
     public void setPowerup (Powerup p) {
         powerup = p;
     }
