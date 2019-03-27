@@ -5,40 +5,20 @@
  */
 package jumpnrun;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Properties;
-import java.util.Random;
 import java.util.Vector;
-import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.image.Image;
-import static javafx.scene.input.DataFormat.URL;
 import static javafx.scene.input.KeyCode.*;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.StackPane;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import net.minortom.davidjumpnrun.configstore.ConfigManager;
 import net.minortom.davidjumpnrun.configstore.Configuration;
 import worldeditor.Block;
-import worldeditor.GUI;
 import worldeditor.IO;
 import net.minortom.davidjumpnrun.i18n.Language;
 import net.minortom.davidjumpnrun.i18n.LanguageEnglish;
@@ -82,7 +62,7 @@ public class JumpNRun extends Application {
     
     @Override
     public void start(Stage primaryStage) throws IOException {
-        
+        try {
 
         
         // The following sections are licensed under the MIT License. You should have already received a copy located at ../net/minortom/LICENSE.txt
@@ -125,15 +105,20 @@ public class JumpNRun extends Application {
         mainMenu = new MainMenu(this);
         chooseGamemodeScreen = new ChooseGamemodeMenu(this);
         winScreen = new WinScreen(this);
-        chooseSkinScreen = new SkinChooseMenu(this);
-        ((SkinChooseMenu)chooseSkinScreen).updateStrings();
-        scene = new Scene(chooseSkinScreen);
+        //chooseSkinScreen = new SkinChooseMenu(this);
+        //((SkinChooseMenu)chooseSkinScreen).updateStrings();
+        //scene = new Scene(chooseSkinScreen);
+        scene = new Scene(mainMenu);
         
         primaryStage.setTitle("Jump-N-Run");
         primaryStage.setScene(scene);
         primaryStage.setMaximized(true);
         primaryStage.show();
         ((WinScreen) winScreen).setWinner(1); //!!!
+        
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
