@@ -117,6 +117,7 @@ public class Language implements Serializable {
         return fontSize;
     }
     
+    @Deprecated
     public void setFontName(String newf){
         setFontNameNC(newf);
         saveChanges();
@@ -126,6 +127,7 @@ public class Language implements Serializable {
         fontName = newf;
     }
     
+    @Deprecated
     public String getFontName(){
         return fontName;
     }

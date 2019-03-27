@@ -90,7 +90,7 @@ public class CreateGameScreen extends VBox {
 
         backBt = new Button("Zurück");
         backBt.setOnAction((ActionEvent e) -> {
-            game.openMainMenu();
+            game.openNetworkScreen();
         });
 
         okBt = new Button("Ok");

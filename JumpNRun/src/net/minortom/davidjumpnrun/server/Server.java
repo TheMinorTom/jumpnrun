@@ -6,6 +6,7 @@ package net.minortom.davidjumpnrun.server;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.minortom.davidjumpnrun.configstore.ConfigManager;
 import net.minortom.davidjumpnrun.netcode.NetworkManager;
 
 public class Server {
@@ -36,5 +37,9 @@ public class Server {
         while(true){
             tcpServer.add(new TCPServer(this));
         }
+    }
+    
+    public String getMapFolder(){
+        return ConfigManager.getStorageLocation() + "maps/";
     }
 }
