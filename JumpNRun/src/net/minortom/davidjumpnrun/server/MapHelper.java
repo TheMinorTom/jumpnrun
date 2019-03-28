@@ -64,4 +64,26 @@ public class MapHelper {
         
         return retMap;
     }
+
+    static String getMap(String mapName) {
+        String everything = "";
+        
+        try(BufferedReader br = new BufferedReader(new FileReader(Server.server.getMapFolder() + mapName))) {
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+            
+            
+            
+            while (line != null) {
+                sb.append(line);
+                sb.append(System.lineSeparator());
+                line = br.readLine();
+            }
+            everything = sb.toString();
+        } catch (Exception e) {
+            
+        }
+        
+        return everything;
+    }
 }

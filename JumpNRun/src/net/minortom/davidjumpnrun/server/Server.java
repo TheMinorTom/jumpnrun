@@ -17,6 +17,8 @@ public class Server {
     public final String infoSeperator = NetworkManager.infoSeperator;
     public final String keyword = NetworkManager.keyword;
     
+    public HashMap<String,OnlGame> games;
+    
     public static void main(String[] args) {
         new Server(args);
     }
@@ -33,10 +35,13 @@ public class Server {
         } */
         Server.server = this;
         
-        System.out.println("Starting the Server");
+        System.out.println("Server Hello World");
         tcpPort = 26656;
         tcpServer = new HashMap<>();
         TCPServer.init(tcpPort);
+        
+        games = new HashMap<>();
+        
         while(true){
             String pubId = "P" + Integer.toString((int) (Math.random()*10000000));
             tcpServer.put(pubId, new TCPServer(this, pubId));
