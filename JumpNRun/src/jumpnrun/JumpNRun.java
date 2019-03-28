@@ -44,6 +44,7 @@ public class JumpNRun extends Application {
     private static Vector<Shoot> shoots;
     private static Vector<PowerupCollect> powerupCollects;
 
+    private String sourcePathProt1, sourcePathProt2;
     
     private Protagonist protagonist1, protagonist2;
     private static GameLoop loop;
@@ -51,7 +52,7 @@ public class JumpNRun extends Application {
     public static Scene scene;
     private static double summonTimer, summonTime;
     private static Vector<Updatable> updatables;
-    private static Parent mainMenu, gameScene, chooseGamemodeScreen, winScreen, chooseSkinScreen;
+    private static Parent mainMenu, gameScene, chooseGamemodeScreen, winScreen, offlineSkinChooseScreen1, offlineSkinChooseScreen2, onlineSkinChooseCreateGame, onlineSkinChooseJoinGame;
     private Gamemode currGamemode;
     private static int deathLimit;
     private static double timeLimit;
@@ -105,6 +106,10 @@ public class JumpNRun extends Application {
         mainMenu = new MainMenu(this);
         chooseGamemodeScreen = new ChooseGamemodeMenu(this);
         winScreen = new WinScreen(this);
+        offlineSkinChooseScreen1 = new SkinChooseMenu(this, SkinChooseMenu.SkinChooseMode.OFFLINE_PLAYER_1);
+        offlineSkinChooseScreen2 = new SkinChooseMenu(this, SkinChooseMenu.SkinChooseMode.OFFLINE_PLAYER_2);
+        onlineSkinChooseCreateGame = new SkinChooseMenu(this, SkinChooseMenu.SkinChooseMode.ONLINE_CREATE_GAME);
+        onlineSkinChooseJoinGame = new SkinChooseMenu(this, SkinChooseMenu.SkinChooseMode.ONLINE_JOIN_GAME);
         //chooseSkinScreen = new SkinChooseMenu(this);
         //((SkinChooseMenu)chooseSkinScreen).updateStrings();
         //scene = new Scene(chooseSkinScreen);
@@ -138,8 +143,8 @@ public class JumpNRun extends Application {
         InputStream worldIn = IO.getFileStream(worldPath);
 
         worldVector = IO.openWorld(worldIn, blocksDirPath);
-        protagonist1 = new Protagonist(1, A, D, W, C, V, B, spawnXDist, spawnY);
-        protagonist2 = new Protagonist(2, LEFT, RIGHT, UP, P, O, I, getWidth() - spawnXDist - Protagonist.width, spawnY);
+        protagonist1 = new Protagonist(1, A, D, W, C, V, B, spawnXDist, spawnY, sourcePathProt1);
+        protagonist2 = new Protagonist(2, LEFT, RIGHT, UP, P, O, I, getWidth() - spawnXDist - Protagonist.width, spawnY, sourcePathProt2);
         updatables.add(protagonist1);
         updatables.add(protagonist2);
         graphic = new Graphic(worldVector, protagonist1, protagonist2, currGamemode);
@@ -241,6 +246,26 @@ public class JumpNRun extends Application {
         ((MainMenu) mainMenu).updateStrings();
     }
     
+    public void openOfflineSkinChooseMenu1() {
+        scene.setRoot(offlineSkinChooseScreen1);
+        ((SkinChooseMenu)offlineSkinChooseScreen1).updateStrings();
+    }
+    
+    public void openOfflineSkinChooseMenu2() {
+        scene.setRoot(offlineSkinChooseScreen2);
+        ((SkinChooseMenu)offlineSkinChooseScreen2).updateStrings();
+    }
+    
+    public void openOnlineSkinChooseCreateGameMenu() {
+        scene.setRoot(onlineSkinChooseCreateGame);
+        ((SkinChooseMenu)onlineSkinChooseCreateGame).updateStrings();
+    }
+    
+    public void openOnlineSkinChooseJoinGameMenu() {
+        scene.setRoot(onlineSkinChooseJoinGame);
+        ((SkinChooseMenu)onlineSkinChooseJoinGame).updateStrings();
+    }
+    
     // The following function is licensed under the MIT License. You should have already received a copy located at ../net/minortom/LICENSE.txt
     // Copyright 2019 MinorTom <mail in license file>
     public void openNetworkScreen() {
@@ -338,6 +363,14 @@ public class JumpNRun extends Application {
 
     public static double getRunTime() {
         return loop.getRunTime();
+    }
+    
+    public void setSourcePathProt1 (String p) {
+        sourcePathProt1 = p;
+    }
+    
+    public void setSourcePathProt2 (String p) {
+        sourcePathProt2 = p;
     }
 
     @Override

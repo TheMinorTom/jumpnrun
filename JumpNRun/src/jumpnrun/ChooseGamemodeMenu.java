@@ -134,7 +134,7 @@ public class ChooseGamemodeMenu extends VBox {
                 try {
                     game.setTimeLimit((Double.parseDouble(timeTF.getText())) * 60);
                     game.setCurrGamemode(JumpNRun.Gamemode.TIME);
-                    game.initGame();
+                    game.openOfflineSkinChooseMenu1();
                 } catch (NumberFormatException n) {
                     timeTF.setText(game.language.ChoGmErrOnlyNumbers);
                 }
@@ -143,13 +143,13 @@ public class ChooseGamemodeMenu extends VBox {
                 try {
                     game.setDeathLimit(Integer.parseInt(deathsTF.getText()));
                     game.setCurrGamemode(JumpNRun.Gamemode.DEATHS);
-                    game.initGame();
+                    game.openOfflineSkinChooseMenu1();
                 } catch (NumberFormatException n) {
                     deathsTF.setText(game.language.ChoGmErrOnlyWholeNumbers);
                 }
             } else if (endlessBt.isSelected()) {
                 game.setCurrGamemode(JumpNRun.Gamemode.ENDLESS);
-                game.initGame();
+                game.openOfflineSkinChooseMenu1();
             }
 
         });

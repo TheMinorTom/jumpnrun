@@ -26,8 +26,8 @@ public class NetworkManager extends VBox {
     JumpNRun game;
     
     LoginScreen loginScreen;
-    JoinGameScreen joinGameScreen;
-    CreateGameScreen createGameScreen;
+    public JoinGameScreen joinGameScreen;
+    public CreateGameScreen createGameScreen;
     WaitScreen waitScreen;
     public ChooseMapScreen mapSelectionScreen;
     public ServerConnection serverConnection;

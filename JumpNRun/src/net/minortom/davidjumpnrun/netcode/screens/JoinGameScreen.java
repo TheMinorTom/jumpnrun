@@ -42,7 +42,7 @@ public class JoinGameScreen extends VBox {
         okBt.setDisable(true);
         
         skinBt.setOnAction((ActionEvent e) -> {
-            okBt.setDisable(false);
+            game.openOnlineSkinChooseJoinGameMenu();
         });
         
         nameField = new TextField();
@@ -74,5 +74,9 @@ public class JoinGameScreen extends VBox {
         skinBt.setText(game.language.GSkinBt);
         
         nameField.setFont(game.language.getFont());
+    }
+    
+    public Button getOkBt() {
+        return okBt;
     }
 }

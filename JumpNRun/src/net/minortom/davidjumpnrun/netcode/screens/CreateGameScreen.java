@@ -109,8 +109,7 @@ public class CreateGameScreen extends VBox {
         
         skinBt = new Button("ERR");
         skinBt.setOnAction((ActionEvent e) -> {
-            skinchosen = true;
-            unlockOk();
+            game.openOnlineSkinChooseCreateGameMenu();
         });
         
         playersTF = new TextField();
@@ -220,7 +219,7 @@ public class CreateGameScreen extends VBox {
     // The following sections are licensed under the MIT License. You should have already received a copy located at ../net/minortom/LICENSE.txt
     // Copyright 2019 MinorTom <mail in license file>
     
-    private void unlockOk(){
+    public void unlockOk(){
         if (toggleschanged&&mapselected&&skinchosen){
             okBt.setDisable(false);
         }
@@ -228,6 +227,10 @@ public class CreateGameScreen extends VBox {
 
     public void setMapName(String name) {
         mapNameLbl.setText(name);
+    }
+    
+    public void setSkinChosen(boolean b) {
+        skinchosen = b;
     }
     
     // End licensed sections
