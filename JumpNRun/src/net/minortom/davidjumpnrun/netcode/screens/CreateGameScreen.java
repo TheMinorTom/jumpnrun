@@ -17,6 +17,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import jumpnrun.JumpNRun;
+import jumpnrun.SkinChooseMenu;
+import net.minortom.davidjumpnrun.configstore.ConfigManager;
 
 public class CreateGameScreen extends VBox {
     
@@ -25,10 +27,14 @@ public class CreateGameScreen extends VBox {
     private RadioButton endlessBt, timeBt, deathsBt;
     private Button backBt, okBt, chooseMapBt, skinBt;
     private TextField timeTF, deathsTF, playersTF, nameTF;
-    private Label timeLbl, deathsLbl, playersLbl, nameLbl, mapNameLbl, players2Lbl;
-    private HBox timeBox, deathsBox, btBox, playersBox, mapBox;
+    private Label timeLbl, deathsLbl, playersLbl, nameLbl, mapNameLbl, skinLbl, players2Lbl;
+    private HBox timeBox, deathsBox, btBox, playersBox, mapBox, skinBox;
     
-    private double timeLimit;   //In seconds
+    String skinUrl;
+    
+    private SkinChooseMenu skinChooseMenu;
+    
+    private double timeLimit; //In seconds
     private double deathLimit;
     
     
@@ -119,6 +125,8 @@ public class CreateGameScreen extends VBox {
         
         mapNameLbl = new Label();
         
+        skinLbl = new Label();
+        
         playersLbl = new Label("ERR");
         
         players2Lbl = new Label("ERR");
@@ -135,6 +143,11 @@ public class CreateGameScreen extends VBox {
         mapBox.setSpacing(20);
         mapBox.setPadding(new Insets(0, 0, 0, 0));
         
+        skinBox = new HBox(skinBt, skinLbl);
+        skinBox.setAlignment(Pos.CENTER_LEFT);
+        skinBox.setSpacing(20);
+        skinBox.setPadding(new Insets(0, 0, 0, 0));
+        
         // End licensed sections
         
         btBox = new HBox(backBt, okBt);
@@ -147,7 +160,7 @@ public class CreateGameScreen extends VBox {
         setAlignment(Pos.CENTER_LEFT);
         setSpacing(50);
         setPadding(new Insets(0, 0, 0, 150));
-        getChildren().addAll(nameLbl, nameTF, playersBox, timeBox, deathsBox, endlessBt, mapBox, skinBt, btBox);
+        getChildren().addAll(nameLbl, nameTF, playersBox, timeBox, deathsBox, endlessBt, mapBox, skinBox, btBox);
     }
     
     public void updateStrings(){
@@ -204,6 +217,7 @@ public class CreateGameScreen extends VBox {
         playersTF.setFont(defaultFont);
         nameTF.setFont(defaultFont);
         mapNameLbl.setFont(defaultFont);
+        skinLbl.setFont(defaultFont);
         playersLbl.setFont(defaultFont);
         players2Lbl.setFont(defaultFont);
         nameLbl.setFont(defaultFont);

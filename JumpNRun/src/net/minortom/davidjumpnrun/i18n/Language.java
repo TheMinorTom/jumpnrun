@@ -146,6 +146,10 @@ public class Language implements Serializable {
         return new Font(fontName, fontSize);
     }
     
+    public Font getHeadingFont(){
+        return new Font(fontName, fontSize*2);
+    }
+    
     public String getShortName(){
         return "ERR";
     }

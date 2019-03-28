@@ -112,7 +112,7 @@ public class SkinChooseMenu extends VBox {
         okBt.setFont(game.language.getFont());
         backBt.setFont(game.language.getFont());
         
-        headingLbl.setFont(new Font(game.language.getFontName(), game.language.getFontSize()*2));
+        headingLbl.setFont(game.language.getHeadingFont());
     }
     
     public void setHeading(String h) {

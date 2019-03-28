@@ -6,4 +6,10 @@ package net.minortom.davidjumpnrun.server;
 
 public class OnlGame {
     
+    public Server server;
+    
+    public String gameName;
+    
+    
+    
 }
