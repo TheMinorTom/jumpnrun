@@ -27,8 +27,7 @@ public class NetworkTCPReceiver extends Thread{
                         if(type.equals("REQ")){
                             tcpServ.userName = packageContent[2];
                             tcpServ.pass = packageContent[3];
-                            tcpServ.pubId = server.tcpServer.indexOf(tcpServ);
-                            tcpServ.token = Integer.toString((int) (Math.random()*10000));
+                            tcpServ.token = "T" + Integer.toString((int) (Math.random()*10000000));
                             tcpServ.out.println(server.keyword + server.infoSeperator + "AUTH-OK" + server.infoSeperator + tcpServ.pubId + server.infoSeperator + tcpServ.token);
                             System.out.println("AUTHENTHICATED " + tcpServ.userName);
                         } else if (type.equals("LOGOUT")) {
@@ -51,7 +50,7 @@ public class NetworkTCPReceiver extends Thread{
                             tcpServ.out.println(toPrint);
                         }
                     }
-                } catch (ArrayIndexOutOfBoundsException e){
+                } catch (Exception e){
                     System.err.println("Invalid package received");
                     e.printStackTrace();
                 }

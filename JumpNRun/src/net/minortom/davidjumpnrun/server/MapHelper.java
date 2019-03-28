@@ -7,6 +7,7 @@ package net.minortom.davidjumpnrun.server;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class MapHelper {
@@ -20,6 +21,7 @@ public class MapHelper {
             i++;
         }
         
+        System.out.println(Arrays.toString(ret));
         return ret;
     }
     
@@ -51,7 +53,6 @@ public class MapHelper {
             
         }
         
-        System.out.println(everything);
         
         String[] tempArr = everything.split("\n");
         HashMap<String, Map> retMap = new HashMap<>();
