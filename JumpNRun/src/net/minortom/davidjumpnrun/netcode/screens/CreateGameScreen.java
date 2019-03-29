@@ -233,7 +233,7 @@ public class CreateGameScreen extends VBox {
     // The following sections are licensed under the MIT License. You should have already received a copy located at ../net/minortom/LICENSE.txt
     // Copyright 2019 MinorTom <mail in license file>
     
-    private void unlockOk(){
+    public void unlockOk(){
         if (toggleschanged&&mapselected&&skinchosen){
             okBt.setDisable(false);
         }
