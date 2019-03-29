@@ -24,7 +24,7 @@ import worldeditor.IO;
  *
  * @author Norbert
  */
-public class Protagonist extends ImageView implements Updatable{
+public class Protagonist extends ImageView implements Updatable {
 
     private Image image;
     private final String spritePath;
@@ -55,8 +55,7 @@ public class Protagonist extends ImageView implements Updatable{
     private Powerup powerup;
     private boolean isFacingRight;
     private int deaths;
-    
-    
+
     public Protagonist(int id, KeyCode left, KeyCode right, KeyCode jump, KeyCode hit, KeyCode shoot, KeyCode use, double x, double y, String sourcePath) {
         super();
         spritePath = sourcePath;
@@ -75,9 +74,9 @@ public class Protagonist extends ImageView implements Updatable{
         gun = new Gun();
 
         deaths = 0;
-        
+
         powerup = null;
-        
+
         image = new Image(IO.getFileStream(spritePath));
 
         setImage(image);
@@ -135,24 +134,21 @@ public class Protagonist extends ImageView implements Updatable{
 
          */
     }
+
     @Override
     public void update(double timeElapsedSeconds, Vector<Vector<Block>> worldVec, Protagonist prot1, Protagonist prot2, Vector<PowerupCollect> powerupCollects) {
         Protagonist otherProt;
-        if(protId == 1) {
+        if (protId == 1) {
             otherProt = prot2;
-        } else{
+        } else {
             otherProt = prot1;
         }
-        
-        if(yPos > 5000) {
+
+        if (yPos > 5000) {
             hitten();
         }
-        
-        if(getBoundsInParent().intersects(otherProt.getBoundsInParent())) {
-            ySpeed = 0;
-            jumpDone = true;
-        }
-        
+
+
         if (!respawnDoing) {
             checkCollects(powerupCollects);
             updateJump(timeElapsedSeconds);
@@ -211,6 +207,13 @@ public class Protagonist extends ImageView implements Updatable{
                 xSpeed = 0;
                 //resetAnimation();
             }
+            setX(xPos);
+            setY(yPos);
+
+            intersects = intersectsPlayer(otherProt);
+            if (intersects) {
+                yPos -= 20;
+            }
 
             setX(xPos);
             setY(yPos);
@@ -233,10 +236,21 @@ public class Protagonist extends ImageView implements Updatable{
                 }
             }
         }
-        if (getBoundsInParent().intersects(otherProt.getBoundsInParent())) {
+        if (intersectsPlayer(otherProt)) {
             return true;
         }
         return false;
+    }
+
+    private boolean intersectsPlayer(Protagonist p) {
+        if (getBoundsInParent().intersects(p.getBoundsInParent())) {
+            if (!p.isRespawning()) {
+
+                return true;
+            }
+        } 
+            return false;
+
     }
 
     public void checkCollects(Vector<PowerupCollect> collects) {
@@ -246,7 +260,7 @@ public class Protagonist extends ImageView implements Updatable{
                 Powerup powerupOld = powerup;
                 powerup = new Powerup(collect.getIcon());
                 JumpNRun.doCollect(collect, powerup, powerupOld, protId);
-                
+
             }
         }
     }
@@ -475,28 +489,28 @@ public class Protagonist extends ImageView implements Updatable{
     }
 
     public void doUse() {
-        if(powerup != null) {
+        if (powerup != null) {
             switch (powerup.getIcon()) {
-                    case DOUBLE_SPEED:
-                        spdFactor = defaultSpdFactor * 2;
-                        isDoubleSpeed = true;
-                        break;
+                case DOUBLE_SPEED:
+                    spdFactor = defaultSpdFactor * 2;
+                    isDoubleSpeed = true;
+                    break;
 
-                    case MACHINE_PISTOL:
-                        isMachinePistol = true;
-                        shootDoing = false;
-                        break;
-                        
-                    case TRUCK:
-                        JumpNRun.addUpdatable(new TruckHandler(this));
-                        break;
-                }
-            
+                case MACHINE_PISTOL:
+                    isMachinePistol = true;
+                    shootDoing = false;
+                    break;
+
+                case TRUCK:
+                    JumpNRun.addUpdatable(new TruckHandler(this));
+                    break;
+            }
+
             JumpNRun.removeNode(powerup);
             powerup = null;
         }
     }
-    
+
     public void doRight() {
         isFacingRight = true;
         goesRight = true;
@@ -520,7 +534,7 @@ public class Protagonist extends ImageView implements Updatable{
     }
 
     public void doHit() {
-        if ((!shootDoing)&&(!isMachinePistol)) {
+        if ((!shootDoing) && (!isMachinePistol)) {
             hitDoing = true;
         }
     }
@@ -585,6 +599,7 @@ public class Protagonist extends ImageView implements Updatable{
     }
 
     private enum CostumeViewport {
+
         LEFT_0(0, 0, Protagonist.getWidth(), Protagonist.getHeight()),
         LEFT_1(50, 0, Protagonist.getWidth(), Protagonist.getHeight()),
         LEFT_2(100, 0, Protagonist.getWidth(), Protagonist.getHeight()),
@@ -622,15 +637,15 @@ public class Protagonist extends ImageView implements Updatable{
         }
 
     }
-    
+
     public static Rectangle2D getMidViewport() {
         return CostumeViewport.MID.getRect();
     }
-    
-    public void setPowerup (Powerup p) {
+
+    public void setPowerup(Powerup p) {
         powerup = p;
     }
-    
+
     public boolean getFacingRight() {
         return isFacingRight;
     }
@@ -638,7 +653,7 @@ public class Protagonist extends ImageView implements Updatable{
     public boolean isRespawning() {
         return respawnDoing;
     }
-    
+
     public int getDeaths() {
         return deaths;
     }
