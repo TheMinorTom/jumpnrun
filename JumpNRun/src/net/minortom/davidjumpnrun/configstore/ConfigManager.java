@@ -43,8 +43,8 @@ public class ConfigManager {
                 PrintWriter pw = new PrintWriter(sw);
                 i.printStackTrace(pw);
                 String sStackTrace = sw.toString(); 
-                error(game.language.CfgManErrorLoadTitle, ""
-                        + game.language.CfgManErrorLoadText + sStackTrace);
+                //error(game.language.CfgManErrorLoadTitle, ""
+                //        + game.language.CfgManErrorLoadText + sStackTrace);
             }
         }
         return config;

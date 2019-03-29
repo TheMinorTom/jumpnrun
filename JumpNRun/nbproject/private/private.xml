@@ -3,12 +3,19 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/tom/docs/projects/Maggdas%20snans%20lolles%20spiel%20liil%20soos/jumpnrun/JumpNRun/src/jumpnrun/Gun.java</file>
+            <file>file:/home/tom/docs/projects/Maggdas%20snans%20lolles%20spiel%20liil%20soos/jumpnrun/JumpNRun/src/net/minortom/davidjumpnrun/server/RemotePlayer.java</file>
+            <file>file:/home/tom/docs/projects/Maggdas%20snans%20lolles%20spiel%20liil%20soos/jumpnrun/JumpNRun/src/net/minortom/davidjumpnrun/netcode/NetworkTCPReceiver.java</file>
             <file>file:/home/tom/docs/projects/Maggdas%20snans%20lolles%20spiel%20liil%20soos/jumpnrun/JumpNRun/src/net/minortom/davidjumpnrun/netcode/NetworkManager.java</file>
-            <file>file:/home/tom/docs/projects/Maggdas%20snans%20lolles%20spiel%20liil%20soos/jumpnrun/JumpNRun/src/net/minortom/davidjumpnrun/netcode/screens/ChooseMapScreen.java</file>
+            <file>file:/home/tom/docs/projects/Maggdas%20snans%20lolles%20spiel%20liil%20soos/jumpnrun/JumpNRun/src/net/minortom/davidjumpnrun/configstore/ConfigManager.java</file>
+            <file>file:/home/tom/docs/projects/Maggdas%20snans%20lolles%20spiel%20liil%20soos/jumpnrun/JumpNRun/src/net/minortom/davidjumpnrun/netcode/screens/commands.txt</file>
+            <file>file:/home/tom/docs/projects/Maggdas%20snans%20lolles%20spiel%20liil%20soos/jumpnrun/JumpNRun/src/net/minortom/davidjumpnrun/configstore/Configuration.java</file>
+            <file>file:/home/tom/docs/projects/Maggdas%20snans%20lolles%20spiel%20liil%20soos/jumpnrun/JumpNRun/src/net/minortom/davidjumpnrun/server/OnlGame.java</file>
+            <file>file:/home/tom/docs/projects/Maggdas%20snans%20lolles%20spiel%20liil%20soos/jumpnrun/JumpNRun/src/net/minortom/davidjumpnrun/netcode/ServerConnection.java</file>
+            <file>file:/home/tom/docs/projects/Maggdas%20snans%20lolles%20spiel%20liil%20soos/jumpnrun/JumpNRun/src/net/minortom/davidjumpnrun/server/NetworkTCPReceiver.java</file>
+            <file>file:/home/tom/docs/projects/Maggdas%20snans%20lolles%20spiel%20liil%20soos/jumpnrun/JumpNRun/src/net/minortom/davidjumpnrun/netcode/screens/CreateGameScreen.java</file>
             <file>file:/home/tom/docs/projects/Maggdas%20snans%20lolles%20spiel%20liil%20soos/jumpnrun/JumpNRun/src/jumpnrun/JumpNRun.java</file>
-            <file>file:/home/tom/docs/projects/Maggdas%20snans%20lolles%20spiel%20liil%20soos/jumpnrun/JumpNRun/src/net/minortom/davidjumpnrun/i18n/Language.java</file>
-            <file>file:/home/tom/docs/projects/Maggdas%20snans%20lolles%20spiel%20liil%20soos/jumpnrun/JumpNRun/src/jumpnrun/SkinChooseMenu.java</file>
+            <file>file:/home/tom/docs/projects/Maggdas%20snans%20lolles%20spiel%20liil%20soos/jumpnrun/JumpNRun/src/net/minortom/davidjumpnrun/netcode/screens/JoinGameScreen.java</file>
+            <file>file:/home/tom/docs/projects/Maggdas%20snans%20lolles%20spiel%20liil%20soos/jumpnrun/JumpNRun/src/net/minortom/davidjumpnrun/i18n/LanguageEnglish.java</file>
         </group>
     </open-files>
 </project-private>

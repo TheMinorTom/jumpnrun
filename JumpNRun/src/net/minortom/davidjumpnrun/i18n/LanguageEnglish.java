@@ -27,7 +27,7 @@ public class LanguageEnglish extends Language{
         // JumpNRun.java
         this.JNRCfgDirCorrectPopTitle = "Storage location";
         this.JNRCfgDirCorrectPopText1 = "Configuration files will be stored at: \n";
-        this.JNRCfgDirCorrectPopText2 = "\nIf this location is incorrect terminate the program now!";
+        this.JNRCfgDirCorrectPopText2 = "\nIf this location is incorrect terminate the program now!\nIf the location already was set this message can pop up because of an update.";
         
         // Main Menu
         this.MainMenuPlayBt = "Play Offline";
