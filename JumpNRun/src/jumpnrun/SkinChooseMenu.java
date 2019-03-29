@@ -168,8 +168,8 @@ public class SkinChooseMenu extends VBox {
         redRB.setFont(game.language.getFont());
         okBt.setFont(game.language.getFont());
         backBt.setFont(game.language.getFont());
-
-        headingLbl.setFont(new Font(game.language.getFontName(), game.language.getFontSize() * 2));
+        
+        headingLbl.setFont(game.language.getHeadingFont());
         switch (mode) {
             case OFFLINE_PLAYER_1:
                 headingLbl.setText(game.language.SkinChooseOfflinePlayer1Heading);

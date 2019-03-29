@@ -7,11 +7,22 @@ package net.minortom.davidjumpnrun.server;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class MapHelper {
     public static String[] listMaps(){
-        throw new UnsupportedOperationException();
+        HashMap<String, Map> maps = getMapCfgFile();
+        String[] ret = new String[maps.size()];
+        
+        int i = 0;
+        for(java.util.Map.Entry<String, Map> oneMap : maps.entrySet()) {
+            ret[i] = oneMap.getValue().name;
+            i++;
+        }
+        
+        System.out.println(Arrays.toString(ret));
+        return ret;
     }
     
     public static String getMapDesc(String map){
@@ -42,6 +53,7 @@ public class MapHelper {
             
         }
         
+        
         String[] tempArr = everything.split("\n");
         HashMap<String, Map> retMap = new HashMap<>();
         
@@ -50,6 +62,28 @@ public class MapHelper {
             retMap.put(tempArrM[1], new Map(tempArrM[0],tempArrM[1],tempArrM[2],tempArrM[3]));
         }
         
-        throw new UnsupportedOperationException();
+        return retMap;
+    }
+
+    static String getMap(String mapName) {
+        String everything = "";
+        
+        try(BufferedReader br = new BufferedReader(new FileReader(Server.server.getMapFolder() + mapName))) {
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+            
+            
+            
+            while (line != null) {
+                sb.append(line);
+                sb.append(System.lineSeparator());
+                line = br.readLine();
+            }
+            everything = sb.toString();
+        } catch (Exception e) {
+            
+        }
+        
+        return everything;
     }
 }

@@ -5,6 +5,7 @@
 package net.minortom.davidjumpnrun.server;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import net.minortom.davidjumpnrun.configstore.ConfigManager;
 import net.minortom.davidjumpnrun.netcode.NetworkManager;
@@ -16,11 +17,13 @@ public class Server {
     public final String infoSeperator = NetworkManager.infoSeperator;
     public final String keyword = NetworkManager.keyword;
     
+    public HashMap<String,OnlGame> games;
+    
     public static void main(String[] args) {
-        Server.server = new Server(args);
+        new Server(args);
     }
     
-    public List<TCPServer> tcpServer;
+    public HashMap<String, TCPServer> tcpServer;
     public int tcpPort;
     
     public Server(String[] args){
@@ -30,16 +33,22 @@ public class Server {
             System.err.println("Invalid argument: Port");
             System.exit(1);
         } */
-        System.out.println(infoSeperator);
+        Server.server = this;
+        
+        System.out.println("Server Hello World");
         tcpPort = 26656;
-        tcpServer = new ArrayList<>();
+        tcpServer = new HashMap<>();
         TCPServer.init(tcpPort);
+        
+        games = new HashMap<>();
+        
         while(true){
-            tcpServer.add(new TCPServer(this));
+            String pubId = "P" + Integer.toString((int) (Math.random()*10000000));
+            tcpServer.put(pubId, new TCPServer(this, pubId));
         }
     }
     
     public String getMapFolder(){
-        return ConfigManager.getStorageLocation() + "maps/";
+        return ConfigManager.getStorageLocation() + "worlds/";
     }
 }

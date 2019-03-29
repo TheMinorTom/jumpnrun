@@ -93,7 +93,6 @@ public class Language implements Serializable {
     public transient String SkinChooseOfflinePlayer1Heading;
     public transient String SkinChooseOfflinePlayer2Heading;
     
-    
     // Wait Screen
     public transient String WaitServerAnswer;
     public transient String WaitOtherPlayersA;
@@ -146,6 +145,10 @@ public class Language implements Serializable {
     
     public Font getFont(){
         return new Font(fontName, fontSize);
+    }
+    
+    public Font getHeadingFont(){
+        return new Font(fontName, fontSize*2);
     }
     
     public String getShortName(){

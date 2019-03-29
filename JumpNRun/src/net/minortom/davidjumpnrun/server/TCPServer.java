@@ -22,11 +22,11 @@ public class TCPServer {
     public String pass;
     
     public String token;
-    public int pubId;
+    public String pubId;
     
-    public TCPServer(Server getServ){
+    public TCPServer(Server getServ, String pubId){
         server = getServ;
-        
+        this.pubId = pubId;
         
         try{
             clientSocket = serverSocket.accept();
