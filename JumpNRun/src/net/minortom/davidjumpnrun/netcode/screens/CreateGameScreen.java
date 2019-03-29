@@ -18,7 +18,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import jumpnrun.JumpNRun;
 import jumpnrun.SkinChooseMenu;
-import net.minortom.davidjumpnrun.configstore.ConfigManager;
+import net.minortom.davidjumpnrun.netcode.NetworkManager;
 
 public class CreateGameScreen extends VBox {
     
@@ -31,6 +31,7 @@ public class CreateGameScreen extends VBox {
     private HBox timeBox, deathsBox, btBox, playersBox, mapBox, skinBox;
     
     String skinUrl;
+    String gameMode;
     
     private SkinChooseMenu skinChooseMenu;
     
@@ -57,12 +58,15 @@ public class CreateGameScreen extends VBox {
                 if (toggleGroup.getSelectedToggle().equals(endlessBt)) {
                     timeTF.setDisable(true);
                     deathsTF.setDisable(true);
+                    gameMode = "ENDLESS";
                 } else if (toggleGroup.getSelectedToggle().equals(timeBt)) {
                     timeTF.setDisable(false);
                     deathsTF.setDisable(true);
+                    gameMode = "TIME";
                 } else if (toggleGroup.getSelectedToggle().equals(deathsBt)) {
                     timeTF.setDisable(true);
                     deathsTF.setDisable(false);
+                    gameMode = "DEATHS";
                 }
             }
 
@@ -206,6 +210,15 @@ public class CreateGameScreen extends VBox {
             game.networkManager.openWaitScreen();
             game.networkManager.setWaitScreenText(game.language.WaitServerAnswer);
             
+            String limit = "0";
+            if("DEATHS".equals(gameMode)){
+                limit = deathsTF.getText();
+            } else if ("TIME".equals(gameMode)) {
+                limit = timeTF.getText();
+            }
+            String skin = skinUrl.split("/")[skinUrl.split("/").length - 1];
+            game.networkManager.serverConnection.out.println(NetworkManager.keyword + NetworkManager.infoSeperator + "OGAME-CREATE" + NetworkManager.infoSeperator + nameTF.getText() + NetworkManager.infoSeperator + playersTF.getText() + NetworkManager.infoSeperator + gameMode + NetworkManager.infoSeperator + limit + NetworkManager.infoSeperator + mapNameLbl.getText() + NetworkManager.infoSeperator + skin);
+            
         });
         
         // The following sections are licensed under the MIT License. You should have already received a copy located at ../net/minortom/LICENSE.txt
@@ -243,8 +256,11 @@ public class CreateGameScreen extends VBox {
         mapNameLbl.setText(name);
     }
   
-    public void setSkinChosen(boolean b) {
+    public void setSkinChosen(boolean b, String skinUrl, String skinName) {
         skinchosen = b;
+        unlockOk();
+        this.skinUrl = skinUrl;
+        skinLbl.setText(skinName);
     }
     
     // End licensed sections

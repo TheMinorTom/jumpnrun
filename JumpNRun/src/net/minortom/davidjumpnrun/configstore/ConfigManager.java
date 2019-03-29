@@ -12,6 +12,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
@@ -68,17 +69,22 @@ public class ConfigManager {
     }
     
     public static void alert(AlertType type, String title, String body, boolean wait){
-        Alert alert = new Alert(type);
-        alert.setTitle(game.language.GWindowName);
-        alert.setHeaderText(title);
-        alert.setContentText(body);
-        alert.setResizable(true);
-        alert.getDialogPane().setPrefSize(480, 320);
-        if(wait){
-            alert.showAndWait();
-        } else {
-            alert.show();
-        }
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                Alert alert = new Alert(type);
+                alert.setTitle(game.language.GWindowName);
+                alert.setHeaderText(title);
+                alert.setContentText(body);
+                alert.setResizable(true);
+                alert.getDialogPane().setPrefSize(480, 320);
+                if(wait){
+                    alert.showAndWait();
+                } else {
+                    alert.show();
+                }
+            }
+        });
         
     }
     

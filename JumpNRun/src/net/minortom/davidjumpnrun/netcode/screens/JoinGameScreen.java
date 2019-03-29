@@ -13,19 +13,24 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import jumpnrun.JumpNRun;
+import net.minortom.davidjumpnrun.netcode.NetworkManager;
 
 public class JoinGameScreen extends VBox {
     
     JumpNRun game;
-    Label nameLabel;
+    Label nameLabel, skinLbl;
     Button okBt, backBt, skinBt;
     TextField nameField;
     HBox btBox;
+    VBox skinBox;
+    
+    String skinUrl;
     
     public JoinGameScreen (JumpNRun game) {
         this.game = game;
         
         nameLabel = new Label("ERR");
+        skinLbl = new Label();
         
         okBt = new Button("ERR");
         backBt = new Button("ERR");
@@ -38,6 +43,8 @@ public class JoinGameScreen extends VBox {
         okBt.setOnAction((ActionEvent e) -> {
             game.networkManager.openWaitScreen();
             game.networkManager.setWaitScreenText(game.language.WaitServerAnswer);
+            String skin = skinUrl.split("/")[skinUrl.split("/").length - 1];
+            game.networkManager.serverConnection.out.println(NetworkManager.keyword + NetworkManager.infoSeperator + "OGAME-JOIN" + NetworkManager.infoSeperator + nameField.getText() + NetworkManager.infoSeperator + skin);
         });
         okBt.setDisable(true);
         
@@ -48,22 +55,29 @@ public class JoinGameScreen extends VBox {
         nameField = new TextField();
         // nameField.getStyleClass().add("-fx-alignment: center");
         
-        btBox = new HBox(okBt, backBt);
+        btBox = new HBox(backBt, okBt);
         btBox.setAlignment(Pos.CENTER);
         btBox.setSpacing(100);
         btBox.setPadding(new Insets(0, 0, 0, 0));
+        
+        skinBox = new VBox(skinBt, skinLbl);
+        skinBox.setAlignment(Pos.CENTER);
+        skinBox.setSpacing(15);
+        skinBox.setPadding(new Insets(0, 0, 0, 0));
         
         updateStrings();
         
         setAlignment(Pos.CENTER);
         setSpacing(50);
         setPadding(new Insets(0, 0, 0, 0));
-        getChildren().addAll(nameLabel, nameField, skinBt, btBox);
+        getChildren().addAll(nameLabel, nameField, skinBox, btBox);
     }
     
     public void updateStrings(){
         nameLabel.setText(game.language.JoinGNameLabel);
         nameLabel.setFont(game.language.getFont());
+        
+        skinLbl.setFont(game.language.getFont());
         
         okBt.setFont(game.language.getFont());
         backBt.setFont(game.language.getFont());
@@ -78,5 +92,11 @@ public class JoinGameScreen extends VBox {
     
     public Button getOkBt() {
         return okBt;
+    }
+
+    public void setSkinChosen(boolean b, String path, String text) {
+        okBt.setDisable(!b);
+        skinUrl = path;
+        skinLbl.setText(text);
     }
 }

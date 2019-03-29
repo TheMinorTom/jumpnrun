@@ -99,6 +99,13 @@ public class Language implements Serializable {
     public transient String WaitOtherPlayersB;
     public transient String WaitGameStart;
     
+    // Online Errors
+    public transient String ErrorTitle;
+    public transient String ErrorUnknown;
+    public transient String ErrorFatalTitle;
+    public transient String ErrorNameAlreadyExists;
+    public transient String ErrorNameDoesntExist;
+    
     // ConfigManager
     public transient String CfgManErrorStorageLocationTitle;
     public transient String CfgManErrorStorageLocationText;

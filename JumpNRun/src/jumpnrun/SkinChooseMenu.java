@@ -115,14 +115,12 @@ public class SkinChooseMenu extends VBox {
                     game.initGame();
                     break;
                 case ONLINE_CREATE_GAME:
-                    game.networkManager.createGameScreen.setSkinChosen(true);
-                    game.networkManager.createGameScreen.unlockOk();
+                    game.networkManager.createGameScreen.setSkinChosen(true, getPath(), ((RadioButton) toggle.getSelectedToggle()).getText());
                     game.networkManager.openCreateGameScreen();            
-                    // Online set skin 
                     break;
                 case ONLINE_JOIN_GAME:
+                    game.networkManager.joinGameScreen.setSkinChosen(true, getPath(), ((RadioButton) toggle.getSelectedToggle()).getText());
                     game.networkManager.openJoinGameScreen();
-                    game.networkManager.joinGameScreen.getOkBt().setDisable(false);
                     break;
             }
         });

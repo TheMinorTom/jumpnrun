@@ -7,9 +7,13 @@ package net.minortom.davidjumpnrun.server;
 import java.util.HashMap;
 import jumpnrun.JumpNRun;
 
-public class OnlGame {
+public class OnlGame implements Runnable{
     
     Server server;
+    
+    public boolean ended;
+    public boolean willStart;
+    public boolean started;
     
     public String gameName;
     public int playersMax;
@@ -20,28 +24,104 @@ public class OnlGame {
     public String mapName;
     public String mapText;
     
-    public HashMap<String,String> players; // Id, skin
+    public HashMap<String,String> playerSkins; // Id, skin
+    public HashMap<String,RemotePlayer> players; // Id, RemotePlayer
     
     
-    
-    public OnlGame(Server server, String gameName, int playersMax, JumpNRun.Gamemode gamemode, double timeLimit, int respawnLimit, String mapName, String playerOneId, String playerOneSkin){
+    public OnlGame(Server server, String gameName, int playersMax, String gamemode, double timeLimit, int respawnLimit, String mapName, String playerOneId, String playerOneSkin){
         this.server = server;
         
         this.gameName = gameName;
         this.playersMax = playersMax;
-        this.gamemode = gamemode;
+        
+        switch (gamemode) {
+            case "DEATHS":
+                this.gamemode = JumpNRun.Gamemode.DEATHS;
+                break;
+            case "TIME":
+                this.gamemode = JumpNRun.Gamemode.TIME;
+                break;
+            case "ENDLESS":
+                this.gamemode = JumpNRun.Gamemode.ENDLESS;
+                break;
+            default:
+                this.gamemode = JumpNRun.Gamemode.ENDLESS;
+                break;
+        }
+        
         this.timeLimit = timeLimit;
         this.respawnLimit = respawnLimit;
         this.mapName = mapName;
         
-        mapText = MapHelper.getMap(mapName);
+        mapText = MapHelper.getMap(MapHelper.getMapCfgFile().get(mapName).fileName);
         
         players = new HashMap<>();
+        playerSkins = new HashMap<>();
         
         addPlayer(playerOneId, playerOneSkin);
     }
     
     public void addPlayer(String pubId, String skin){
-        players.put(pubId, skin);
+        playerSkins.put(pubId, skin);
+        String name = server.tcpServer.get(pubId).userName;
+        players.put(pubId, new RemotePlayer(server, this, pubId, skin, name));
+        
+        sendAllTCP(server.keyword + server.infoSeperator + "OGAME-PJOINED" + server.infoSeperator + name);
+    }
+    
+    public void sendAllTCP(String text){
+        players.forEach((k,v) -> {
+            server.tcpServer.get(k).out.println(text);
+        });
+    }
+    
+    public void sendAllUDP(String text){
+        if(!willStart) return;
+        players.forEach((k,v) -> {
+            server.tcpServer.get(k).out.println(text);
+        });
+    }
+    
+    public int getPlayersUdpConnected(){
+        int c = 0;
+        for(java.util.Map.Entry<String, RemotePlayer> entry : players.entrySet()) {
+            String key = entry.getKey();
+            RemotePlayer value = entry.getValue();
+            if(value.udpConnected){
+                c++;
+            }
+        }
+        return c;
+    }
+    
+    public void startGame(){
+        
+    }
+    
+    public void startGameNow(){
+        
+    }
+    
+    @Override
+    public void run() {
+        while (!ended) {
+            if(willStart){
+                if(started){
+                    
+                } else {
+                    if(players.size() == getPlayersUdpConnected()){
+                        startGameNow();
+                    } else {
+                        
+                    }
+                }
+            } else {
+                if(players.size() == playersMax){
+                    startGame();
+                } else {
+                    
+                }
+            }
+        }
     }
 }

@@ -6,6 +6,7 @@ package net.minortom.davidjumpnrun.netcode;
 
 import java.io.IOException;
 import jumpnrun.JumpNRun;
+import net.minortom.davidjumpnrun.configstore.ConfigManager;
 import net.minortom.davidjumpnrun.netcode.ServerConnection.ConnState;
 
 public class NetworkTCPReceiver extends Thread{
@@ -37,6 +38,42 @@ public class NetworkTCPReceiver extends Thread{
                         if(type.equals("LISTOK")){
                             String[] maps = packageContent[2].split(",");
                             game.networkManager.mapSelectionDone(maps);
+                        }
+                    } else if (packageContent[1].startsWith("OGAME")){
+                        String type = packageContent[1].split("-")[1];
+                        switch (type) {
+                            case "YJOINED":
+                                break;
+                            case "PJOINED":
+                                
+                                break;
+                            case "ERR":
+                                String text;
+                                switch (packageContent[3].toLowerCase()) {
+                                    case "namealreadyexists":
+                                        text = game.language.ErrorNameAlreadyExists;
+                                        break;
+                                    case "namedoesntexist":
+                                        text = game.language.ErrorNameDoesntExist;
+                                        break;
+                                    default:
+                                        text = game.language.ErrorUnknown;
+                                        break;
+                                }
+                                if(Boolean.parseBoolean(packageContent[2])){
+                                    ConfigManager.error(game.language.ErrorFatalTitle, text);
+                                    game.openNetworkScreen();
+                                } else {
+                                    ConfigManager.error(game.language.ErrorTitle, text);
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                    } else if (packageContent[1].startsWith("IGAME")){
+                        String type = packageContent[1].split("-")[1];
+                        if(type.equals("TYPE")){
+                            
                         }
                     }
                 } catch (Exception e){

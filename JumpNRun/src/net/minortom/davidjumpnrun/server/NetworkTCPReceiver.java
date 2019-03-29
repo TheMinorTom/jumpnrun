@@ -49,6 +49,28 @@ public class NetworkTCPReceiver extends Thread{
                             String toPrint = server.keyword + server.infoSeperator + "MAP-LISTOK" + server.infoSeperator + lmaps;
                             tcpServ.out.println(toPrint);
                         }
+                    } else if (packageContent[1].startsWith("OGAME")){
+                        String type = packageContent[1].split("-")[1];
+                        if(type.equals("CREATE")){
+                            if(server.games.containsKey(packageContent[2])){
+                                tcpServ.out.println(server.keyword + server.infoSeperator + "OGAME-ERR" + server.infoSeperator + "true" + server.infoSeperator + "namealreadyexists");
+                            } else {
+                                OnlGame onlGame = new OnlGame(server, packageContent[2], Integer.parseInt(packageContent[3]), packageContent[4], Double.parseDouble(packageContent[5]), (int)Double.parseDouble(packageContent[5]), packageContent[6], tcpServ.pubId, packageContent[7]);
+                                server.games.put(packageContent[2], onlGame);
+                                (new Thread(onlGame)).start();
+                            }
+                        } else if(type.equals("JOIN")){
+                            if(!server.games.containsKey(packageContent[2])){
+                                tcpServ.out.println(server.keyword + server.infoSeperator + "OGAME-ERR" + server.infoSeperator + "true" + server.infoSeperator + "namedoesntexist");
+                            } else {
+                                server.games.get(packageContent[2]).addPlayer(tcpServ.pubId, packageContent[3]);
+                            }
+                        }
+                    } else if (packageContent[1].startsWith("IGAME")){
+                        String type = packageContent[1].split("-")[1];
+                        if(type.equals("TYPE")){
+                            
+                        }
                     }
                 } catch (Exception e){
                     System.err.println("Invalid package received");

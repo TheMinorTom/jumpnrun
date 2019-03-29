@@ -4,3 +4,12 @@ AUTH-OK         server          user id, user token
 
 MAP-LISTREQ     client          -
 MAP-LISTOK      server          comma seperated map names
+
+OGAME-CREATE    client          name, max players, game mode, limit (if infinite 0), map, skin
+OGAME-JOIN      client          name, skin
+OGAME-YJOINED   server          name, max players, game mode, limit (if infinite 0), map, skin
+OGAME-PJOINED   server          pname
+OGAME-WILLSTART server          TODO
+OGAME-ERR       client          fatal, code
+
+//IGAME

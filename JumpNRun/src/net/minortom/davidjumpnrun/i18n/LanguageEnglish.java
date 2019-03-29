@@ -96,6 +96,13 @@ public class LanguageEnglish extends Language{
         this.WaitOtherPlayersB = " players have joined yet:\n";
         this.WaitGameStart = "Waiting for the Game to start.";
         
+        // Online Errors
+        this.ErrorTitle = "Error";
+        this.ErrorUnknown = "Unknown Error Code";
+        this.ErrorFatalTitle = "Fatal Error";
+        this.ErrorNameAlreadyExists = "The Name you have chosen is already in use.";
+        this.ErrorNameDoesntExist = "The Game you want to join doesn't exist.";
+        
         // Config Manager
         this.CfgManErrorStorageLocationTitle = "The configuration might not be loaded/saved correctly";
         this.CfgManErrorStorageLocationText = "The Operating System could not be identified.";
