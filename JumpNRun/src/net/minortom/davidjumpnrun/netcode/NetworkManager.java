@@ -16,7 +16,7 @@ import jumpnrun.JumpNRun;
 import net.minortom.davidjumpnrun.netcode.screens.ChooseMapScreen;
 import net.minortom.davidjumpnrun.netcode.screens.CreateGameScreen;
 import net.minortom.davidjumpnrun.netcode.screens.JoinGameScreen;
-import net.minortom.davidjumpnrun.netcode.screens.WaitScreen;
+import net.minortom.davidjumpnrun.netcode.screens.WaitScreen
 
 public class NetworkManager extends VBox {
     

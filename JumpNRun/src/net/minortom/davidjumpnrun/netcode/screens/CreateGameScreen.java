@@ -115,8 +115,7 @@ public class CreateGameScreen extends VBox {
         
         skinBt = new Button("ERR");
         skinBt.setOnAction((ActionEvent e) -> {
-            skinchosen = true;
-            unlockOk();
+            game.openOnlineSkinChooseCreateGameMenu();
         });
         
         playersTF = new TextField();
@@ -242,6 +241,10 @@ public class CreateGameScreen extends VBox {
 
     public void setMapName(String name) {
         mapNameLbl.setText(name);
+    }
+  
+    public void setSkinChosen(boolean b) {
+        skinchosen = b;
     }
     
     // End licensed sections

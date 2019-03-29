@@ -27,7 +27,7 @@ import worldeditor.IO;
 public class Protagonist extends ImageView implements Updatable{
 
     private Image image;
-    private static final String spritePath = JumpNRun.sourcePath + "sprites/SpielfigurGes.png";
+    private final String spritePath;
     private double xPos, yPos, xSpeed, ySpeed, xSpawn, ySpawn;
     private boolean intersects;
     private boolean goesRight;
@@ -57,8 +57,9 @@ public class Protagonist extends ImageView implements Updatable{
     private int deaths;
     
     
-    public Protagonist(int id, KeyCode left, KeyCode right, KeyCode jump, KeyCode hit, KeyCode shoot, KeyCode use, double x, double y) {
+    public Protagonist(int id, KeyCode left, KeyCode right, KeyCode jump, KeyCode hit, KeyCode shoot, KeyCode use, double x, double y, String sourcePath) {
         super();
+        spritePath = sourcePath;
         protId = id;
         isFacingRight = false;
         xSpeed = 0;

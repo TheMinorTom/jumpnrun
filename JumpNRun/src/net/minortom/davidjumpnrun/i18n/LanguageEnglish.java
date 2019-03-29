@@ -87,6 +87,8 @@ public class LanguageEnglish extends Language{
         this.SkinColorYellow = "Yellow";
         this.SkinColorRed = "Red";
         this.SkinChooseDefaultHeading = "Choose your skin!";
+        this.SkinChooseOfflinePlayer1Heading = "Left Player: Choose your Skin!";
+        this.SkinChooseOfflinePlayer2Heading = "Right Player: Choose your Skin!";
         
         // Wait Screen
         this.WaitServerAnswer = "Waiting for the Server";
