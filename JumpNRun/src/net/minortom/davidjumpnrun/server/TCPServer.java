@@ -16,7 +16,7 @@ public class TCPServer {
     Socket clientSocket;
     PrintWriter out;
     BufferedReader in;
-    NetworkTCPReceiver tcpReceiver;
+    NetworkTCPReceiverServer tcpReceiver;
     
     public String userName;
     public String pass;
@@ -39,7 +39,7 @@ public class TCPServer {
             return;
         }
         
-        tcpReceiver = new NetworkTCPReceiver(server, this);
+        tcpReceiver = new NetworkTCPReceiverServer(server, this);
         tcpReceiver.start();
     }
     

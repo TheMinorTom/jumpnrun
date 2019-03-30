@@ -20,6 +20,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import net.minortom.davidjumpnrun.i18n.Language;
 import worldeditor.IO;
@@ -45,6 +46,7 @@ public class SkinChooseMenu extends VBox {
     private final JumpNRun game;
     private final SkinChooseMode mode;
 
+    private Skin skin;
     public SkinChooseMenu(JumpNRun game, SkinChooseMode mode) {
         this.game = game;
         this.mode = mode;
@@ -107,19 +109,19 @@ public class SkinChooseMenu extends VBox {
         okBt.setOnAction((ActionEvent e) -> {
             switch (mode) {
                 case OFFLINE_PLAYER_1:
-                    game.setSourcePathProt1(getPath());
+                    game.setSkinProt1(getSkin());
                     game.openOfflineSkinChooseMenu2();
                     break;
                 case OFFLINE_PLAYER_2:
-                    game.setSourcePathProt2(getPath());
+                    game.setSkinProt2(getSkin());
                     game.initGame();
                     break;
                 case ONLINE_CREATE_GAME:
-                    game.networkManager.createGameScreen.setSkinChosen(true, getPath(), ((RadioButton) toggle.getSelectedToggle()).getText());
-                    game.networkManager.openCreateGameScreen();            
+                    game.networkManager.createGameScreen.setSkinChosen(true, getSkin(), ((RadioButton) toggle.getSelectedToggle()).getText());
+                    game.networkManager.openCreateGameScreen();
                     break;
                 case ONLINE_JOIN_GAME:
-                    game.networkManager.joinGameScreen.setSkinChosen(true, getPath(), ((RadioButton) toggle.getSelectedToggle()).getText());
+                    game.networkManager.joinGameScreen.setSkinChosen(true, getSkin(), ((RadioButton) toggle.getSelectedToggle()).getText());
                     game.networkManager.openJoinGameScreen();
                     break;
             }
@@ -136,17 +138,17 @@ public class SkinChooseMenu extends VBox {
 
     }
 
-    private String getPath() {
+    private Skin getSkin() {
         if (blueRB.isSelected()) {
-            return skinPaths[0];
+            return Skin.BLUE;
         } else if (greenRB.isSelected()) {
-            return skinPaths[1];
+            return Skin.GREEN;
         } else if (orangeRB.isSelected()) {
-            return skinPaths[2];
+            return Skin.ORANGE;
         } else if (yellowRB.isSelected()) {
-            return skinPaths[3];
+            return Skin.YELLOW;
         } else if (redRB.isSelected()) {
-            return skinPaths[4];
+            return Skin.RED;
         } else {
             return null;
         }
@@ -166,7 +168,7 @@ public class SkinChooseMenu extends VBox {
         redRB.setFont(game.language.getFont());
         okBt.setFont(game.language.getFont());
         backBt.setFont(game.language.getFont());
-        
+
         headingLbl.setFont(game.language.getHeadingFont());
         switch (mode) {
             case OFFLINE_PLAYER_1:
@@ -196,5 +198,21 @@ public class SkinChooseMenu extends VBox {
         OFFLINE_PLAYER_2,
         ONLINE_CREATE_GAME,
         ONLINE_JOIN_GAME;
+    }
+
+    public enum Skin {
+
+        RED("sprites/protagonist/SpielfigurRot.png", Color.RED),
+        BLUE("sprites/protagonist/SpielfigurBlau.png", Color.BLUE),
+        GREEN("sprites/protagonist/SpielfigurGruen.png", Color.GREEN),
+        ORANGE("sprites/protagonist/SpielfigurOrange.png", Color.ORANGE),
+        YELLOW("sprites/protagonist/SpielfigurGelb.png", Color.YELLOW);
+        public final String path;
+        public final Color color;
+
+        Skin(String path, Color c) {
+            this.path = path;
+            color = c;
+        }
     }
 }

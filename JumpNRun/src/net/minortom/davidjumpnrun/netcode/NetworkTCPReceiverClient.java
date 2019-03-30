@@ -9,7 +9,7 @@ import jumpnrun.JumpNRun;
 import net.minortom.davidjumpnrun.configstore.ConfigManager;
 import net.minortom.davidjumpnrun.netcode.ServerConnection.ConnState;
 
-public class NetworkTCPReceiver extends Thread{
+public class NetworkTCPReceiverClient extends Thread{
     JumpNRun game;
     ServerConnection sconn;
     
@@ -38,14 +38,14 @@ public class NetworkTCPReceiver extends Thread{
                         if(type.equals("LISTOK")){
                             String[] maps = packageContent[2].split(",");
                             game.networkManager.mapSelectionDone(maps);
-                        }
+                        } 
                     } else if (packageContent[1].startsWith("OGAME")){
                         String type = packageContent[1].split("-")[1];
                         switch (type) {
                             case "YJOINED":
                                 break;
                             case "PJOINED":
-                                
+
                                 break;
                             case "ERR":
                                 String text;
@@ -99,7 +99,7 @@ public class NetworkTCPReceiver extends Thread{
         }
     }
     
-    NetworkTCPReceiver(JumpNRun setgame, ServerConnection setsconn){
+    NetworkTCPReceiverClient(JumpNRun setgame, ServerConnection setsconn){
         game = setgame;
         sconn = setsconn;
     }

@@ -136,7 +136,7 @@ public class NetworkManager extends VBox {
         } catch (Exception e) {}
     }
 
-    public void creteGameScreenSetMap(String name) {
+    public void createGameScreenSetMap(String name) {
         createGameScreen.setMapName(name);
     }
 }

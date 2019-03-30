@@ -5,6 +5,7 @@
 package net.minortom.davidjumpnrun.server;
 
 import java.util.HashMap;
+import javafx.geometry.Point2D;
 import jumpnrun.JumpNRun;
 
 public class OnlGame implements Runnable{
@@ -27,13 +28,18 @@ public class OnlGame implements Runnable{
     public HashMap<String,String> playerSkins; // Id, skin
     public HashMap<String,RemotePlayer> players; // Id, RemotePlayer
     
+    public Point2D [] [] startPositions;    // First index: Player amount; Second index: Player id  --- Exaple: There are 3 players and you need to know the positions of the first: startPosition[3][0]
+    
+    private double mapWidth;
     
     public OnlGame(Server server, String gameName, int playersMax, String gamemode, double timeLimit, int respawnLimit, String mapName, String playerOneId, String playerOneSkin){
         this.server = server;
         
         this.gameName = gameName;
         this.playersMax = playersMax;
-        
+        this.mapWidth = mapWidth;
+        System.out.println(mapWidth);   //////////!!!!!!!!!
+        ended = false;
         switch (gamemode) {
             case "DEATHS":
                 this.gamemode = JumpNRun.Gamemode.DEATHS;
@@ -67,11 +73,15 @@ public class OnlGame implements Runnable{
         players.put(pubId, new RemotePlayer(server, this, pubId, skin, name));
         
         sendAllTCP(server.keyword + server.infoSeperator + "OGAME-PJOINED" + server.infoSeperator + name);
+        if(isReadyToStart()) {
+            startGame();
+        }
     }
     
     public void sendAllTCP(String text){
         players.forEach((k,v) -> {
             server.tcpServer.get(k).out.println(text);
+            
         });
     }
     
@@ -95,13 +105,14 @@ public class OnlGame implements Runnable{
     }
     
     public void startGame(){
-        
+        (new Thread(this)).start();
     }
     
     public void startGameNow(){
         
     }
     
+    /*
     @Override
     public void run() {
         while (!ended) {
@@ -123,5 +134,30 @@ public class OnlGame implements Runnable{
                 }
             }
         }
+    }
+    */
+    
+    //Game main-loop
+    @Override
+    public void run() {
+        for(java.util.Map.Entry<String, RemotePlayer> entry : players.entrySet()) {
+            (new Thread(entry.getValue())).start();
+        }
+        
+        while(!ended) {
+            
+        }      
+    }
+    
+    
+    private boolean isReadyToStart() {
+        if(willStart){
+
+            if(players.size() == playersMax){
+                return true;
+            }
+        
+        }
+        return false;
     }
 }

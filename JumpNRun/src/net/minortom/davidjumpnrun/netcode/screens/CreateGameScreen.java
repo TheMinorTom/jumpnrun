@@ -30,6 +30,7 @@ public class CreateGameScreen extends VBox {
     private Label timeLbl, deathsLbl, playersLbl, nameLbl, mapNameLbl, skinLbl, players2Lbl;
     private HBox timeBox, deathsBox, btBox, playersBox, mapBox, skinBox;
     
+    SkinChooseMenu.Skin skin;
     String skinUrl;
     String gameMode;
     
@@ -42,13 +43,14 @@ public class CreateGameScreen extends VBox {
     private boolean toggleschanged = false;
     private boolean mapselected = false;
     private boolean skinchosen = false;
+    private double mapSize;
     
     public CreateGameScreen (JumpNRun game) {
         this.game = game;
         
         timeLimit = 5;
         deathLimit = 10;
-
+        mapSize = 0;
         ToggleGroup toggleGroup = new ToggleGroup();
         toggleGroup.selectedToggleProperty().addListener(new ChangeListener() {
             @Override
@@ -255,11 +257,16 @@ public class CreateGameScreen extends VBox {
     public void setMapName(String name) {
         mapNameLbl.setText(name);
     }
+    
+    public void setMapSize(double m) {
+        mapSize = m;
+    }
   
-    public void setSkinChosen(boolean b, String skinUrl, String skinName) {
+    public void setSkinChosen(boolean b, SkinChooseMenu.Skin skin, String skinName) {
+        this.skin = skin;
         skinchosen = b;
         unlockOk();
-        this.skinUrl = skinUrl;
+        this.skinUrl = skin.path;
         skinLbl.setText(skinName);
     }
     

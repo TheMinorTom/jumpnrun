@@ -71,7 +71,7 @@ public class ChooseMapScreen extends VBox {
     }
     
     private void callback(String map){
-        game.networkManager.creteGameScreenSetMap(map);
+        game.networkManager.createGameScreenSetMap(map);
         game.networkManager.openCreateGameScreen();
     }
     
@@ -79,5 +79,6 @@ public class ChooseMapScreen extends VBox {
         game.networkManager.serverConnection.out.println(
         game.networkManager.keyword + game.networkManager.infoSeperator + "MAP-LISTREQ"
         );
+        System.out.println("Map Request Sent"); ////////!!!!!!!!!!!!!!
     }
 }

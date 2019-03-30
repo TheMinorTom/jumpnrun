@@ -28,7 +28,9 @@ public class Protagonist extends ImageView implements Updatable {
 
     private Image image;
     private final String spritePath;
-    private double xPos, yPos, xSpeed, ySpeed, xSpawn, ySpawn;
+    private final SkinChooseMenu.Skin skin;
+    protected double xPos, yPos; 
+    private double xSpeed, ySpeed, xSpawn, ySpawn;
     private boolean intersects;
     private boolean goesRight;
     private boolean goesLeft;
@@ -56,9 +58,10 @@ public class Protagonist extends ImageView implements Updatable {
     private boolean isFacingRight;
     private int deaths;
 
-    public Protagonist(int id, KeyCode left, KeyCode right, KeyCode jump, KeyCode hit, KeyCode shoot, KeyCode use, double x, double y, String sourcePath) {
+    public Protagonist(int id, KeyCode left, KeyCode right, KeyCode jump, KeyCode hit, KeyCode shoot, KeyCode use, double x, double y, SkinChooseMenu.Skin skin) {
         super();
-        spritePath = sourcePath;
+        this.skin = skin;
+        spritePath = skin.path;
         protId = id;
         isFacingRight = false;
         xSpeed = 0;
@@ -598,7 +601,7 @@ public class Protagonist extends ImageView implements Updatable {
 
     }
 
-    private enum CostumeViewport {
+    public enum CostumeViewport {
 
         LEFT_0(0, 0, Protagonist.getWidth(), Protagonist.getHeight()),
         LEFT_1(50, 0, Protagonist.getWidth(), Protagonist.getHeight()),

@@ -13,7 +13,7 @@ import worldeditor.Block;
  *
  * @author DavidPrivat
  */
-abstract class GameLoop extends AnimationTimer {
+abstract class GameLoopOffline extends AnimationTimer {
 
     private long timeElapsed;
     private double timeElapsedSecond;
@@ -28,7 +28,7 @@ abstract class GameLoop extends AnimationTimer {
     private Vector<PowerupCollect> powerupCollects;
     private Vector<Updatable> updatables;
 
-    public GameLoop(Vector<Vector<Block>> worldVec, Protagonist prot1, Protagonist prot2, Vector<PowerupCollect> collects, Vector<Updatable> updatables) {
+    public GameLoopOffline(Vector<Vector<Block>> worldVec, Protagonist prot1, Protagonist prot2, Vector<PowerupCollect> collects, Vector<Updatable> updatables) {
         super();
         worldVector = worldVec;
         protagonist1 = prot1;
@@ -62,7 +62,7 @@ abstract class GameLoop extends AnimationTimer {
         return runTime;
     }
     
-    static class EndlessLoop extends GameLoop {
+    static class EndlessLoop extends GameLoopOffline {
 
         public EndlessLoop(Vector<Vector<Block>> worldVec, Protagonist prot1, Protagonist prot2, Vector<PowerupCollect> collects, Vector<Updatable> updatables, JumpNRun game) {
             super(worldVec, prot1, prot2, collects, updatables);
@@ -75,7 +75,7 @@ abstract class GameLoop extends AnimationTimer {
         }
     }
 
-    static class DeathLimitLoop extends GameLoop {
+    static class DeathLimitLoop extends GameLoopOffline {
 
         private int deathLimit;
 
@@ -95,7 +95,7 @@ abstract class GameLoop extends AnimationTimer {
 
     }
 
-    static class TimeLimitLoop extends GameLoop {
+    static class TimeLimitLoop extends GameLoopOffline {
 
         private double timeLimit;
         

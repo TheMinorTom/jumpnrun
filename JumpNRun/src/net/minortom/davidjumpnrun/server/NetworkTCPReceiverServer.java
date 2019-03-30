@@ -6,7 +6,7 @@ package net.minortom.davidjumpnrun.server;
 
 import java.io.IOException;
 
-public class NetworkTCPReceiver extends Thread{
+public class NetworkTCPReceiverServer extends Thread{
     Server server;
     TCPServer tcpServ;
     
@@ -22,6 +22,7 @@ public class NetworkTCPReceiver extends Thread{
                         System.err.println("Invalid package received, "+ server.keyword +": " + packageContent[0]);
                         continue;
                     }
+                    System.out.println(line);   ////////!!!!!!!!!!!!
                     if(packageContent[1].startsWith("AUTH")){
                         String type = packageContent[1].split("-")[1];
                         if(type.equals("REQ")){
@@ -35,7 +36,9 @@ public class NetworkTCPReceiver extends Thread{
                         }
                     } else if (packageContent[1].startsWith("MAP")){
                         String type = packageContent[1].split("-")[1];
+                        System.out.println(type);   /////////!!!!!!!!!!!
                         if(type.equals("LISTREQ")){
+                            System.out.println("Listrequest detected");  ///////!!!!!!!!!!!!!!!!!!!!!!
                             String[] maps = MapHelper.listMaps();
                             String lmaps;
                             lmaps = maps[0];
@@ -57,7 +60,7 @@ public class NetworkTCPReceiver extends Thread{
                             } else {
                                 OnlGame onlGame = new OnlGame(server, packageContent[2], Integer.parseInt(packageContent[3]), packageContent[4], Double.parseDouble(packageContent[5]), (int)Double.parseDouble(packageContent[5]), packageContent[6], tcpServ.pubId, packageContent[7]);
                                 server.games.put(packageContent[2], onlGame);
-                                (new Thread(onlGame)).start();
+                                // (new Thread(onlGame)).start();
                             }
                         } else if(type.equals("JOIN")){
                             if(!server.games.containsKey(packageContent[2])){
@@ -100,7 +103,7 @@ public class NetworkTCPReceiver extends Thread{
         tcpServ.tcpReceiver.stop();
     }
     
-    NetworkTCPReceiver(Server serv, TCPServer  totcp){
+    NetworkTCPReceiverServer(Server serv, TCPServer  totcp){
         server = serv;
         tcpServ = totcp;
     }

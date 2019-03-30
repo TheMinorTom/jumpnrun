@@ -22,7 +22,7 @@ public class ServerConnection {
     public String token;
     
     public ConnState currentConnState;
-    private NetworkTCPReceiver tcpreceiver;
+    private NetworkTCPReceiverClient tcpreceiver;
     
     private Socket socket;
     public PrintWriter out;
@@ -62,7 +62,7 @@ public class ServerConnection {
             currentConnState = ConnState.ERROR_INVALID_HOST;
             return;
         }
-        tcpreceiver = new NetworkTCPReceiver(game, this);
+        tcpreceiver = new NetworkTCPReceiverClient(game, this);
         tcpreceiver.start();
         
         out.println(NetworkManager.keyword + NetworkManager.infoSeperator + "AUTH-REQ" + NetworkManager.infoSeperator + username + NetworkManager.infoSeperator + pass);

@@ -30,7 +30,8 @@ import net.minortom.davidjumpnrun.netcode.NetworkManager;
  * @author Norbert
  */
 public class JumpNRun extends Application {
-
+    public static JumpNRun game;
+    
     public static final String sourcePath = ConfigManager.getStorageLocation();
     private static final String blocksDirPath = sourcePath + "sprites/blocks/";
     private static String worldPath = sourcePath + "worlds/world.david";
@@ -44,10 +45,13 @@ public class JumpNRun extends Application {
     private static Vector<Shoot> shoots;
     private static Vector<PowerupCollect> powerupCollects;
 
-    private String sourcePathProt1, sourcePathProt2;
+    private SkinChooseMenu.Skin skinProt1, skinProt2;
     
     private Protagonist protagonist1, protagonist2;
-    private static GameLoop loop;
+    private Vector<ProtagonistOnlineClient> onlineProts;
+    
+    private static GameLoopOffline loopOffline;
+    private static GameLoopOnline loopOnline;
     private static Stage primStage;
     public static Scene scene;
     private static double summonTimer, summonTime;
@@ -64,8 +68,7 @@ public class JumpNRun extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         try {
-
-        
+        game = this;
         // The following sections are licensed under the MIT License. You should have already received a copy located at ../net/minortom/LICENSE.txt
         // Copyright 2019 MinorTom <mail in license file>
         //Language Selection default
@@ -131,6 +134,7 @@ public class JumpNRun extends Application {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+
         launch(args);
     }
 
@@ -143,24 +147,36 @@ public class JumpNRun extends Application {
         InputStream worldIn = IO.getFileStream(worldPath);
 
         worldVector = IO.openWorld(worldIn, blocksDirPath);
-        protagonist1 = new Protagonist(1, A, D, W, C, V, B, spawnXDist, spawnY, sourcePathProt1);
-        protagonist2 = new Protagonist(2, LEFT, RIGHT, UP, P, O, I, getWidth() - spawnXDist - Protagonist.width, spawnY, sourcePathProt2);
+        protagonist1 = new Protagonist(1, A, D, W, C, V, B, spawnXDist, spawnY, skinProt1);
+        protagonist2 = new Protagonist(2, LEFT, RIGHT, UP, P, O, I, getWidth() - spawnXDist - Protagonist.width, spawnY, skinProt2);
         updatables.add(protagonist1);
         updatables.add(protagonist2);
         graphic = new Graphic(worldVector, protagonist1, protagonist2, currGamemode);
         gameScene = new Group(graphic);
         scene.setRoot(gameScene);
         if (currGamemode == Gamemode.ENDLESS) {
-            loop = GameLoop.endlessLoop(worldVector, protagonist1, protagonist2, powerupCollects, updatables, this);
+            loopOffline = GameLoopOffline.endlessLoop(worldVector, protagonist1, protagonist2, powerupCollects, updatables, this);
         } else if (currGamemode == Gamemode.DEATHS) {
-            loop = GameLoop.deathLimitLoop(worldVector, protagonist1, protagonist2, powerupCollects, updatables, deathLimit, this);
+            loopOffline = GameLoopOffline.deathLimitLoop(worldVector, protagonist1, protagonist2, powerupCollects, updatables, deathLimit, this);
         } else if (currGamemode == Gamemode.TIME) {
-            loop = GameLoop.timeLimitLoop(worldVector, protagonist1, protagonist2, powerupCollects, updatables, timeLimit, this);
+            loopOffline = GameLoopOffline.timeLimitLoop(worldVector, protagonist1, protagonist2, powerupCollects, updatables, timeLimit, this);
         }
-        loop.start();
+        loopOffline.start();
         setUpKeyHandlers();
     }
 
+    public void initOnlineGame() {
+        worldVector = null; //Get world from server, maqybe to the constructor
+        onlineProts = new Vector<ProtagonistOnlineClient>();
+        /*
+        fill Vector with new ProtagonistOnlineClients from server
+        
+        */
+        loopOnline = new GameLoopOnline((ProtagonistOnlineClient[])onlineProts.toArray());
+        loopOnline.start();
+        
+    }
+    
     public static Graphic getGraphic() {
         return graphic;
     }
@@ -225,7 +241,7 @@ public class JumpNRun extends Application {
     }
 
     public void endGame() {
-        loop.stop();
+        loopOffline.stop();
         if (protagonist1.getDeaths() < protagonist2.getDeaths()) {
             ((WinScreen) winScreen).setWinner(1);
         } else if (protagonist1.getDeaths() > protagonist2.getDeaths()){
@@ -362,15 +378,15 @@ public class JumpNRun extends Application {
     }
 
     public static double getRunTime() {
-        return loop.getRunTime();
+        return loopOffline.getRunTime();
     }
     
-    public void setSourcePathProt1 (String p) {
-        sourcePathProt1 = p;
+    public void setSkinProt1 (SkinChooseMenu.Skin s) {
+        skinProt1 = s;
     }
     
-    public void setSourcePathProt2 (String p) {
-        sourcePathProt2 = p;
+    public void setSkinProt2 (SkinChooseMenu.Skin s) {
+        skinProt2 = s;
     }
 
     @Override
