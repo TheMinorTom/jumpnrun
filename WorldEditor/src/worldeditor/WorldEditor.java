@@ -7,6 +7,7 @@ package worldeditor;
 
 import java.io.FileWriter;
 import java.util.Vector;
+import javafx.scene.control.Alert;
 
 /**
  *
@@ -24,7 +25,15 @@ public class WorldEditor {
         new Block("WATER", blocksPath, "Water.bmp", false),
         new Block("GRASS", blocksPath, "Grass.bmp", true),
         new Block("DIRT_SOLID", blocksPath, "Dirt.bmp", true),
-        new Block("DIRT_NONSOLID", blocksPath,"Dirt.bmp", false)
+        new Block("DIRT_NONSOLID", blocksPath,"Dirt.bmp", false),
+        new Block("STONE_SOLID", blocksPath, "Stone.bmp", true),
+        new Block("STONE_NONSOLID", blocksPath,"Stone.bmp", false),
+        new Block("STONE_WALL_SOLID", blocksPath, "StoneWall.bmp", true),
+        new Block("STONE_WALL_NONSOLID", blocksPath,"StoneWall.bmp", false),
+        new Block("METAL_SOLID", blocksPath, "Metal.bmp", true),
+        new Block("METAL_NONSOLID", blocksPath,"Metal.bmp", false),
+        new Block("SAND_SOLID", blocksPath, "Sand.bmp", true),
+        new Block("SAND_NONSOLID", blocksPath,"Sand.bmp", false),
     };
     private static GUI gui;
     FileWriter output;
@@ -32,6 +41,7 @@ public class WorldEditor {
     
     public static void main (String ... args)
     {
+        
         gui = new GUI();
         System.out.println("Hallo");
         gui.launch(args);

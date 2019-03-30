@@ -76,6 +76,21 @@ public class IO {
 
         }
     }
+    
+    public static Vector<Vector<Block>> openWorld(String worldString) {
+        Vector<Vector<Block>> retVec = new Vector();
+        
+        String[] cols = worldString.split("\\"+String.valueOf(colSep));
+        String blockSizeString = cols[0].substring(0, cols[0].length()-1);
+        double blockSize = Double.parseDouble(blockSizeString);
+        
+        for(String col: cols) {
+            String[] blocks = col.split(String.valueOf(blockSep));
+            System.out.println(blocks[0]);
+        }
+        
+        return retVec;
+    }
 
     public static Vector<Vector<Block>> openWorld(File file) {
         Vector<Vector<Block>> world = new Vector<Vector<Block>>();
