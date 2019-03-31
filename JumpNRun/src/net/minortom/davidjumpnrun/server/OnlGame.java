@@ -5,8 +5,11 @@
 package net.minortom.davidjumpnrun.server;
 
 import java.util.HashMap;
+import java.util.Vector;
 import javafx.geometry.Point2D;
 import jumpnrun.JumpNRun;
+import worldeditor.Block;
+import worldeditor.IO;
 
 public class OnlGame implements Runnable{
     
@@ -28,17 +31,13 @@ public class OnlGame implements Runnable{
     public HashMap<String,String> playerSkins; // Id, skin
     public HashMap<String,RemotePlayer> players; // Id, RemotePlayer
     
-    public Point2D [] [] startPositions;    // First index: Player amount; Second index: Player id  --- Exaple: There are 3 players and you need to know the positions of the first: startPosition[3][0]
-    
-    private double mapWidth;
+    private Vector<Vector<Block>> worldVector;
     
     public OnlGame(Server server, String gameName, int playersMax, String gamemode, double timeLimit, int respawnLimit, String mapName, String playerOneId, String playerOneSkin){
         this.server = server;
         
         this.gameName = gameName;
         this.playersMax = playersMax;
-        this.mapWidth = mapWidth;
-        System.out.println(mapWidth);   //////////!!!!!!!!!
         ended = false;
         switch (gamemode) {
             case "DEATHS":
@@ -105,6 +104,10 @@ public class OnlGame implements Runnable{
     }
     
     public void startGame(){
+        
+        worldVector = IO.openWorld(mapText, Server.getBlocksFolder());
+        double worldWidth = worldVector.size() * worldVector.get(0).get(0).getFitWidth();
+        System.out.println("World successfully loaded!");
         (new Thread(this)).start();
     }
     
@@ -151,13 +154,13 @@ public class OnlGame implements Runnable{
     
     
     private boolean isReadyToStart() {
-        if(willStart){
+        //if(willStart){
 
             if(players.size() == playersMax){
                 return true;
             }
         
-        }
+        //}
         return false;
     }
 }

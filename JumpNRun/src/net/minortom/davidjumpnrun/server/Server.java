@@ -48,7 +48,11 @@ public class Server {
         }
     }
     
-    public String getMapFolder(){
+    public static String getMapFolder(){
         return ConfigManager.getStorageLocation() + "worlds/";
+    }
+    
+    public static String getBlocksFolder() {
+        return ConfigManager.getStorageLocation() + "sprites/blocks/";
     }
 }

@@ -37,7 +37,7 @@ public class MapHelper {
         
         String everything = "";
         
-        try(BufferedReader br = new BufferedReader(new FileReader(Server.server.getMapFolder() + "maps.jnrmapcfg"))) {
+        try(BufferedReader br = new BufferedReader(new FileReader(Server.getMapFolder() + "maps.jnrmapcfg"))) {
             StringBuilder sb = new StringBuilder();
             String line = br.readLine();
             
