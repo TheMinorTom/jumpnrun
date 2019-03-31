@@ -14,14 +14,15 @@ public class RemotePlayer implements Runnable{
     public String pubId;
     public String skin;
     public String name;
+    public int index; //Number >= 0
     
-    
-    public RemotePlayer(Server server, OnlGame game, String pubId, String skin, String name){
+    public RemotePlayer(Server server, OnlGame game, String pubId, String skin, String name, int index){
         this.server = server;
         this.game = game;
         this.pubId = pubId;
         this.skin = skin;
         this.name = name;
+        this.index = index;
     }
     
     @Override

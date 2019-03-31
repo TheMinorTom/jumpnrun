@@ -149,6 +149,23 @@ public class Graphic extends Group {
 
         getChildren().addAll(worldGroup);
     }
+    
+    public Graphic(Vector<Vector<Block>> worldVec) {
+        worldVector = worldVec;
+        for (int i = 0; i < worldVector.size(); i++) {
+            for (int j = 0; j < worldVector.get(i).size(); j++) {
+                Block block = worldVector.get(i).get(j);
+                if (block != null) {
+                    blockSize = block.getFitWidth();
+                    block.setX(block.getLayoutX());
+                    block.setY(block.getLayoutY());
+                }
+            }
+        }
+        
+        worldGroup = GUI.drawWorld(worldVec, worldVec.get(0).get(0).getFitWidth());
+        getChildren().add(worldGroup);
+    }
 
     public static double getBlockSize() {
 

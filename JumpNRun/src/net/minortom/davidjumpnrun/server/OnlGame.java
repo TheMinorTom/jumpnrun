@@ -69,7 +69,7 @@ public class OnlGame implements Runnable{
     public void addPlayer(String pubId, String skin){
         playerSkins.put(pubId, skin);
         String name = server.tcpServer.get(pubId).userName;
-        players.put(pubId, new RemotePlayer(server, this, pubId, skin, name));
+        players.put(pubId, new RemotePlayer(server, this, pubId, skin, name, players.size()));
         
         sendAllTCP(server.keyword + server.infoSeperator + "OGAME-PJOINED" + server.infoSeperator + name);
         if(isReadyToStart()) {
@@ -108,6 +108,7 @@ public class OnlGame implements Runnable{
         worldVector = IO.openWorld(mapText, Server.getBlocksFolder());
         double worldWidth = worldVector.size() * worldVector.get(0).get(0).getFitWidth();
         System.out.println("World successfully loaded!");
+        sendAllTCP(server.keyword + server.infoSeperator + "OGAME-INITMAP" + server.infoSeperator + mapText);
         (new Thread(this)).start();
     }
     

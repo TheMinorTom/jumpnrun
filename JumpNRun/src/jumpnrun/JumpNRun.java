@@ -177,6 +177,13 @@ public class JumpNRun extends Application {
         
     }
     
+    public static void initMap (String mapAsString) {
+        worldVector = IO.openWorld(mapAsString, blocksDirPath);
+        graphic = new Graphic(worldVector);
+        gameScene = new Group(graphic);
+        scene.setRoot(gameScene);
+    }
+    
     public static Graphic getGraphic() {
         return graphic;
     }

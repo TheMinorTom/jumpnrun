@@ -67,6 +67,8 @@ public class NetworkTCPReceiverClient extends Thread{
                                     ConfigManager.error(game.language.ErrorTitle, text);
                                 }
                                 break;
+                            case "INITMAP":
+                                JumpNRun.initMap(packageContent[2]);
                             default:
                                 break;
                         }
