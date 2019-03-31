@@ -93,7 +93,7 @@ public class IO {
         int xIndex = 0;
         int yIndex = 0;
         
-        boolean addIsSolid;
+        boolean addIsSolid = true;
         String addName;
         String addFileName;
         Block addBlock;
@@ -109,7 +109,11 @@ public class IO {
                     
                     addName = dataInBlock[0];
                     addFileName = dataInBlock[1];
+                    try {
                     addIsSolid = (Integer.parseInt(dataInBlock[2]) == 1) ? true : false;
+                    } catch(NumberFormatException e) {
+                        System.err.println(currBlock);
+                    }
                     addBlock = new Block(addName, blockDir, addFileName, addIsSolid);
                     
                     if(!blocks.contains(addBlock)) {

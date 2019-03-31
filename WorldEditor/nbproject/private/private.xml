@@ -5,6 +5,8 @@
         <group>
             <file>file:/E:/David/Java/NetBeansProjects/JumpNRun/git/jumpnrun/WorldEditor/src/worldeditor/GUI.java</file>
             <file>file:/E:/David/Java/NetBeansProjects/JumpNRun/git/jumpnrun/WorldEditor/src/worldeditor/WorldEditor.java</file>
+            <file>file:/E:/David/Java/NetBeansProjects/JumpNRun/git/jumpnrun/WorldEditor/src/worldeditor/Block.java</file>
+            <file>file:/E:/David/Java/NetBeansProjects/JumpNRun/git/jumpnrun/WorldEditor/src/worldeditor/BlockChose.java</file>
             <file>file:/E:/David/Java/NetBeansProjects/JumpNRun/git/jumpnrun/WorldEditor/src/worldeditor/IO.java</file>
             <file>file:/E:/David/Java/NetBeansProjects/JumpNRun/git/jumpnrun/WorldEditor/src/worldeditor/AddBlockDialog.java</file>
         </group>
