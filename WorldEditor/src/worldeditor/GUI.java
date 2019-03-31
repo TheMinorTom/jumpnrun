@@ -54,8 +54,6 @@ public class GUI extends Application {
     @Override
     public void start(Stage primaryStage) {
         
-        
-        IO.openWorld("60B|;Air,,0;Air,,0;Air,,0;Air,,0;Air,,0;Air,,0;Air,,0;Air,,0;Air,,0;Air,,0;Air,,0;Air,,0;Air,,0;");
 
         blockSize = 60;
         dragBlockIndEntered = new Vector<int[]>();

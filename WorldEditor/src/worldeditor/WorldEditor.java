@@ -68,6 +68,10 @@ public class WorldEditor {
         
     }
     
+    public static String getBlocksPath() {
+        return getStorageLocation() + "sprites/blocks/";
+    }
+    
     
     
 }

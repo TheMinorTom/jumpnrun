@@ -30,16 +30,13 @@ public class Block extends ImageView {
         imageFileName = fileName;
         blocksDir = dir;
         
-        int temp = fileName.length();
-        boolean empty = (temp == 0);
+        int fileNameLength = fileName.length();
+        boolean empty = (fileNameLength == 0);
         if(empty)
         {
             
         }else
         {
-            if(!dir.equals("C:\\Users\\User\\AppData\\Roaming/davidjumpnrun/sprites/blocks/")) {
-                int o = 0;
-            }
             image = new Image(IO.getFileStream(dir+fileName));
             setImage(image);
         }

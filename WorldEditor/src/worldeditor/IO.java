@@ -77,18 +77,60 @@ public class IO {
         }
     }
     
-    public static Vector<Vector<Block>> openWorld(String worldString) {
+    public static Vector<Vector<Block>> openWorld(String worldString, String blockDir) {
         Vector<Vector<Block>> retVec = new Vector();
+        Vector<Block> blocks = new Vector<Block>();
         
         String[] cols = worldString.split("\\"+String.valueOf(colSep));
         String blockSizeString = cols[0].substring(0, cols[0].length()-1);
         double blockSize = Double.parseDouble(blockSizeString);
         
-        for(String col: cols) {
-            String[] blocks = col.split(String.valueOf(blockSep));
-            System.out.println(blocks[0]);
+        String currCol;
+        String currBlock;
+        String[] blocksInCol;
+        String[] dataInBlock;
+        
+        int xIndex = 0;
+        int yIndex = 0;
+        
+        boolean addIsSolid;
+        String addName;
+        String addFileName;
+        Block addBlock;
+        for(int i = 1; i < cols.length; i++) {
+            currCol = cols[i];
+            blocksInCol = currCol.split("\\"+String.valueOf(blockSep));
+            retVec.add(new Vector<Block>());
+            for(int j = 0; j < blocksInCol.length; j++) {
+                currBlock = blocksInCol[j];
+                dataInBlock = currBlock.split("\\"+String.valueOf(nameUrlSolSep));
+                if(dataInBlock.length == 3) {
+                    retVec.get(xIndex).add(null);
+                    
+                    addName = dataInBlock[0];
+                    addFileName = dataInBlock[1];
+                    addIsSolid = (Integer.parseInt(dataInBlock[2]) == 1) ? true : false;
+                    addBlock = new Block(addName, blockDir, addFileName, addIsSolid);
+                    
+                    if(!blocks.contains(addBlock)) {
+                        blocks.add(addBlock);
+                    }
+                    
+                    addBlock.setFitWidth(blockSize);
+                    addBlock.setFitHeight(blockSize);
+                    retVec.get(xIndex).set(yIndex, addBlock);
+                    yIndex++;
+                }
+            }
+            yIndex = 0;
+            xIndex++;
         }
         
+        Block[] blocksAsArr = new Block[blocks.size()];
+        for(int i = 0; i < blocks.size(); i++) {
+            blocksAsArr[i] = blocks.get(i);
+        }
+        WorldEditor.setBlocks(blocksAsArr);
         return retVec;
     }
 
