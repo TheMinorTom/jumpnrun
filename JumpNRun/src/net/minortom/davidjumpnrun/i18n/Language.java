@@ -114,6 +114,9 @@ public class Language implements Serializable {
     public transient String CfgManErrorSaveTitle;
     public transient String CfgManErrorSaveText;
     
+    // Gameplay
+    public transient String playerNameLocalPlayer;
+    
     public transient JumpNRun game;
     
     public Language (JumpNRun newGame){

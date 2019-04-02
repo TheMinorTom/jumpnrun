@@ -112,6 +112,9 @@ public class LanguageEnglish extends Language{
                 + "Stack Trace: \n";
         this.CfgManErrorSaveTitle = "Config could not be saved";
         this.CfgManErrorSaveText = "Stack Trace: \n";
+        
+        // Gameplay
+        this.playerNameLocalPlayer = "You";
     }
     
     @Override

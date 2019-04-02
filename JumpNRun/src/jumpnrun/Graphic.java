@@ -7,10 +7,12 @@ package jumpnrun;
 
 import java.util.Vector;
 import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import static javafx.scene.input.KeyCode.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
@@ -86,6 +88,7 @@ public class Graphic extends Group {
             private int timeLeftSeconds;
             private final double startTime;
             private double timeLeft;
+
             public CountDownLabel() {
                 super(String.valueOf(JumpNRun.getTimeLimit()));
                 startTime = JumpNRun.getTimeLimit();
@@ -96,7 +99,7 @@ public class Graphic extends Group {
             @Override
             public void update(double timeElapsed, Vector<Vector<Block>> world, Protagonist prot1, Protagonist prot2, Vector<PowerupCollect> powerupCollects) {
                 timeLeft = startTime - JumpNRun.getRunTime();
-                if(timeLeft < 10) {
+                if (timeLeft < 10) {
                     setTextFill(Color.RED);
                 }
                 timeLeftSeconds = ((int) timeLeft) % 60;
@@ -149,7 +152,7 @@ public class Graphic extends Group {
 
         getChildren().addAll(worldGroup);
     }
-    
+
     public Graphic(Vector<Vector<Block>> worldVec) {
         worldVector = worldVec;
         for (int i = 0; i < worldVector.size(); i++) {
@@ -162,9 +165,32 @@ public class Graphic extends Group {
                 }
             }
         }
-        
+
         worldGroup = GUI.drawWorld(worldVec, worldVec.get(0).get(0).getFitWidth());
         getChildren().add(worldGroup);
+    }
+
+    public void addOtherOnlineProt(String name, String skinFileName, int indexId, String pubId, int playerAmount, double spawnY) {
+        double worldWidth = worldVector.size() * blockSize;
+        double spawnX = (worldWidth / (playerAmount + 1)) * (indexId + 1);
+        ProtagonistOnlineClient addProt = new ProtagonistOnlineClient(indexId, spawnX, spawnY, skinFileName, name, pubId, LEFT, RIGHT, UP, P, O, I);
+
+        Platform.runLater(() -> {
+            worldGroup.getChildren().addAll(addProt, addProt.getNameLabel());
+        });
+        JumpNRun.game.getOnlineProts().put(pubId, addProt);
+    }
+
+    public void addLocalOnlineProt(String name, String skinFileName, int indexId, String pubId, int playerAmount, double spawnY) {
+        double worldWidth = worldVector.size() * blockSize;
+        double spawnX = (worldWidth / (playerAmount + 1)) * (indexId + 1);
+        ProtagonistOnlineClient addProt = new ProtagonistOnlineClient(indexId, spawnX, spawnY, skinFileName, JumpNRun.game.language.playerNameLocalPlayer, pubId, LEFT, RIGHT, UP, P, O, I);
+        JumpNRun.game.setLocalProt(addProt);
+        addProt.getNameLabel().setFont(new Font("Arial Black", 30));
+        Platform.runLater(() -> {
+            worldGroup.getChildren().addAll(addProt, addProt.getNameLabel());
+        });
+        JumpNRun.game.getOnlineProts().put(pubId, addProt);
     }
 
     public static double getBlockSize() {

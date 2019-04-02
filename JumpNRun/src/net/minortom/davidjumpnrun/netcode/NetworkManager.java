@@ -10,6 +10,7 @@ import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import jumpnrun.JumpNRun;
@@ -138,5 +139,14 @@ public class NetworkManager extends VBox {
 
     public void createGameScreenSetMap(String name) {
         createGameScreen.setMapName(name);
+    }
+    
+    public void sendKeyPress(String id, String gameName, String action) {
+        serverConnection.out.println(keyword + infoSeperator + "OGAME-KEYPRESS" + infoSeperator + id + infoSeperator + gameName + infoSeperator + action);
+        System.out.println("Messega sent: " + keyword + infoSeperator + "OGAME-KEYPRESS" + infoSeperator + id + infoSeperator + gameName + infoSeperator + action);
+    }
+    
+    public void sendKeyRelease (String id, String gameName, String action) {
+        serverConnection.out.println(keyword + infoSeperator + "OGAME-KEYRELEASE" + infoSeperator + id + infoSeperator + gameName + infoSeperator + action);
     }
 }

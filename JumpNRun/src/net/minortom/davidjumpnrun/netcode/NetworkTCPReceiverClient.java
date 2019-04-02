@@ -9,37 +9,37 @@ import jumpnrun.JumpNRun;
 import net.minortom.davidjumpnrun.configstore.ConfigManager;
 import net.minortom.davidjumpnrun.netcode.ServerConnection.ConnState;
 
-public class NetworkTCPReceiverClient extends Thread{
+public class NetworkTCPReceiverClient extends Thread {
+
     JumpNRun game;
     ServerConnection sconn;
-    
+
     @Override
-    public void run(){
+    public void run() {
         String line;
         try {
-            while ((line = game.networkManager.serverConnection.in.readLine()) != null){
-                System.out.println(line);
-                try{
+            while ((line = game.networkManager.serverConnection.in.readLine()) != null) {
+                try {
                     String[] packageContent = line.split(NetworkManager.infoSeperator);
-                    if(!packageContent[0].equals(NetworkManager.keyword)){
+                    if (!packageContent[0].equals(NetworkManager.keyword)) {
                         System.err.println("Invalid package received: " + line);
                         continue;
                     }
-                    if(packageContent[1].startsWith("AUTH")){
+                    if (packageContent[1].startsWith("AUTH")) {
                         String type = packageContent[1].split("-")[1];
-                        if(type.equals("OK")){
+                        if (type.equals("OK")) {
                             sconn.pubId = packageContent[2];
                             sconn.token = packageContent[3];
                             game.networkManager.serverConnection.currentConnState = ConnState.CONNECTED;
                             System.out.println("CONNECTED " + sconn.pubId + " " + sconn.token);
                         }
-                    } else if (packageContent[1].startsWith("MAP")){
+                    } else if (packageContent[1].startsWith("MAP")) {
                         String type = packageContent[1].split("-")[1];
-                        if(type.equals("LISTOK")){
+                        if (type.equals("LISTOK")) {
                             String[] maps = packageContent[2].split(",");
                             game.networkManager.mapSelectionDone(maps);
-                        } 
-                    } else if (packageContent[1].startsWith("OGAME")){
+                        }
+                    } else if (packageContent[1].startsWith("OGAME")) {
                         String type = packageContent[1].split("-")[1];
                         switch (type) {
                             case "YJOINED":
@@ -60,7 +60,7 @@ public class NetworkTCPReceiverClient extends Thread{
                                         text = game.language.ErrorUnknown;
                                         break;
                                 }
-                                if(Boolean.parseBoolean(packageContent[2])){
+                                if (Boolean.parseBoolean(packageContent[2])) {
                                     ConfigManager.error(game.language.ErrorFatalTitle, text);
                                     game.openNetworkScreen();
                                 } else {
@@ -68,40 +68,55 @@ public class NetworkTCPReceiverClient extends Thread{
                                 }
                                 break;
                             case "INITMAP":
-                                JumpNRun.initMap(packageContent[2]);
+                                game.initMap(packageContent[2]);
+                                break;
+                            case "INITPROT":
+                                if (packageContent[6].equals("1")) {
+                                    game.initLocalProt(packageContent[2], packageContent[3], Integer.valueOf(packageContent[4]), packageContent[5]);
+                                } else {
+                                    game.initOtherProt(packageContent[2], packageContent[3], Integer.valueOf(packageContent[4]), packageContent[5]);
+                                }
+                                break;
+                            case "INITGAME":
+                                game.initOnlineGame(packageContent[2], packageContent[3], packageContent[4], packageContent[5], packageContent[6]);
+                                break;
+                            case "UPDATEPROT":
+                                game.updateProt(packageContent[2], packageContent[3], packageContent[4], packageContent[5]);
                             default:
                                 break;
                         }
-                    } else if (packageContent[1].startsWith("IGAME")){
+                    } else if (packageContent[1].startsWith("IGAME")) {
                         String type = packageContent[1].split("-")[1];
-                        if(type.equals("TYPE")){
-                            
+                        if (type.equals("TYPE")) {
+
                         }
                     }
-                } catch (Exception e){
+                    
+                } catch (NullPointerException e) {
+                }catch (Exception e) {
                     System.err.println("Invalid package received");
                     e.printStackTrace();
-                }
-                /**
-                if(line.contains("JUMPNRUN")){
-                    System.out.println(line);
-                    game.networkManager.serverConnection.currentConnState = ServerConnection.ConnState.CONNECTED;
-                }else{
                     System.err.println(line);
                 }
-                
-                
-                if(line.equals("JUMPNRUN test")){
-                    game.networkManager.serverConnection.currentConnState = ServerConnection.ConnState.CONNECTED;
-                }
-                **/
+                /**
+                 * if(line.contains("JUMPNRUN")){ System.out.println(line);
+                 * game.networkManager.serverConnection.currentConnState =
+                 * ServerConnection.ConnState.CONNECTED; }else{
+                 * System.err.println(line); }
+                 *
+                 *
+                 * if(line.equals("JUMPNRUN test")){
+                 * game.networkManager.serverConnection.currentConnState =
+                 * ServerConnection.ConnState.CONNECTED; }
+                *
+                 */
             }
         } catch (IOException ex) {
             game.networkManager.serverConnection.currentConnState = ServerConnection.ConnState.ERROR_INTERNAL;
         }
     }
-    
-    NetworkTCPReceiverClient(JumpNRun setgame, ServerConnection setsconn){
+
+    NetworkTCPReceiverClient(JumpNRun setgame, ServerConnection setsconn) {
         game = setgame;
         sconn = setsconn;
     }

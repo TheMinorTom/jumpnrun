@@ -202,17 +202,18 @@ public class SkinChooseMenu extends VBox {
 
     public enum Skin {
 
-        RED("sprites/protagonist/SpielfigurRot.png", Color.RED),
-        BLUE("sprites/protagonist/SpielfigurBlau.png", Color.BLUE),
-        GREEN("sprites/protagonist/SpielfigurGruen.png", Color.GREEN),
-        ORANGE("sprites/protagonist/SpielfigurOrange.png", Color.ORANGE),
-        YELLOW("sprites/protagonist/SpielfigurGelb.png", Color.YELLOW);
+        RED("sprites/protagonist/SpielfigurRot.png", Color.RED, "red"),
+        BLUE("sprites/protagonist/SpielfigurBlau.png", Color.BLUE, "blue"),
+        GREEN("sprites/protagonist/SpielfigurGruen.png", Color.GREEN, "green"),
+        ORANGE("sprites/protagonist/SpielfigurOrange.png", Color.ORANGE, "orange"),
+        YELLOW("sprites/protagonist/SpielfigurGelb.png", Color.YELLOW, "yellow");
         public final String path;
         public final Color color;
-
-        Skin(String path, Color c) {
+        public final String skinName;
+        Skin(String path, Color c, String name) {
             this.path = path;
             color = c;
+            skinName = name;
         }
     }
 }

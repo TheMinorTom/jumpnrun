@@ -27,41 +27,58 @@ import worldeditor.IO;
 public class Protagonist extends ImageView implements Updatable {
 
     private Image image;
-    private final String spritePath;
-    private final SkinChooseMenu.Skin skin;
+    private String spritePath;
+    private SkinChooseMenu.Skin skin;
     protected double xPos, yPos; 
-    private double xSpeed, ySpeed, xSpawn, ySpawn;
-    private boolean intersects;
-    private boolean goesRight;
-    private boolean goesLeft;
-    private double accPerSec;
-    private boolean jumpDone;
-    private boolean oldJumpDone;
-    private boolean hitDoing, shootDoing, respawnDoing;
-    private CostumeViewport currCostume;
+    protected double xSpeed, ySpeed, xSpawn, ySpawn;
+    protected boolean intersects;
+    protected boolean goesRight;
+    protected boolean goesLeft;
+    protected double accPerSec;
+    protected boolean jumpDone;
+    protected boolean oldJumpDone;
+    protected boolean hitDoing, shootDoing, respawnDoing;
+    protected CostumeViewport currCostume;
     private double animationStateDouble;
-    private static double stepsPerSecond;
+    protected static double stepsPerSecond;
     private double jumpTimer, hitTimer, shootTimer, respawnTimer, machinePistolTimer;   //Timer
-    private double forkAnimationXPosAdd, forkAnimationYPosAdd;
+    protected double forkAnimationXPosAdd, forkAnimationYPosAdd;
     public final static double width = 50;
     public final static double height = 100;
-    private final static double defaultXSpeed = 60;
+    protected final static double defaultXSpeed = 60;
     private KeyCode[] protControlls;
-    private double spdFactor;
-    private final double defaultSpdFactor = 2;
+    public double spdFactor;
+    protected final double defaultSpdFactor = 2;
     private Pitchfork pitchfork;
     private Gun gun;
     private Label respawnTimerLabel;
     private final int protId;
-    private boolean isDoubleSpeed, isMachinePistol;  //Powerup booleans
-    private Powerup powerup;
-    private boolean isFacingRight;
-    private int deaths;
+    protected boolean isDoubleSpeed, isMachinePistol;  //Powerup booleans
+    protected Powerup powerup;
+    protected boolean isFacingRight;
+    protected int deaths;
+    
 
+
+    public Protagonist(int indexId, double x, double y) {
+        protId = indexId;
+        resetAnimation();
+        
+        setFitWidth(width);
+        setFitHeight(height);
+        
+        setX(x);
+        setY(y);
+        xPos = x;
+        yPos = y;
+        setVisible(true);
+
+    }
+    
     public Protagonist(int id, KeyCode left, KeyCode right, KeyCode jump, KeyCode hit, KeyCode shoot, KeyCode use, double x, double y, SkinChooseMenu.Skin skin) {
         super();
         this.skin = skin;
-        spritePath = skin.path;
+        spritePath = JumpNRun.sourcePath + skin.path;
         protId = id;
         isFacingRight = false;
         xSpeed = 0;
@@ -245,7 +262,7 @@ public class Protagonist extends ImageView implements Updatable {
         return false;
     }
 
-    private boolean intersectsPlayer(Protagonist p) {
+    public boolean intersectsPlayer(Protagonist p) {
         if (getBoundsInParent().intersects(p.getBoundsInParent())) {
             if (!p.isRespawning()) {
 
@@ -386,7 +403,7 @@ public class Protagonist extends ImageView implements Updatable {
         setAnimationState(CostumeViewport.MID);
     }
 
-    private void updateAnimation(double timeElapsedSeconds) {
+    public void updateAnimation(double timeElapsedSeconds) {
 
         if ((goesLeft || goesRight) && (!jumpDone) && (!hitDoing) && (!shootDoing)) {
             if (goesLeft) {
@@ -598,7 +615,6 @@ public class Protagonist extends ImageView implements Updatable {
 
     public static double getHeight() {
         return height;
-
     }
 
     public enum CostumeViewport {
@@ -659,5 +675,9 @@ public class Protagonist extends ImageView implements Updatable {
 
     public int getDeaths() {
         return deaths;
+    }
+    
+    public CostumeViewport getCurrCostume() {
+        return currCostume;
     }
 }

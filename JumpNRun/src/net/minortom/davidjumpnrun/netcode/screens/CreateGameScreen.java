@@ -44,6 +44,8 @@ public class CreateGameScreen extends VBox {
     private boolean mapselected = false;
     private boolean skinchosen = false;
     private double mapSize;
+    private boolean nameTFNotEmpty = false;
+    private boolean playersTFNotEmpty = false;
     
     public CreateGameScreen (JumpNRun game) {
         this.game = game;
@@ -73,7 +75,8 @@ public class CreateGameScreen extends VBox {
             }
 
         });
-
+        
+        
         endlessBt = new RadioButton("Unendlich");
         endlessBt.setToggleGroup(toggleGroup);
         
@@ -127,6 +130,31 @@ public class CreateGameScreen extends VBox {
         playersTF = new TextField();
         
         nameTF = new TextField();
+        
+        nameTF.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if(newValue.isEmpty()) {
+                    nameTFNotEmpty = false;
+                } else {
+                    nameTFNotEmpty =true;
+                }
+                unlockOk();
+            }
+        });
+        
+        playersTF.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if(newValue.isEmpty()) {
+                    playersTFNotEmpty = false;
+                } else {
+                    playersTFNotEmpty =true;
+                }
+
+                unlockOk();
+            }
+        });
         
         mapNameLbl = new Label();
         
@@ -242,6 +270,8 @@ public class CreateGameScreen extends VBox {
         players2Lbl.setText(game.language.CreateGPlayers2Lbl);
         nameLbl.setText(game.language.CreateGNameLbl);
         
+        
+        
         // End licensed sections
     }
     
@@ -249,8 +279,10 @@ public class CreateGameScreen extends VBox {
     // Copyright 2019 MinorTom <mail in license file>
     
     public void unlockOk(){
-        if (toggleschanged&&mapselected&&skinchosen){
+        if (toggleschanged&&mapselected&&skinchosen&&nameTFNotEmpty&&playersTFNotEmpty){
             okBt.setDisable(false);
+        } else {
+            okBt.setDisable(true);
         }
     }
 

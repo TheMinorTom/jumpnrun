@@ -7,8 +7,10 @@ package jumpnrun;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Vector;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -16,6 +18,7 @@ import javafx.scene.Scene;
 import static javafx.scene.input.KeyCode.*;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import jumpnrun.SkinChooseMenu.Skin;
 import net.minortom.davidjumpnrun.configstore.ConfigManager;
 import net.minortom.davidjumpnrun.configstore.Configuration;
 import worldeditor.Block;
@@ -30,8 +33,9 @@ import net.minortom.davidjumpnrun.netcode.NetworkManager;
  * @author Norbert
  */
 public class JumpNRun extends Application {
+
     public static JumpNRun game;
-    
+
     public static final String sourcePath = ConfigManager.getStorageLocation();
     private static final String blocksDirPath = sourcePath + "sprites/blocks/";
     private static String worldPath = sourcePath + "worlds/world.david";
@@ -46,10 +50,9 @@ public class JumpNRun extends Application {
     private static Vector<PowerupCollect> powerupCollects;
 
     private SkinChooseMenu.Skin skinProt1, skinProt2;
-    
+
     private Protagonist protagonist1, protagonist2;
-    private Vector<ProtagonistOnlineClient> onlineProts;
-    
+
     private static GameLoopOffline loopOffline;
     private static GameLoopOnline loopOnline;
     private static Stage primStage;
@@ -64,66 +67,78 @@ public class JumpNRun extends Application {
     public NetworkManager networkManager;
     public Language language;
     public Configuration config;
-    
+
+    //Online Stuff
+    private ProtagonistOnlineClient localProt;
+    private double onlineSpawnY;
+    private int playerAmount;
+    private double onlineTimeLimit;
+    private int onlineRespawnLimit;
+    private Gamemode onlineGamemode;
+    private HashMap<String, ProtagonistOnlineClient> onlineProts;
+    private String gameName;
+
     @Override
     public void start(Stage primaryStage) throws IOException {
+
         try {
-        game = this;
-        // The following sections are licensed under the MIT License. You should have already received a copy located at ../net/minortom/LICENSE.txt
-        // Copyright 2019 MinorTom <mail in license file>
-        //Language Selection default
-        if(null == Language.defaultLang()){
-            language = new Language(this);
-        } else
-        switch (Language.defaultLang()) {
-            case "EN":
-                language = new LanguageEnglish(this);
-                break;
-            case "DE":
-                language = new LanguageGerman(this);
-                break;
-            default:
+            game = this;
+            // The following sections are licensed under the MIT License. You should have already received a copy located at ../net/minortom/LICENSE.txt
+            // Copyright 2019 MinorTom <mail in license file>
+            //Language Selection default
+            if (null == Language.defaultLang()) {
                 language = new Language(this);
-                break;
-        }
-        
-        ConfigManager.game = this;
-        config = ConfigManager.loadConfiguration();
-        
-        if(config == null){
-            ConfigManager.info(language.JNRCfgDirCorrectPopTitle, ""
-                    + language.JNRCfgDirCorrectPopText1
-                    + ConfigManager.getStorageLocation()
-                    + language.JNRCfgDirCorrectPopText2);
-            config = new Configuration();
-            config.gameLanguage = language;
-            ConfigManager.saveConfiguration(config);
-        }
-        language = config.gameLanguage;
-        language = Language.setNewLangNC(language, language);
-        
-        networkManager = new NetworkManager(this);
-        // End licensed sections
-        
-        primStage = primaryStage;
-        mainMenu = new MainMenu(this);
-        chooseGamemodeScreen = new ChooseGamemodeMenu(this);
-        winScreen = new WinScreen(this);
-        offlineSkinChooseScreen1 = new SkinChooseMenu(this, SkinChooseMenu.SkinChooseMode.OFFLINE_PLAYER_1);
-        offlineSkinChooseScreen2 = new SkinChooseMenu(this, SkinChooseMenu.SkinChooseMode.OFFLINE_PLAYER_2);
-        onlineSkinChooseCreateGame = new SkinChooseMenu(this, SkinChooseMenu.SkinChooseMode.ONLINE_CREATE_GAME);
-        onlineSkinChooseJoinGame = new SkinChooseMenu(this, SkinChooseMenu.SkinChooseMode.ONLINE_JOIN_GAME);
-        //chooseSkinScreen = new SkinChooseMenu(this);
-        //((SkinChooseMenu)chooseSkinScreen).updateStrings();
-        //scene = new Scene(chooseSkinScreen);
-        scene = new Scene(mainMenu);
-        
-        primaryStage.setTitle("Jump-N-Run");
-        primaryStage.setScene(scene);
-        primaryStage.setMaximized(true);
-        primaryStage.show();
-        ((WinScreen) winScreen).setWinner(1); //!!!
-        
+            } else {
+                switch (Language.defaultLang()) {
+                    case "EN":
+                        language = new LanguageEnglish(this);
+                        break;
+                    case "DE":
+                        language = new LanguageGerman(this);
+                        break;
+                    default:
+                        language = new Language(this);
+                        break;
+                }
+            }
+
+            ConfigManager.game = this;
+            config = ConfigManager.loadConfiguration();
+
+            if (config == null) {
+                ConfigManager.info(language.JNRCfgDirCorrectPopTitle, ""
+                        + language.JNRCfgDirCorrectPopText1
+                        + ConfigManager.getStorageLocation()
+                        + language.JNRCfgDirCorrectPopText2);
+                config = new Configuration();
+                config.gameLanguage = language;
+                ConfigManager.saveConfiguration(config);
+            }
+            language = config.gameLanguage;
+            language = Language.setNewLangNC(language, language);
+
+            networkManager = new NetworkManager(this);
+            // End licensed sections
+
+            primStage = primaryStage;
+            mainMenu = new MainMenu(this);
+            chooseGamemodeScreen = new ChooseGamemodeMenu(this);
+            winScreen = new WinScreen(this);
+            offlineSkinChooseScreen1 = new SkinChooseMenu(this, SkinChooseMenu.SkinChooseMode.OFFLINE_PLAYER_1);
+            offlineSkinChooseScreen2 = new SkinChooseMenu(this, SkinChooseMenu.SkinChooseMode.OFFLINE_PLAYER_2);
+            onlineSkinChooseCreateGame = new SkinChooseMenu(this, SkinChooseMenu.SkinChooseMode.ONLINE_CREATE_GAME);
+            onlineSkinChooseJoinGame = new SkinChooseMenu(this, SkinChooseMenu.SkinChooseMode.ONLINE_JOIN_GAME);
+            //chooseSkinScreen = new SkinChooseMenu(this);
+            //((SkinChooseMenu)chooseSkinScreen).updateStrings();
+            //scene = new Scene(chooseSkinScreen);
+            scene = new Scene(mainMenu);
+
+            primaryStage.setTitle("Jump-N-Run");
+            primaryStage.setScene(scene);
+            primaryStage.setMaximized(true);
+            primaryStage.show();
+            ((WinScreen) winScreen).setWinner(1); //!!!
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -165,25 +180,70 @@ public class JumpNRun extends Application {
         setUpKeyHandlers();
     }
 
-    public void initOnlineGame() {
-        worldVector = null; //Get world from server, maqybe to the constructor
-        onlineProts = new Vector<ProtagonistOnlineClient>();
-        /*
-        fill Vector with new ProtagonistOnlineClients from server
-        
-        */
-        loopOnline = new GameLoopOnline((ProtagonistOnlineClient[])onlineProts.toArray());
-        loopOnline.start();
-        
+    public void initOnlineGame(String playerAmount, String spawnY, String gamemode, String limit, String gameName) {
+        onlineProts = new HashMap();
+        this.gameName = gameName;
+        try {
+            this.playerAmount = Integer.parseInt(playerAmount);
+        } catch (NumberFormatException e) {
+            System.err.println("Could not read playerAmount!");
+        }
+        try {
+            this.onlineSpawnY = Double.parseDouble(spawnY);
+        } catch (NumberFormatException e) {
+            System.out.println("Could not read spawnY!");
+        }
+
+        switch (gamemode.toLowerCase()) {
+            case "time":
+                onlineGamemode = Gamemode.TIME;
+                onlineTimeLimit = Double.parseDouble(limit);
+                break;
+            case "deaths":
+                onlineGamemode = Gamemode.DEATHS;
+                onlineRespawnLimit = Integer.parseInt(limit);
+                break;
+            case "endless":
+            default:
+                onlineGamemode = Gamemode.ENDLESS;
+                break;
+        }
+        this.worldVector = null; //Get world from server, maqybe to the constructor
+
     }
-    
-    public static void initMap (String mapAsString) {
+
+    public void initMap(String mapAsString) {
         worldVector = IO.openWorld(mapAsString, blocksDirPath);
         graphic = new Graphic(worldVector);
         gameScene = new Group(graphic);
         scene.setRoot(gameScene);
+        setUpOnlineKeyHandlers();
     }
-    
+
+    public void initOtherProt(String name, String skinFileName, int index, String pubId) {
+        graphic.addOtherOnlineProt(name, skinFileName, index, pubId, this.playerAmount, onlineSpawnY);
+    }
+
+    public void initLocalProt(String name, String skinFileName, int index, String pubId) {
+        graphic.addLocalOnlineProt(name, skinFileName, index, pubId, this.playerAmount, onlineSpawnY);
+    }
+
+    public void setLocalProt(ProtagonistOnlineClient p) {
+        localProt = p;
+    }
+
+    public void updateProt(String id, String x, String y, String animationsState) {
+        double xPos = Double.parseDouble(x);
+        double yPos = Double.parseDouble(y);
+        int animationStateInt = Integer.parseInt(animationsState);
+        Protagonist.CostumeViewport viewPort = Protagonist.CostumeViewport.values()[animationStateInt];
+        onlineProts.get(id).update(xPos, yPos, viewPort);
+    }
+
+    public HashMap<String, ProtagonistOnlineClient> getOnlineProts() {
+        return onlineProts;
+    }
+
     public static Graphic getGraphic() {
         return graphic;
     }
@@ -231,6 +291,33 @@ public class JumpNRun extends Application {
         graphic.requestFocus();
     }
 
+    private void setUpOnlineKeyHandlers() {
+        graphic.setOnKeyPressed((KeyEvent e) -> {
+            if (e.getCode() == localProt.getControls()[0]) {
+                networkManager.sendKeyPress(localProt.pubId, gameName, "LEFT");
+            } else if (e.getCode() == localProt.getControls()[1]) {
+                networkManager.sendKeyPress(localProt.pubId, gameName, "RIGHT");
+            } else if (e.getCode() == localProt.getControls()[2]) {
+                networkManager.sendKeyPress(localProt.pubId, gameName, "JUMP");
+            } else if (e.getCode() == localProt.getControls()[3]) {
+                networkManager.sendKeyPress(localProt.pubId, gameName, "HIT");
+            } else if (e.getCode() == localProt.getControls()[4]) {
+                networkManager.sendKeyPress(localProt.pubId, gameName, "SHOOT");
+            } else if (e.getCode() == localProt.getControls()[5]) {
+                networkManager.sendKeyPress(localProt.pubId, gameName, "USE");
+            }
+
+        });
+        graphic.setOnKeyReleased((KeyEvent e) -> {
+            if (e.getCode() == localProt.getControls()[0]) {
+                networkManager.sendKeyRelease(localProt.pubId, gameName, "LEFT");
+            } else if (e.getCode() == localProt.getControls()[1]) {
+                networkManager.sendKeyRelease(localProt.pubId, gameName, "RIGHT");
+            }
+        });
+        Platform.runLater(()->{graphic.requestFocus();});
+    }
+
     public enum Gamemode {
 
         ENDLESS,
@@ -251,10 +338,10 @@ public class JumpNRun extends Application {
         loopOffline.stop();
         if (protagonist1.getDeaths() < protagonist2.getDeaths()) {
             ((WinScreen) winScreen).setWinner(1);
-        } else if (protagonist1.getDeaths() > protagonist2.getDeaths()){
+        } else if (protagonist1.getDeaths() > protagonist2.getDeaths()) {
             ((WinScreen) winScreen).setWinner(2);
         } else {
-            ((WinScreen)winScreen).setWinner(-1);
+            ((WinScreen) winScreen).setWinner(-1);
         }
         scene.setRoot(winScreen);
     }
@@ -268,34 +355,34 @@ public class JumpNRun extends Application {
         scene.setRoot(mainMenu);
         ((MainMenu) mainMenu).updateStrings();
     }
-    
+
     public void openOfflineSkinChooseMenu1() {
         scene.setRoot(offlineSkinChooseScreen1);
-        ((SkinChooseMenu)offlineSkinChooseScreen1).updateStrings();
+        ((SkinChooseMenu) offlineSkinChooseScreen1).updateStrings();
     }
-    
+
     public void openOfflineSkinChooseMenu2() {
         scene.setRoot(offlineSkinChooseScreen2);
-        ((SkinChooseMenu)offlineSkinChooseScreen2).updateStrings();
+        ((SkinChooseMenu) offlineSkinChooseScreen2).updateStrings();
     }
-    
+
     public void openOnlineSkinChooseCreateGameMenu() {
         scene.setRoot(onlineSkinChooseCreateGame);
-        ((SkinChooseMenu)onlineSkinChooseCreateGame).updateStrings();
+        ((SkinChooseMenu) onlineSkinChooseCreateGame).updateStrings();
     }
-    
+
     public void openOnlineSkinChooseJoinGameMenu() {
         scene.setRoot(onlineSkinChooseJoinGame);
-        ((SkinChooseMenu)onlineSkinChooseJoinGame).updateStrings();
+        ((SkinChooseMenu) onlineSkinChooseJoinGame).updateStrings();
     }
-    
+
     // The following function is licensed under the MIT License. You should have already received a copy located at ../net/minortom/LICENSE.txt
     // Copyright 2019 MinorTom <mail in license file>
     public void openNetworkScreen() {
         scene.setRoot(networkManager);
         networkManager.updateStrings();
     }
-    
+
     public static void addUpdatable(Updatable u) {
         updatables.add(u);
     }
@@ -387,12 +474,12 @@ public class JumpNRun extends Application {
     public static double getRunTime() {
         return loopOffline.getRunTime();
     }
-    
-    public void setSkinProt1 (SkinChooseMenu.Skin s) {
+
+    public void setSkinProt1(SkinChooseMenu.Skin s) {
         skinProt1 = s;
     }
-    
-    public void setSkinProt2 (SkinChooseMenu.Skin s) {
+
+    public void setSkinProt2(SkinChooseMenu.Skin s) {
         skinProt2 = s;
     }
 
@@ -404,5 +491,4 @@ public class JumpNRun extends Application {
         System.exit(0);
     }
 
-    
 }

@@ -5,6 +5,7 @@
 package net.minortom.davidjumpnrun.server;
 
 import java.io.IOException;
+import javafx.scene.input.KeyCode;
 
 public class NetworkTCPReceiverServer extends Thread{
     Server server;
@@ -68,6 +69,8 @@ public class NetworkTCPReceiverServer extends Thread{
                             } else {
                                 server.games.get(packageContent[2]).addPlayer(tcpServ.pubId, packageContent[3]);
                             }
+                        } else if(type.equals("KEYPRESS")) {
+                            server.games.get(packageContent[3]).players.get(packageContent[2]).handleKeyPress(packageContent[4]);
                         }
                     } else if (packageContent[1].startsWith("IGAME")){
                         String type = packageContent[1].split("-")[1];
@@ -78,6 +81,7 @@ public class NetworkTCPReceiverServer extends Thread{
                 } catch (Exception e){
                     System.err.println("Invalid package received");
                     e.printStackTrace();
+                    System.err.println(line);
                 }
                 /**
                 if(line.startsWith("JUMPNRUN ")){
