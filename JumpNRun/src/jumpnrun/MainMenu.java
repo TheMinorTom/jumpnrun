@@ -33,7 +33,7 @@ import net.minortom.davidjumpnrun.i18n.LanguageGerman;
  */
 public class MainMenu extends VBox {
 
-    private Button playBt, exitBt, onlineBt, fontSizePBt, fontSizeMBt;
+    private Button playBt, exitBt, onlineBt, fontSizePBt, fontSizeMBt, creditsBt;
     private Label fontSizeLabel, langLabel;
     private HBox fontSizeBox;
     RadioButton langSelectEN;
@@ -139,13 +139,18 @@ public class MainMenu extends VBox {
                 break;
         }
         
+        creditsBt = new Button("ERR");
+        creditsBt.setOnAction((ActionEvent e) -> {
+            game.openCreditsScreen();
+        });
+        
         updateStrings();
         
         // End licensed sections
         
-        setSpacing(50);
+        setSpacing(game.language.getFontSize());
         
-        getChildren().addAll(playBt, onlineBt, exitBt, fontSizeVBox, langBox);
+        getChildren().addAll(playBt, onlineBt, exitBt, fontSizeVBox, langBox, creditsBt);
         setAlignment(Pos.CENTER);
     }
     
@@ -170,6 +175,8 @@ public class MainMenu extends VBox {
         langSelectEN.setFont(btFont);
         langSelectDE.setText(game.language.langDE);
         langSelectEN.setText(game.language.langEN);
+        creditsBt.setFont(btFont);
+        creditsBt.setText(game.language.MainMenuCreditsBt);
     }
 
 }

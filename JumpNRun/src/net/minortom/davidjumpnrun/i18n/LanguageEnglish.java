@@ -37,6 +37,10 @@ public class LanguageEnglish extends Language{
         this.MainMenuFontSizeMBt = "A-";
         this.MainMenuFontSizePBt = "A+";
         this.MainMenuLangLabel = "Language";
+        this.MainMenuCreditsBt = "Credits";
+        
+        // Credits Screen
+        this.CreditsHeader = "Credits";
         
         // Login Screen
         this.LoginScreenLoginLabel = "Username";

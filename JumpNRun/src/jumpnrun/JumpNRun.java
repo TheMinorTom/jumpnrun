@@ -19,6 +19,7 @@ import static javafx.scene.input.KeyCode.*;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import jumpnrun.SkinChooseMenu.Skin;
+import net.minortom.davidjumpnrun.CreditsScreen;
 import net.minortom.davidjumpnrun.configstore.ConfigManager;
 import net.minortom.davidjumpnrun.configstore.Configuration;
 import worldeditor.Block;
@@ -60,10 +61,11 @@ public class JumpNRun extends Application {
     private static double summonTimer, summonTime;
     private static Vector<Updatable> updatables;
     private static Parent mainMenu, gameScene, chooseGamemodeScreen, winScreen, offlineSkinChooseScreen1, offlineSkinChooseScreen2, onlineSkinChooseCreateGame, onlineSkinChooseJoinGame;
+    private static CreditsScreen creditsScreen;
     private Gamemode currGamemode;
     private static int deathLimit;
     private static double timeLimit;
-
+    
     public NetworkManager networkManager;
     public Language language;
     public Configuration config;
@@ -128,6 +130,7 @@ public class JumpNRun extends Application {
             offlineSkinChooseScreen2 = new SkinChooseMenu(this, SkinChooseMenu.SkinChooseMode.OFFLINE_PLAYER_2);
             onlineSkinChooseCreateGame = new SkinChooseMenu(this, SkinChooseMenu.SkinChooseMode.ONLINE_CREATE_GAME);
             onlineSkinChooseJoinGame = new SkinChooseMenu(this, SkinChooseMenu.SkinChooseMode.ONLINE_JOIN_GAME);
+            creditsScreen = new CreditsScreen(this);
             //chooseSkinScreen = new SkinChooseMenu(this);
             //((SkinChooseMenu)chooseSkinScreen).updateStrings();
             //scene = new Scene(chooseSkinScreen);
@@ -381,6 +384,11 @@ public class JumpNRun extends Application {
     public void openNetworkScreen() {
         scene.setRoot(networkManager);
         networkManager.updateStrings();
+    }
+    
+    public void openCreditsScreen() {
+        scene.setRoot(creditsScreen);
+        creditsScreen.updateStrings();
     }
 
     public static void addUpdatable(Updatable u) {

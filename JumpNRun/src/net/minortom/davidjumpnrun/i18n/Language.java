@@ -4,15 +4,22 @@
  */
 package net.minortom.davidjumpnrun.i18n;
 
+import java.io.File;
 import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.text.Font;
 import jumpnrun.JumpNRun;
+import static jumpnrun.JumpNRun.sourcePath;
 import net.minortom.davidjumpnrun.configstore.ConfigManager;
 
 public class Language implements Serializable {
     // Font Info
     private int fontSize;
-    private String fontName;
+    private String fontName, fontUrl;
+    transient private Font standardFont;
+    transient private Font headerFont;
     
     // Start variables
     
@@ -40,6 +47,10 @@ public class Language implements Serializable {
     public transient String MainMenuFontSizePBt;
     public transient String MainMenuFontSizeMBt;
     public transient String MainMenuLangLabel;
+    public transient String MainMenuCreditsBt;
+    
+    // Credits Screen
+    public transient String CreditsHeader;
     
     // Login Screen
     public transient String LoginScreenLoginLabel;
@@ -117,12 +128,17 @@ public class Language implements Serializable {
     // Gameplay
     public transient String playerNameLocalPlayer;
     
+    public transient int changeA;
+    
     public transient JumpNRun game;
     
     public Language (JumpNRun newGame){
         fontName = "Maiandra GD";
+        fontUrl = "sprites/font/font.ttf";
         fontSize = 30;
         game = newGame;
+        
+        setFontFileNC(fontUrl, fontName);
     }
     
     public void setFontSize(int size){
@@ -138,27 +154,52 @@ public class Language implements Serializable {
         return fontSize;
     }
     
+    public int getHeaderSize(){
+        return fontSize * 2;
+    }
+    
     @Deprecated
     public void setFontName(String newf){
         setFontNameNC(newf);
         saveChanges();
     }
     
+    @Deprecated
     public void setFontNameNC(String newf){
         fontName = newf;
     }
     
-    @Deprecated
+    public void setFontFile(String newf, String newfname){
+        setFontFileNC(newf, newfname);
+        saveChanges();
+    }
+    
+    public void setFontFileNC(String newf, String newfname){
+        try {
+            System.out.println(sourcePath + newf);
+            System.out.println(new File(sourcePath + newf).toURI().toURL().toString());
+            standardFont = Font.loadFont(new File(sourcePath + newf).toURI().toURL().toString(), getFontSize());
+            headerFont = Font.loadFont(new File(sourcePath + newf).toURI().toURL().toString(), getHeaderSize());
+            fontName = newfname;
+        } catch (MalformedURLException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
     public String getFontName(){
         return fontName;
     }
     
+    public String getFontUrl(){
+        return fontUrl;
+    }
+    
     public Font getFont(){
-        return new Font(fontName, fontSize);
+        return standardFont;
     }
     
     public Font getHeadingFont(){
-        return new Font(fontName, fontSize*2);
+        return headerFont;
     }
     
     public String getShortName(){
@@ -170,15 +211,15 @@ public class Language implements Serializable {
     }
     
     public static Language setNewLang(Language oldLang, Language newLang){
-        newLang.setFontNameNC(oldLang.getFontName());
         newLang.setFontSizeNC(oldLang.getFontSize());
+        newLang.setFontFileNC(oldLang.getFontUrl(), oldLang.getFontName());
         newLang.saveChanges();
         return newLang;
     }
     
     public static Language setNewLangNC(Language oldLang, Language newLang){
-        newLang.setFontNameNC(oldLang.getFontName());
         newLang.setFontSizeNC(oldLang.getFontSize());
+        newLang.setFontFileNC(oldLang.getFontUrl(), oldLang.getFontName());
         return newLang;
     }
     
