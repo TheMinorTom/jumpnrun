@@ -41,6 +41,7 @@ public class LanguageEnglish extends Language{
         
         // Credits Screen
         this.CreditsHeader = "Credits";
+        this.CreditsCloseBt = "Close";
         
         // Login Screen
         this.LoginScreenLoginLabel = "Username";

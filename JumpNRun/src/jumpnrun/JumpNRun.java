@@ -117,7 +117,7 @@ public class JumpNRun extends Application {
                 ConfigManager.saveConfiguration(config);
             }
             language = config.gameLanguage;
-            language = Language.setNewLangNC(language, language);
+            //language = Language.setNewLangNC(language, language);
 
             networkManager = new NetworkManager(this);
             // End licensed sections

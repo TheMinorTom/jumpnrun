@@ -51,6 +51,7 @@ public class Language implements Serializable {
     
     // Credits Screen
     public transient String CreditsHeader;
+    public transient String CreditsCloseBt;
     
     // Login Screen
     public transient String LoginScreenLoginLabel;
@@ -128,7 +129,7 @@ public class Language implements Serializable {
     // Gameplay
     public transient String playerNameLocalPlayer;
     
-    public transient int changeA;
+    public transient int changeB;
     
     public transient JumpNRun game;
     
@@ -148,6 +149,7 @@ public class Language implements Serializable {
     
     public void setFontSizeNC(int size){
         fontSize = size;
+        setFontFile();
     }
     
     public int getFontSize(){
@@ -174,11 +176,21 @@ public class Language implements Serializable {
         saveChanges();
     }
     
+    public void setFontFile(){
+        setFontFileNC();
+        saveChanges();
+    }
+    
     public void setFontFileNC(String newf, String newfname){
+        fontName = newfname;
+        fontUrl = newf;
+        setFontFileNC();
+    }
+    
+    public void setFontFileNC(){
         try {
-            standardFont = Font.loadFont(new File(sourcePath + newf).toURI().toURL().toString(), getFontSize());
-            headerFont = Font.loadFont(new File(sourcePath + newf).toURI().toURL().toString(), getHeaderSize());
-            fontName = newfname;
+            standardFont = Font.loadFont(new File(sourcePath + fontUrl).toURI().toURL().toString(), getFontSize());
+            headerFont = Font.loadFont(new File(sourcePath + fontUrl).toURI().toURL().toString(), getHeaderSize());
         } catch (MalformedURLException ex) {
             ex.printStackTrace();
         }

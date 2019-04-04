@@ -27,7 +27,7 @@ public class CreditsScreen extends VBox {
     WebView textView;
     WebEngine webEngine;
     
-    Button backBt;
+    Button backBt, closeBt;
     
     boolean loadedother;
     
@@ -36,12 +36,12 @@ public class CreditsScreen extends VBox {
         
         backBt = new Button("ERR");
         backBt.setOnAction((ActionEvent e) -> {
-            if (loadedother){
-                updateStrings();
-                loadedother = false;
-            } else {
-                game.openMainMenu();
-            }
+            updateStrings();
+        });
+        
+        closeBt = new Button("ERR");
+        closeBt.setOnAction((ActionEvent e) -> {
+            game.openMainMenu();
         });
         
         textView = new WebView();
@@ -54,12 +54,14 @@ public class CreditsScreen extends VBox {
         setAlignment(Pos.CENTER);
         setSpacing(50);
         setPadding(new Insets(0, 0, 0, 0));
-        getChildren().addAll(headerLabel, textView, backBt);
+        getChildren().addAll(headerLabel, textView, backBt, closeBt);
     }
     
     public void updateStrings(){
         backBt.setFont(game.language.getFont());
         backBt.setText(game.language.backBt);
+        closeBt.setFont(game.language.getFont());
+        closeBt.setText(game.language.CreditsCloseBt);
         headerLabel.setFont(game.language.getHeadingFont());
         headerLabel.setText(game.language.CreditsHeader);
         
