@@ -176,8 +176,6 @@ public class Language implements Serializable {
     
     public void setFontFileNC(String newf, String newfname){
         try {
-            System.out.println(sourcePath + newf);
-            System.out.println(new File(sourcePath + newf).toURI().toURL().toString());
             standardFont = Font.loadFont(new File(sourcePath + newf).toURI().toURL().toString(), getFontSize());
             headerFont = Font.loadFont(new File(sourcePath + newf).toURI().toURL().toString(), getHeaderSize());
             fontName = newfname;

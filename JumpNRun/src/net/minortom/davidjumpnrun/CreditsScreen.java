@@ -29,21 +29,23 @@ public class CreditsScreen extends VBox {
     
     Button backBt;
     
+    boolean loadedother;
+    
     public CreditsScreen (JumpNRun game) {
         this.game = game;
         
         backBt = new Button("ERR");
         backBt.setOnAction((ActionEvent e) -> {
-            game.openMainMenu();
+            if (loadedother){
+                updateStrings();
+                loadedother = false;
+            } else {
+                game.openMainMenu();
+            }
         });
         
         textView = new WebView();
         webEngine = textView.getEngine();
-        try {
-            webEngine.load(new File(sourcePath + "sprites/webpages/credits-" + game.language.getShortName() + ".html").toURI().toURL().toString());
-        } catch (MalformedURLException ex) {
-            ex.printStackTrace();
-        }
         
         headerLabel = new Label("Please Wait");
         
@@ -60,6 +62,13 @@ public class CreditsScreen extends VBox {
         backBt.setText(game.language.backBt);
         headerLabel.setFont(game.language.getHeadingFont());
         headerLabel.setText(game.language.CreditsHeader);
+        
+        loadedother = true;
+        try {
+            webEngine.load(new File(sourcePath + "sprites/webpages/credits-" + game.language.getShortName() + ".html").toURI().toURL().toString());
+        } catch (MalformedURLException ex) {
+            ex.printStackTrace();
+        }
     }
 
 }
