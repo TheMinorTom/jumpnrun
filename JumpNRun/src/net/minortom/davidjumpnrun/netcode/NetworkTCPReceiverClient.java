@@ -5,9 +5,13 @@
 package net.minortom.davidjumpnrun.netcode;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map.Entry;
 import jumpnrun.JumpNRun;
 import net.minortom.davidjumpnrun.configstore.ConfigManager;
 import net.minortom.davidjumpnrun.netcode.ServerConnection.ConnState;
+import net.minortom.davidjumpnrun.netcode.screens.WaitScreen;
+import net.minortom.davidjumpnrun.netcode.screens.WaitScreen.WaitAnimation;
 
 public class NetworkTCPReceiverClient extends Thread {
 
@@ -19,6 +23,7 @@ public class NetworkTCPReceiverClient extends Thread {
         String line;
         try {
             while ((line = game.networkManager.serverConnection.in.readLine()) != null) {
+                System.out.println(line);
                 try {
                     String[] packageContent = line.split(NetworkManager.infoSeperator);
                     if (!packageContent[0].equals(NetworkManager.keyword)) {
@@ -43,9 +48,27 @@ public class NetworkTCPReceiverClient extends Thread {
                         String type = packageContent[1].split("-")[1];
                         switch (type) {
                             case "YJOINED":
+                                game.networkManager.onlineWaitScreenPlayers = new HashMap<>();
                                 break;
                             case "PJOINED":
-
+                                if(packageContent[3].equals(sconn.pubId)){
+                                    game.networkManager.onlineWaitScreenPlayers = new HashMap<>();
+                                    game.networkManager.onlineWaitScreenPlayersNeeded = Integer.parseInt(packageContent[4]);
+                                }
+                                game.networkManager.onlineWaitScreenPlayers.put(packageContent[3], packageContent[2]);
+                                String waitText = game.language.WaitOtherPlayersA;
+                                waitText += game.networkManager.onlineWaitScreenPlayers.size() + "/" + game.networkManager.onlineWaitScreenPlayersNeeded;
+                                waitText += game.language.WaitOtherPlayersB;
+                                for(Entry<String, String> e : game.networkManager.onlineWaitScreenPlayers.entrySet()) {
+                                    String key = e.getKey();
+                                    String value = e.getValue();
+                                    waitText += "\n" + value;
+                                }
+                                if(game.networkManager.onlineWaitScreenPlayers.size()>=game.networkManager.onlineWaitScreenPlayersNeeded){
+                                    game.networkManager.waitScreen.setText(game.language.WaitGameStart, WaitAnimation.LOADING);
+                                }else{
+                                    game.networkManager.waitScreen.setText(waitText, WaitAnimation.WAITING);
+                                }
                                 break;
                             case "ERR":
                                 String text;

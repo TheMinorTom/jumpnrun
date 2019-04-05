@@ -15,6 +15,7 @@ import javafx.scene.layout.VBox;
 import jumpnrun.JumpNRun;
 import jumpnrun.SkinChooseMenu;
 import net.minortom.davidjumpnrun.netcode.NetworkManager;
+import net.minortom.davidjumpnrun.netcode.screens.WaitScreen.WaitAnimation;
 
 public class JoinGameScreen extends VBox {
 
@@ -43,7 +44,7 @@ public class JoinGameScreen extends VBox {
 
         okBt.setOnAction((ActionEvent e) -> {
             game.networkManager.openWaitScreen();
-            game.networkManager.setWaitScreenText(game.language.WaitServerAnswer);
+            game.networkManager.setWaitScreenText(game.language.WaitServerAnswer, WaitAnimation.LOADING);
             String skin = skinUrl.split("/")[skinUrl.split("/").length - 1];
             game.networkManager.serverConnection.out.println(NetworkManager.keyword + NetworkManager.infoSeperator + "OGAME-JOIN" + NetworkManager.infoSeperator + nameField.getText() + NetworkManager.infoSeperator + skin);
         });

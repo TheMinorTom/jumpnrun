@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Vector;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 /**
  *
@@ -342,8 +343,12 @@ public class IO {
             InputStream in = new FileInputStream(uri);
             return in;
         } catch(FileNotFoundException e){
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("File at " + uri + " not found! Check if all resources are saved correctly in the programm's AppData directory");
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Game");
+            alert.setHeaderText("Error");
+            alert.setContentText("File at " + uri + " not found. This could be because the program was incorrectly installed.");
+            alert.setResizable(true);
+            alert.getDialogPane().setPrefSize(480, 320);
             alert.showAndWait();
             return null;
         }

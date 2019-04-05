@@ -18,11 +18,15 @@ import net.minortom.davidjumpnrun.netcode.screens.ChooseMapScreen;
 import net.minortom.davidjumpnrun.netcode.screens.CreateGameScreen;
 import net.minortom.davidjumpnrun.netcode.screens.JoinGameScreen;
 import net.minortom.davidjumpnrun.netcode.screens.WaitScreen;
+import net.minortom.davidjumpnrun.netcode.screens.WaitScreen.WaitAnimation;
 
 public class NetworkManager extends VBox {
     
     public static final String infoSeperator = "!";//Character.toString((char) 31);
     public static final String keyword = "JUMPNRUN";
+    
+    public java.util.Map<String,String> onlineWaitScreenPlayers; // PubID, name
+    public int onlineWaitScreenPlayersNeeded;
     
     JumpNRun game;
     
@@ -109,7 +113,7 @@ public class NetworkManager extends VBox {
     
     public void openMapSelection(){
         openWaitScreen();
-        setWaitScreenText(game.language.WaitServerAnswer);
+        setWaitScreenText(game.language.WaitServerAnswer, WaitAnimation.LOADING);
     }
     
     public void mapSelectionDone(String[] maps){
@@ -124,6 +128,10 @@ public class NetworkManager extends VBox {
     
     public void setWaitScreenText(String text){
         waitScreen.setText(text);
+    }
+    
+    public void setWaitScreenText(String text, WaitAnimation waitanim){
+        waitScreen.setText(text, waitanim);
     }
     
     public void updateBtnsLoggedIn(){

@@ -19,6 +19,7 @@ import javafx.scene.text.Font;
 import jumpnrun.JumpNRun;
 import jumpnrun.SkinChooseMenu;
 import net.minortom.davidjumpnrun.netcode.NetworkManager;
+import net.minortom.davidjumpnrun.netcode.screens.WaitScreen.WaitAnimation;
 
 public class CreateGameScreen extends VBox {
     
@@ -238,7 +239,7 @@ public class CreateGameScreen extends VBox {
                 deathsTF.setText(game.language.ChoGmErrOnlyWholeNumbers);
             }
             game.networkManager.openWaitScreen();
-            game.networkManager.setWaitScreenText(game.language.WaitServerAnswer);
+            game.networkManager.setWaitScreenText(game.language.WaitServerAnswer, WaitAnimation.LOADING);
             
             String limit = "0";
             if("DEATHS".equals(gameMode)){

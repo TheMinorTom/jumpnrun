@@ -98,7 +98,7 @@ public class LanguageEnglish extends Language{
         // Wait Screen
         this.WaitServerAnswer = "Waiting for the Server";
         this.WaitOtherPlayersA = "Waiting for other players.\nOnly ";
-        this.WaitOtherPlayersB = " players have joined yet:\n";
+        this.WaitOtherPlayersB = " players have joined yet:";
         this.WaitGameStart = "Waiting for the Game to start.";
         
         // Online Errors
