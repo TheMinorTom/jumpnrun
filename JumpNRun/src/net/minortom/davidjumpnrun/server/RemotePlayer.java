@@ -6,7 +6,13 @@ package net.minortom.davidjumpnrun.server;
 
 import java.util.HashMap;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.input.KeyCode;
+import javafx.scene.shape.Rectangle;
+import jumpnrun.Gun;
+import jumpnrun.Pitchfork;
 import jumpnrun.Protagonist;
 import worldeditor.Block;
 
@@ -28,18 +34,24 @@ public class RemotePlayer extends Protagonist implements Runnable {
 
     private boolean intersectsPlayer = false;
 
+    private RemoteObject remotePitchfork, remoteGun;
+
+    private static final double fpsLimit = 60;
+    
     public RemotePlayer(Server server, OnlGame game, String pubId, String skin, String name, int index, int maxPlayer) {
-        super(index, (game.worldWidth/(maxPlayer+1)) * (index+1), OnlGame.spawnY);
+        super(index, (game.worldWidth / (maxPlayer + 1)) * (index + 1), OnlGame.spawnY);
         this.server = server;
         this.game = game;
         this.pubId = pubId;
         this.skin = skin;
         this.name = name;
         this.index = index;
-        accPerSec = 10;
+        accPerSec = 1000;
         animationStateAsInt = currCostume.ordinal();
         shootDoing = false;
         hitDoing = false;
+        remotePitchfork = new RemoteObject(Pitchfork.AnimationState.LEFT.getRect());
+        remoteGun = new RemoteObject(Gun.AnimationState.LEFT.getRect());
     }
 
     @Override
@@ -53,9 +65,17 @@ public class RemotePlayer extends Protagonist implements Runnable {
             timeElapsed = now - oldTime;
             oldTime = now;
             timeElapsedSeconds = timeElapsed / (1000.0d * 1000.0d * 1000.0d);
-
+            double fpsCheck = 1/fpsLimit - timeElapsedSeconds;
+            if(fpsCheck > 0) {
+                try {
+                    Thread.sleep((long)((fpsCheck) * 1000));
+                } catch (InterruptedException ex) {
+                    
+                }
+            }
             update();
-            server.tcpServer.get(pubId).out.println(server.keyword + server.infoSeperator + "OGAME-UPDATEPROT" + server.infoSeperator + pubId + server.infoSeperator + String.valueOf(xPos) + server.infoSeperator + String.valueOf(yPos) + server.infoSeperator + String.valueOf(animationStateAsInt));
+            game.sendAllTCP(server.keyword + server.infoSeperator + "OGAME-UPDATEPROT" + server.infoSeperator + pubId + server.infoSeperator + String.valueOf(xPos) + server.infoSeperator + String.valueOf(yPos) + server.infoSeperator + String.valueOf(animationStateAsInt));
+            //server.tcpServer.get(pubId).out.println(server.keyword + server.infoSeperator + "OGAME-UPDATEPROT" + server.infoSeperator + pubId + server.infoSeperator + String.valueOf(xPos) + server.infoSeperator + String.valueOf(yPos) + server.infoSeperator + String.valueOf(animationStateAsInt));
         }
     }
 
@@ -69,7 +89,7 @@ public class RemotePlayer extends Protagonist implements Runnable {
             if (((!goesRight) && (!goesLeft)) && (ySpeed == 0)) {
                 if (xSpeed != 0) {
 
-                    // xSpeed -= (xSpeed / 10);
+                    xSpeed -= (xSpeed / 10);
                     xSpeed = 0;
                     resetAnimation();
                 }
@@ -98,7 +118,12 @@ public class RemotePlayer extends Protagonist implements Runnable {
                 if (!isMachinePistol) {
                     updateAnimation(timeElapsedSeconds);
                 }
+                intersects = collisionCheck(game.worldVector, game.players);
+                if(intersects) {
+                    yPos -= 50;
+                }
             }
+
             xPos += xSpeed * spdFactor * timeElapsedSeconds;
             setX(xPos);
             setY(yPos);
@@ -198,7 +223,7 @@ public class RemotePlayer extends Protagonist implements Runnable {
 
     void handleKeyPress(String action) {
         System.out.println("Keypress!"); /////!!!!!!!!!!!!!!!!!!!!
-        switch(action.toUpperCase()) {
+        switch (action.toUpperCase()) {
             case "LEFT":
                 doLeft();
                 break;
@@ -219,9 +244,9 @@ public class RemotePlayer extends Protagonist implements Runnable {
                 break;
         }
     }
-    
+
     void handleKeyRelease(String action) {
-        switch(action.toUpperCase()) {
+        switch (action.toUpperCase()) {
             case "LEFT":
                 releaseLeft();
                 break;
@@ -229,6 +254,114 @@ public class RemotePlayer extends Protagonist implements Runnable {
                 releaseRight();
                 break;
         }
+    }
+
+    @Override
+    public void doRight() {
+        isFacingRight = true;
+        goesRight = true;
+        goesLeft = false;
+    }
+
+    @Override
+    public void doLeft() {
+        isFacingRight = false;
+        goesLeft = true;
+        goesRight = false;
+    }
+
+    @Override
+    public void doJump() {
+        if (ySpeed == 0) {
+            jumpDone = true;
+        }
+    }
+
+    @Override
+    public void updateJump(double timeElapsedSeconds) {
+        if (!jumpDone) {
+            jumpTimer = 0;
+        } else {
+            if (remotePitchfork.getAnimationState() == 0) {
+                forkAnimationXPosAdd = -5;
+            } else if (remotePitchfork.getAnimationState() == 1) {
+                forkAnimationXPosAdd = -10;
+            }
+
+            jumpTimer += timeElapsedSeconds;
+            if (jumpTimer < 0.2) {
+                if (goesLeft) {
+                    setAnimationState(CostumeViewport.LEFT_JUMP);
+                } else if (goesRight) {
+                    setAnimationState(CostumeViewport.RIGHT_JUMP);
+                } else {
+                    setAnimationState(CostumeViewport.MID_JUMP);
+                }
+            } else {
+                if (currCostume == CostumeViewport.LEFT_JUMP) {
+                    setAnimationState(CostumeViewport.LEFT_0);
+                } else if (currCostume == CostumeViewport.RIGHT_JUMP) {
+                    setAnimationState(CostumeViewport.RIGHT_0);
+                } else {
+                    setAnimationState(CostumeViewport.MID);
+                }
+                jumpDone = false;
+                ySpeed = -1 * (game.blockSize * 10.5);
+            }
+        }
+    }
+
+    @Override
+    public void updateHit(double timeElapsedSeconds, Protagonist otherProt) {
+        hitTimer += timeElapsedSeconds;
+        if (remotePitchfork.getAnimationState() == 0) {
+            remotePitchfork.setX(xPos - 40); //- forkAnimationXPosAdd);
+            setAnimationState(CostumeViewport.LEFT_HIT);
+        } else if (remotePitchfork.getAnimationState() == 1) {
+            remotePitchfork.setX(xPos + 30); //+ forkAnimationXPosAdd);
+            setAnimationState(CostumeViewport.RIGHT_HIT);
+        }
+        remotePitchfork.setY(yPos + 55);
+        game.players.forEach((id, p) -> {
+            if (!id.equals(pubId)) {
+                if (intersects(remotePitchfork.getX(), remotePitchfork.getY(), remotePitchfork.getWidth(), remotePitchfork.getHeight(), p.getX(), p.getY(), width, height)) {
+                    p.hitten();
+                }
+            }
+        });
+
+        if (hitTimer > 0.3) {
+            hitDoing = false;
+            remotePitchfork.setAnimationState(-1);
+            hitTimer = 0;
+            setAnimationState(CostumeViewport.MID);
+
+        }
+    }
+
+    @Override
+    public void updateShoot(double timeElapsedSeconds, Protagonist otherProt) {
+        /*
+        shootTimer += timeElapsedSeconds;
+        gun.setVisible(true);
+        if (gun.getFacingLeft()) {
+            gun.setX(getX() - 20); //- forkAnimationXPosAdd);
+            setAnimationState(CostumeViewport.LEFT_SHOOT);
+        } else {
+            gun.setX(getX() + 5); //+ forkAnimationXPosAdd);
+            setAnimationState(CostumeViewport.RIGHT_SHOOT);
+        }
+        gun.setY(getY() + 22); ///
+        gun.updateShoot(shootTimer);
+
+        if (shootTimer > 2) {
+            shootDoing = false;
+            gun.setVisible(false);
+            shootTimer = 0;
+            setAnimationState(CostumeViewport.MID);
+
+        }
+                */
     }
 
 }

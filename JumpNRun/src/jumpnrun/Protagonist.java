@@ -41,7 +41,7 @@ public class Protagonist extends ImageView implements Updatable {
     protected CostumeViewport currCostume;
     private double animationStateDouble;
     protected static double stepsPerSecond;
-    private double jumpTimer, hitTimer, shootTimer, respawnTimer, machinePistolTimer;   //Timer
+    protected double jumpTimer, hitTimer, shootTimer, respawnTimer, machinePistolTimer;   //Timer
     protected double forkAnimationXPosAdd, forkAnimationYPosAdd;
     public final static double width = 50;
     public final static double height = 100;
@@ -67,11 +67,19 @@ public class Protagonist extends ImageView implements Updatable {
         setFitWidth(width);
         setFitHeight(height);
         
+        jumpTimer = 0;
+        hitTimer = 0;
+        shootTimer = 0;
+        respawnTimer = 0;
+        machinePistolTimer = 0;
+        
         setX(x);
         setY(y);
         xPos = x;
         yPos = y;
         setVisible(true);
+        
+        spdFactor = defaultSpdFactor;
 
     }
     

@@ -14,7 +14,7 @@ import worldeditor.IO;
 
 public class OnlGame implements Runnable {
 
-    public static final double spawnY = 150;
+    public static final double spawnY = 0;
 
     Server server;
 

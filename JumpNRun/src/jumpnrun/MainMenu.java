@@ -69,6 +69,11 @@ public class MainMenu extends VBox {
         // The following sections are licensed under the MIT License. You should have already received a copy located at ../net/minortom/LICENSE.txt
         // Copyright 2019 MinorTom <mail in license file>
         
+        creditsBt = new Button("ERR");
+        creditsBt.setOnAction((ActionEvent e) -> {
+            game.openCreditsScreen();
+        });
+        
         fontSizeLabel = new Label("ERR");
         langLabel = new Label("ERR");
         
@@ -139,10 +144,7 @@ public class MainMenu extends VBox {
                 break;
         }
         
-        creditsBt = new Button("ERR");
-        creditsBt.setOnAction((ActionEvent e) -> {
-            game.openCreditsScreen();
-        });
+        
         
         updateStrings();
         

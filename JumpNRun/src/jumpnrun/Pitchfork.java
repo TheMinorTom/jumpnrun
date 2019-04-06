@@ -20,12 +20,14 @@ public class Pitchfork extends ImageView{
     
     private final static String imageSource = JumpNRun.sourcePath + "sprites/pitchforkGes.png";
     private boolean facingLeft;
+    private AnimationState currAnimationState;
     Pitchfork()
     {
         setImage(new Image(IO.getFileStream(imageSource)));
         setVisible(false);
         facingLeft = true;
-        setViewport(AnimationState.LEFT.getRect());
+        currAnimationState = AnimationState.LEFT;
+        setViewport(currAnimationState.getRect());
         
        
         
@@ -58,7 +60,7 @@ public class Pitchfork extends ImageView{
         return facingLeft;
     }
     
-    private enum AnimationState{
+    public enum AnimationState{
         LEFT(0,0,60,12),
         RIGHT(61,0,60,12);
         private Rectangle2D r;

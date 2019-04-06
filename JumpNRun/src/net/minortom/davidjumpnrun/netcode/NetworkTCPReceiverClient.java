@@ -23,7 +23,6 @@ public class NetworkTCPReceiverClient extends Thread {
         String line;
         try {
             while ((line = game.networkManager.serverConnection.in.readLine()) != null) {
-                System.out.println(line);
                 try {
                     String[] packageContent = line.split(NetworkManager.infoSeperator);
                     if (!packageContent[0].equals(NetworkManager.keyword)) {

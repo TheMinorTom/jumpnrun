@@ -65,7 +65,7 @@ public class JumpNRun extends Application {
     private Gamemode currGamemode;
     private static int deathLimit;
     private static double timeLimit;
-    
+
     public NetworkManager networkManager;
     public Language language;
     public Configuration config;
@@ -79,6 +79,8 @@ public class JumpNRun extends Application {
     private Gamemode onlineGamemode;
     private HashMap<String, ProtagonistOnlineClient> onlineProts;
     private String gameName;
+
+    private boolean[] keysDown;
 
     @Override
     public void start(Stage primaryStage) throws IOException {
@@ -141,6 +143,8 @@ public class JumpNRun extends Application {
             primaryStage.setMaximized(true);
             primaryStage.show();
             ((WinScreen) winScreen).setWinner(1); //!!!
+
+            keysDown = new boolean[]{false, false, false, false, false, false};
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -297,28 +301,67 @@ public class JumpNRun extends Application {
     private void setUpOnlineKeyHandlers() {
         graphic.setOnKeyPressed((KeyEvent e) -> {
             if (e.getCode() == localProt.getControls()[0]) {
-                networkManager.sendKeyPress(localProt.pubId, gameName, "LEFT");
+
+                if (!keysDown[0]) {
+                    keysDown[0] = true;
+                    networkManager.sendKeyPress(localProt.pubId, gameName, "LEFT");
+                }
             } else if (e.getCode() == localProt.getControls()[1]) {
-                networkManager.sendKeyPress(localProt.pubId, gameName, "RIGHT");
+                if (!keysDown[1]) {
+                    keysDown[1] = true;
+                    networkManager.sendKeyPress(localProt.pubId, gameName, "RIGHT");
+                }
             } else if (e.getCode() == localProt.getControls()[2]) {
-                networkManager.sendKeyPress(localProt.pubId, gameName, "JUMP");
+                if (!keysDown[2]) {
+                    keysDown[2] = true;
+
+                    networkManager.sendKeyPress(localProt.pubId, gameName, "JUMP");
+                }
             } else if (e.getCode() == localProt.getControls()[3]) {
-                networkManager.sendKeyPress(localProt.pubId, gameName, "HIT");
+                if (!keysDown[3]) {
+                    keysDown[3] = true;
+
+                    networkManager.sendKeyPress(localProt.pubId, gameName, "HIT");
+                }
             } else if (e.getCode() == localProt.getControls()[4]) {
-                networkManager.sendKeyPress(localProt.pubId, gameName, "SHOOT");
+                if (!keysDown[4]) {
+                    keysDown[4] = true;
+
+                    networkManager.sendKeyPress(localProt.pubId, gameName, "SHOOT");
+                }
             } else if (e.getCode() == localProt.getControls()[5]) {
-                networkManager.sendKeyPress(localProt.pubId, gameName, "USE");
+                if (!keysDown[5]) {
+                    keysDown[5] = true;
+
+                    networkManager.sendKeyPress(localProt.pubId, gameName, "USE");
+                }
             }
 
         });
         graphic.setOnKeyReleased((KeyEvent e) -> {
             if (e.getCode() == localProt.getControls()[0]) {
+                keysDown[0] = false;
                 networkManager.sendKeyRelease(localProt.pubId, gameName, "LEFT");
             } else if (e.getCode() == localProt.getControls()[1]) {
+                keysDown[1] = false;
                 networkManager.sendKeyRelease(localProt.pubId, gameName, "RIGHT");
+            } else if (e.getCode() == localProt.getControls()[2]) {
+                keysDown[2] = false;
+                networkManager.sendKeyRelease(localProt.pubId, gameName, "JUMP");
+            } else if (e.getCode() == localProt.getControls()[3]) {
+                keysDown[3] = false;
+                networkManager.sendKeyRelease(localProt.pubId, gameName, "HIT");
+            } else if (e.getCode() == localProt.getControls()[4]) {
+                keysDown[4] = false;
+                networkManager.sendKeyRelease(localProt.pubId, gameName, "SHOOT");
+            } else if (e.getCode() == localProt.getControls()[5]) {
+                keysDown[5] = false;
+                networkManager.sendKeyRelease(localProt.pubId, gameName, "USE");
             }
         });
-        Platform.runLater(()->{graphic.requestFocus();});
+        Platform.runLater(() -> {
+            graphic.requestFocus();
+        });
     }
 
     public enum Gamemode {
@@ -385,7 +428,7 @@ public class JumpNRun extends Application {
         scene.setRoot(networkManager);
         networkManager.updateStrings();
     }
-    
+
     public void openCreditsScreen() {
         scene.setRoot(creditsScreen);
         creditsScreen.updateStrings();

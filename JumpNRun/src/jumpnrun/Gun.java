@@ -92,7 +92,7 @@ public class Gun extends ImageView {
         return facingLeft;
     }
 
-    private enum AnimationState {
+    public enum AnimationState {
         LEFT(0, 0, 55, 10),
         LEFT_SHOOT(56, 0, 56, 10),
         RIGHT_SHOOT(114, 0, 56, 10),

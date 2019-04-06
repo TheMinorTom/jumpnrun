@@ -16,14 +16,12 @@ public class NetworkTCPReceiverServer extends Thread{
         String line;
         try {
             while ((line = tcpServ.in.readLine()) != null){
-                System.out.println(line);
                 try{
                     String[] packageContent = line.split(server.infoSeperator);
                     if(!packageContent[0].equals(server.keyword)){
                         System.err.println("Invalid package received, "+ server.keyword +": " + packageContent[0]);
                         continue;
                     }
-                    System.out.println(line);   ////////!!!!!!!!!!!!
                     if(packageContent[1].startsWith("AUTH")){
                         String type = packageContent[1].split("-")[1];
                         if(type.equals("REQ")){
@@ -37,7 +35,6 @@ public class NetworkTCPReceiverServer extends Thread{
                         }
                     } else if (packageContent[1].startsWith("MAP")){
                         String type = packageContent[1].split("-")[1];
-                        System.out.println(type);   /////////!!!!!!!!!!!
                         if(type.equals("LISTREQ")){
                             System.out.println("Listrequest detected");  ///////!!!!!!!!!!!!!!!!!!!!!!
                             String[] maps = MapHelper.listMaps();
@@ -71,7 +68,10 @@ public class NetworkTCPReceiverServer extends Thread{
                             }
                         } else if(type.equals("KEYPRESS")) {
                             server.games.get(packageContent[3]).players.get(packageContent[2]).handleKeyPress(packageContent[4]);
+                        } else if(type.equals("KEYRELEASE")) {
+                            server.games.get(packageContent[3]).players.get(packageContent[2]).handleKeyRelease(packageContent[4]);
                         }
+                        
                     } else if (packageContent[1].startsWith("IGAME")){
                         String type = packageContent[1].split("-")[1];
                         if(type.equals("TYPE")){
@@ -81,7 +81,7 @@ public class NetworkTCPReceiverServer extends Thread{
                 } catch (Exception e){
                     System.err.println("Invalid package received");
                     e.printStackTrace();
-                    System.err.println(line);
+                    System.err.println("Invalid package recieved by server:"+line);
                 }
                 /**
                 if(line.startsWith("JUMPNRUN ")){
