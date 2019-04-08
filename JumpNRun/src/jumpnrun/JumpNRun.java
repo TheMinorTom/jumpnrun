@@ -7,7 +7,10 @@ package jumpnrun;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -29,6 +32,8 @@ import net.minortom.davidjumpnrun.i18n.Language;
 import net.minortom.davidjumpnrun.i18n.LanguageEnglish;
 import net.minortom.davidjumpnrun.i18n.LanguageGerman;
 import net.minortom.davidjumpnrun.netcode.NetworkManager;
+import net.minortom.davidjumpnrun.server.Server;
+import worldeditor.InGameSceneWorldEditor;
 import worldeditor.WorldEditor;
 
 /**
@@ -82,6 +87,8 @@ public class JumpNRun extends Application {
     private HashMap<String, ProtagonistOnlineClient> onlineProts;
     private String gameName;
 
+    InGameSceneWorldEditor worldEditor;
+    
     private boolean[] keysDown;
 
     @Override
@@ -145,6 +152,8 @@ public class JumpNRun extends Application {
             //chooseSkinScreen = new SkinChooseMenu(this);
             //((SkinChooseMenu)chooseSkinScreen).updateStrings();
             //scene = new Scene(chooseSkinScreen);
+            worldEditor = new InGameSceneWorldEditor();
+            
             scene = new Scene(mainMenu);
 
             primaryStage.setTitle("Jump-N-Run");
@@ -166,8 +175,38 @@ public class JumpNRun extends Application {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-
-        launch(args);
+        String starttype;
+        try {
+            starttype = args[0];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            starttype = "client";
+        }
+        
+        /*
+        List<String> templeft = Arrays.asList(args);
+        templeft.remove(starttype);
+        String[] rArgs = (String[]) templeft.toArray();
+        */
+        
+        // TODO: Fix shift left
+        String[] rArgs = args;
+        
+        switch (starttype) {
+            case "server":
+                Server.main(rArgs);
+                break;
+            case "mapEdit":
+                // TODO: Implement map edit start
+                break;
+            case "help":
+                System.out.println("Options: [server|client|help]");
+                System.exit(0);
+                break;
+            case "client":
+            default:
+                launch(rArgs);
+                break;
+        }
     }
 
     public void initGame() {
@@ -453,6 +492,7 @@ public class JumpNRun extends Application {
     public void openWorldEditor() {
         Platform.runLater(()->{
             WorldEditor.main();
+            //worldEditor.start(getPrimStage());
         });
 
     }

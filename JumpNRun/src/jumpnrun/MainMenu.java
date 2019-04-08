@@ -73,6 +73,7 @@ public class MainMenu extends VBox {
         creditsBt.setOnAction((ActionEvent e) -> {
             game.openCreditsScreen();
         });
+        
         worldEditorBt = new Button("ERR");
         worldEditorBt.setOnAction((ActionEvent e)->{
             game.openWorldEditor();
@@ -156,7 +157,7 @@ public class MainMenu extends VBox {
         
         setSpacing(game.language.getFontSize());
         
-        getChildren().addAll(playBt, onlineBt, exitBt, fontSizeVBox, langBox, creditsBt, worldEditorBt);
+        getChildren().addAll(playBt, onlineBt, worldEditorBt, fontSizeVBox, langBox, creditsBt, exitBt);
         setAlignment(Pos.CENTER);
     }
     
