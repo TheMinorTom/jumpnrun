@@ -9,6 +9,7 @@ import java.util.Vector;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import net.minortom.davidjumpnrun.configstore.ConfigManager;
 import worldeditor.Block;
 import worldeditor.IO;
 
@@ -19,14 +20,14 @@ import worldeditor.IO;
 class Truck extends ImageView implements Updatable {
 
     private double xPos, yPos, xSpd, ySpd, yAcc;
-    private final String imageSource = JumpNRun.sourcePath + "sprites/TruckGes.png";
+    private final String imageSource = "sprites/TruckGes.png";
     private Protagonist owner;
     private AnimationState animationState;
     private double existTimer;
     private final double lifeTime = 8;
 
     Truck(double x, double y, boolean facingRight, Protagonist owner) {
-        setImage(new Image(IO.getFileStream(imageSource)));
+        setImage(new Image(ConfigManager.getFileStream(imageSource)));
         existTimer = 0;
         xPos = x;
         yPos = y;

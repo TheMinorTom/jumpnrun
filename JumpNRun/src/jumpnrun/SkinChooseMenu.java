@@ -22,6 +22,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import net.minortom.davidjumpnrun.configstore.ConfigManager;
 import net.minortom.davidjumpnrun.i18n.Language;
 import worldeditor.IO;
 
@@ -31,11 +32,11 @@ import worldeditor.IO;
  */
 public class SkinChooseMenu extends VBox {
 
-    private final String[] skinPaths = new String[]{JumpNRun.sourcePath + "sprites/protagonist/SpielfigurBlau.png",
-        JumpNRun.sourcePath + "sprites/protagonist/SpielfigurGruen.png",
-        JumpNRun.sourcePath + "sprites/protagonist/SpielfigurOrange.png",
-        JumpNRun.sourcePath + "sprites/protagonist/SpielfigurGelb.png",
-        JumpNRun.sourcePath + "sprites/protagonist/SpielfigurRot.png"};
+    private final String[] skinPaths = new String[]{"sprites/protagonist/SpielfigurBlau.png",
+        "sprites/protagonist/SpielfigurGruen.png",
+        "sprites/protagonist/SpielfigurOrange.png",
+        "sprites/protagonist/SpielfigurGelb.png",
+        "sprites/protagonist/SpielfigurRot.png"};
     private final Rectangle2D viewPort = Protagonist.getMidViewport();
     private Button backBt, okBt;
     private Label headingLbl;
@@ -50,15 +51,15 @@ public class SkinChooseMenu extends VBox {
     public SkinChooseMenu(JumpNRun game, SkinChooseMode mode) {
         this.game = game;
         this.mode = mode;
-        blueIV = new ImageView(new Image(IO.getFileStream(skinPaths[0])));
+        blueIV = new ImageView(new Image(ConfigManager.getFileStream(skinPaths[0])));
         blueIV.setViewport(viewPort);
-        greenIV = new ImageView(new Image(IO.getFileStream(skinPaths[1])));
+        greenIV = new ImageView(new Image(ConfigManager.getFileStream(skinPaths[1])));
         greenIV.setViewport(viewPort);
-        orangeIV = new ImageView(new Image(IO.getFileStream(skinPaths[2])));
+        orangeIV = new ImageView(new Image(ConfigManager.getFileStream(skinPaths[2])));
         orangeIV.setViewport(viewPort);
-        yellowIV = new ImageView(new Image(IO.getFileStream(skinPaths[3])));
+        yellowIV = new ImageView(new Image(ConfigManager.getFileStream(skinPaths[3])));
         yellowIV.setViewport(viewPort);
-        redIV = new ImageView(new Image(IO.getFileStream(skinPaths[4])));
+        redIV = new ImageView(new Image(ConfigManager.getFileStream(skinPaths[4])));
         redIV.setViewport(viewPort);
 
         toggle = new ToggleGroup();

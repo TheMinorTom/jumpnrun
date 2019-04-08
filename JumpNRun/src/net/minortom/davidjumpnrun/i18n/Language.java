@@ -48,6 +48,7 @@ public class Language implements Serializable {
     public transient String MainMenuFontSizeMBt;
     public transient String MainMenuLangLabel;
     public transient String MainMenuCreditsBt;
+    public transient String MainMenuWorldEditorBt;
     
     // Credits Screen
     public transient String CreditsHeader;
@@ -86,6 +87,8 @@ public class Language implements Serializable {
     public transient String ChoGmOkBt;
     public transient String ChoGmErrOnlyNumbers;
     public transient String ChoGmErrOnlyWholeNumbers;
+    public transient String ChoGmCMBt;
+    public transient String ChoGmDMBt;
     
     // Create Game Screen
     public transient String CreateGChooseMapBt;

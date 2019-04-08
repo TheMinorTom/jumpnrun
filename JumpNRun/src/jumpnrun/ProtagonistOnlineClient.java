@@ -15,6 +15,7 @@ import jumpnrun.Protagonist.CostumeViewport;
 import static jumpnrun.Protagonist.height;
 import static jumpnrun.Protagonist.width;
 import jumpnrun.SkinChooseMenu.Skin;
+import net.minortom.davidjumpnrun.configstore.ConfigManager;
 import worldeditor.IO;
 
 /**
@@ -44,9 +45,9 @@ public class ProtagonistOnlineClient extends ImageView{
         update(x,y, CostumeViewport.MID);
         
         
-        spritePath = JumpNRun.sourcePath + "sprites/protagonist/" + skinFileName;
+        spritePath = "sprites/protagonist/" + skinFileName;
         this.indexId = indexId;
-        Image image = new Image(IO.getFileStream(spritePath));
+        Image image = new Image(ConfigManager.getFileStream(spritePath));
 
         setImage(image);
         setViewport(CostumeViewport.MID.getRect());

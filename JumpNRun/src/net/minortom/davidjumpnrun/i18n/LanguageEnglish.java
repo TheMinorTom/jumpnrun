@@ -38,6 +38,7 @@ public class LanguageEnglish extends Language{
         this.MainMenuFontSizePBt = "A+";
         this.MainMenuLangLabel = "Language";
         this.MainMenuCreditsBt = "Credits";
+        this.MainMenuWorldEditorBt = "Open WorldEditor";
         
         // Credits Screen
         this.CreditsHeader = "Credits";
@@ -76,6 +77,8 @@ public class LanguageEnglish extends Language{
         this.ChoGmOkBt = "Start";
         this.ChoGmErrOnlyNumbers = "Numbers only!";
         this.ChoGmErrOnlyWholeNumbers = "Whole Numbers only!";
+        this.ChoGmCMBt = "Select map";
+        this.ChoGmDMBt = "Default map";
         
         // Create Game Screen
         this.CreateGChooseMapBt = "Choose a Map";

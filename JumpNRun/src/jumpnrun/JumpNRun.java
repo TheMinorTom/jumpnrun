@@ -18,6 +18,7 @@ import javafx.scene.Scene;
 import static javafx.scene.input.KeyCode.*;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import jumpnrun.SkinChooseMenu.Skin;
 import net.minortom.davidjumpnrun.CreditsScreen;
 import net.minortom.davidjumpnrun.configstore.ConfigManager;
@@ -28,6 +29,7 @@ import net.minortom.davidjumpnrun.i18n.Language;
 import net.minortom.davidjumpnrun.i18n.LanguageEnglish;
 import net.minortom.davidjumpnrun.i18n.LanguageGerman;
 import net.minortom.davidjumpnrun.netcode.NetworkManager;
+import worldeditor.WorldEditor;
 
 /**
  *
@@ -37,9 +39,9 @@ public class JumpNRun extends Application {
 
     public static JumpNRun game;
 
-    public static final String sourcePath = ConfigManager.getStorageLocation();
-    private static final String blocksDirPath = sourcePath + "sprites/blocks/";
-    private static String worldPath = sourcePath + "worlds/world.david";
+    public static String sourcePath;
+    private static String blocksDirPath;
+    private static String worldAbsPath;
 
     private static final double spawnY = 100;
     public static final double spawnXDist = 350;
@@ -84,6 +86,7 @@ public class JumpNRun extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
+        primStage = primaryStage;
 
         try {
             game = this;
@@ -118,6 +121,12 @@ public class JumpNRun extends Application {
                 config.gameLanguage = language;
                 ConfigManager.saveConfiguration(config);
             }
+
+            sourcePath = ConfigManager.getStorageLocation();
+
+            worldAbsPath = ConfigManager.getStorageLocation() + "worlds/world.david";
+            blocksDirPath = ConfigManager.getStorageLocation() + "sprites/blocks/";
+            worldeditor.WorldEditor.initBlocksArr();
             language = config.gameLanguage;
             //language = Language.setNewLangNC(language, language);
 
@@ -146,6 +155,7 @@ public class JumpNRun extends Application {
 
             keysDown = new boolean[]{false, false, false, false, false, false};
 
+            //!!
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -166,9 +176,9 @@ public class JumpNRun extends Application {
         summonTime = 5;
         powerupCollects = new Vector();
 
-        InputStream worldIn = IO.getFileStream(worldPath);
+        InputStream worldIn = ConfigManager.getFileStreamAbsPath(worldAbsPath);
 
-        worldVector = IO.openWorld(worldIn, blocksDirPath);
+        worldVector = IO.openWorld(worldIn);
         protagonist1 = new Protagonist(1, A, D, W, C, V, B, spawnXDist, spawnY, skinProt1);
         protagonist2 = new Protagonist(2, LEFT, RIGHT, UP, P, O, I, getWidth() - spawnXDist - Protagonist.width, spawnY, skinProt2);
         updatables.add(protagonist1);
@@ -364,6 +374,12 @@ public class JumpNRun extends Application {
         });
     }
 
+    void setWorldPath(String customPath) {
+        if(!customPath.isEmpty()) {
+            worldAbsPath = customPath;
+        }
+    }
+
     public enum Gamemode {
 
         ENDLESS,
@@ -432,6 +448,13 @@ public class JumpNRun extends Application {
     public void openCreditsScreen() {
         scene.setRoot(creditsScreen);
         creditsScreen.updateStrings();
+    }
+
+    public void openWorldEditor() {
+        Platform.runLater(()->{
+            WorldEditor.main();
+        });
+
     }
 
     public static void addUpdatable(Updatable u) {
@@ -540,6 +563,10 @@ public class JumpNRun extends Application {
         networkManager.shutdown();
         // TODO: Find out who is still running, making us unable to gracefully shut down.
         System.exit(0);
+    }
+
+    public Stage getPrimStage() {
+        return primStage;
     }
 
 }

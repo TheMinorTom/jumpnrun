@@ -8,6 +8,7 @@ package jumpnrun;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import net.minortom.davidjumpnrun.configstore.ConfigManager;
 import worldeditor.IO;
 
 /**
@@ -16,12 +17,12 @@ import worldeditor.IO;
  */
 public class Gun extends ImageView {
 
-    private final static String imageSource = JumpNRun.sourcePath + "sprites/GunGes.png";
+    private final static String imageSource = "sprites/GunGes.png";
     private boolean facingLeft, shootGenerated;
 
     Gun() {
         shootGenerated = false;
-        setImage(new Image(IO.getFileStream(imageSource)));
+        setImage(new Image(ConfigManager.getFileStream(imageSource)));
         setVisible(false);
         setX(200);
         setY(200);

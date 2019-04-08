@@ -15,5 +15,7 @@ public class Configuration implements Serializable {
     public String networkUser = "";
     public String networkPass = "";
     public String networkHost = "";
+    // Custom path
+    public String customPath = "";
     
 }

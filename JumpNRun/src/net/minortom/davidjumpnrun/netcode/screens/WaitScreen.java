@@ -12,7 +12,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import jumpnrun.JumpNRun;
-import static jumpnrun.JumpNRun.sourcePath;
+import net.minortom.davidjumpnrun.configstore.ConfigManager;
 import worldeditor.IO;
 
 public class WaitScreen extends VBox {
@@ -27,9 +27,9 @@ public class WaitScreen extends VBox {
         this.game = game;
         
         textLabel = new Label("Please Wait");
-        nothingImage = new Image(IO.getFileStream(sourcePath + "sprites/images/nothing.png"));
-        waitImage = new Image(IO.getFileStream(sourcePath + "sprites/images/waiting.gif"));
-        loadImage = new Image(IO.getFileStream(sourcePath + "sprites/images/loading.gif"));
+        nothingImage = new Image(ConfigManager.getFileStream("sprites/images/nothing.png"));
+        waitImage = new Image(ConfigManager.getFileStream("sprites/images/waiting.gif"));
+        loadImage = new Image(ConfigManager.getFileStream("sprites/images/loading.gif"));
         setImage(WaitAnimation.NONE);
         
         updateStrings();

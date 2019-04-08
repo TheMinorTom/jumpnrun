@@ -16,11 +16,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.stage.FileChooser;
+import net.minortom.davidjumpnrun.configstore.ConfigManager;
 
 /**
  *
@@ -28,15 +31,19 @@ import javafx.scene.text.Font;
  */
 public class ChooseGamemodeMenu extends VBox {
 
-    private RadioButton endlessBt, timeBt, deathsBt;
+    private RadioButton endlessBt, timeBt, deathsBt,
+            customMapBt, defaultMapBt;
     private Button backBt, okBt;
     private TextField timeTF, deathsTF;
     private Label timeLbl, deathsLbl;
-    private HBox timeBox, deathsBox, btBox;
+    private HBox timeBox, deathsBox, btBox,
+            mapBox;
     private double timeLimit;   //In sekunden
     private double deathLimit;
     private static JumpNRun game;
-
+    
+    private String customPath = "";
+    
     public ChooseGamemodeMenu(JumpNRun game) {
         this.game = game;
 
@@ -87,6 +94,25 @@ public class ChooseGamemodeMenu extends VBox {
         deathsLbl = new Label(" Respawns");
 
         deathsBox = new HBox(deathsBt, deathsTF, deathsLbl);
+        
+        customMapBt = new RadioButton("Map auswählen");
+        customMapBt.setOnAction((ActionEvent e)->{
+            customPath = (new FileChooser().showOpenDialog(game.getPrimStage())).getPath();
+            if(!customPath.endsWith(".david")) {
+                customPath = "";
+                ConfigManager.error("Game", "Selected file is not a valid world (.david)");
+                defaultMapBt.setSelected(true);
+            }
+        });
+        defaultMapBt = new RadioButton("Standard map");
+        defaultMapBt.setSelected(true);
+        defaultMapBt.setOnAction((ActionEvent e)->{
+            customPath = "";
+        });
+        ToggleGroup mapToggle = new ToggleGroup();
+        mapToggle.getToggles().addAll(defaultMapBt, customMapBt);
+        mapBox = new HBox(customMapBt, defaultMapBt);
+        mapBox.setSpacing(50);
 
         backBt = new Button("Zurück");
         backBt.setOnAction((ActionEvent e) -> {
@@ -106,7 +132,7 @@ public class ChooseGamemodeMenu extends VBox {
         setAlignment(Pos.CENTER_LEFT);
         setSpacing(50);
         setPadding(new Insets(0, 0, 0, 150));
-        getChildren().addAll(timeBox, deathsBox, endlessBt, btBox);
+        getChildren().addAll(timeBox, deathsBox, endlessBt, new Separator(), mapBox, btBox);
     }
     
     public void updateStrings(){
@@ -120,6 +146,8 @@ public class ChooseGamemodeMenu extends VBox {
         deathsLbl.setFont(defaultFont);
         backBt.setFont(defaultFont);
         okBt.setFont(defaultFont);
+        customMapBt.setFont(defaultFont);
+        defaultMapBt.setFont(defaultFont);
         
         backBt.setText(game.language.backBt);
         endlessBt.setText(game.language.ChoGmEndlessBt);
@@ -128,8 +156,11 @@ public class ChooseGamemodeMenu extends VBox {
         deathsBt.setText(game.language.ChoGmDeathsBt);
         deathsLbl.setText(game.language.ChoGmDeathsLbl);
         okBt.setText(game.language.ChoGmOkBt);
+        customMapBt.setText(game.language.ChoGmCMBt);
+        defaultMapBt.setText(game.language.ChoGmDMBt);
         
         okBt.setOnAction((ActionEvent e) -> {
+            game.setWorldPath(customPath);
             if (timeBt.isSelected()) {
                 try {
                     game.setTimeLimit((Double.parseDouble(timeTF.getText())) * 60);

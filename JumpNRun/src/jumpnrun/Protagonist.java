@@ -17,6 +17,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import net.minortom.davidjumpnrun.configstore.ConfigManager;
 import worldeditor.Block;
 import worldeditor.IO;
 
@@ -86,7 +87,7 @@ public class Protagonist extends ImageView implements Updatable {
     public Protagonist(int id, KeyCode left, KeyCode right, KeyCode jump, KeyCode hit, KeyCode shoot, KeyCode use, double x, double y, SkinChooseMenu.Skin skin) {
         super();
         this.skin = skin;
-        spritePath = JumpNRun.sourcePath + skin.path;
+        spritePath = skin.path;
         protId = id;
         isFacingRight = false;
         xSpeed = 0;
@@ -105,7 +106,7 @@ public class Protagonist extends ImageView implements Updatable {
 
         powerup = null;
 
-        image = new Image(IO.getFileStream(spritePath));
+        image = new Image(ConfigManager.getFileStream(spritePath));
 
         setImage(image);
         resetAnimation();

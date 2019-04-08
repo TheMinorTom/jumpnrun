@@ -33,7 +33,7 @@ import net.minortom.davidjumpnrun.i18n.LanguageGerman;
  */
 public class MainMenu extends VBox {
 
-    private Button playBt, exitBt, onlineBt, fontSizePBt, fontSizeMBt, creditsBt;
+    private Button playBt, exitBt, onlineBt, fontSizePBt, fontSizeMBt, creditsBt, worldEditorBt;
     private Label fontSizeLabel, langLabel;
     private HBox fontSizeBox;
     RadioButton langSelectEN;
@@ -72,6 +72,10 @@ public class MainMenu extends VBox {
         creditsBt = new Button("ERR");
         creditsBt.setOnAction((ActionEvent e) -> {
             game.openCreditsScreen();
+        });
+        worldEditorBt = new Button("ERR");
+        worldEditorBt.setOnAction((ActionEvent e)->{
+            game.openWorldEditor();
         });
         
         fontSizeLabel = new Label("ERR");
@@ -152,7 +156,7 @@ public class MainMenu extends VBox {
         
         setSpacing(game.language.getFontSize());
         
-        getChildren().addAll(playBt, onlineBt, exitBt, fontSizeVBox, langBox, creditsBt);
+        getChildren().addAll(playBt, onlineBt, exitBt, fontSizeVBox, langBox, creditsBt, worldEditorBt);
         setAlignment(Pos.CENTER);
     }
     
@@ -179,6 +183,8 @@ public class MainMenu extends VBox {
         langSelectEN.setText(game.language.langEN);
         creditsBt.setFont(btFont);
         creditsBt.setText(game.language.MainMenuCreditsBt);
+        worldEditorBt.setFont(btFont);
+        worldEditorBt.setText(game.language.MainMenuWorldEditorBt);
     }
 
 }
