@@ -32,7 +32,7 @@ public class Graphic extends Group {
 
     public final static double lblYDist = 50;
 
-    public final static Font lblFont = new Font("Cooper Black", 30);
+    public static Font lblFont = new Font("Cooper Black", 30);
 
     private static Vector<Vector<Block>> worldVector;
     private static Group worldGroup;
@@ -44,6 +44,7 @@ public class Graphic extends Group {
 
     public Graphic(Vector<Vector<Block>> worldVec, Protagonist prot1, Protagonist prot2, JumpNRun.Gamemode gamemode) {
         super();
+        lblFont = JumpNRun.game.language.getFont();
         this.gamemode = gamemode;
         worldVector = worldVec;
         deaths1 = 0;
@@ -65,11 +66,11 @@ public class Graphic extends Group {
         rightLbl = new Label();
 
         if (gamemode == JumpNRun.Gamemode.ENDLESS || gamemode == JumpNRun.Gamemode.TIME) {
-            leftLbl.setText("0 Kills");
-            rightLbl.setText("0 Kills");
+            leftLbl.setText("0" + JumpNRun.game.language.GraphicKills);
+            rightLbl.setText("0" + JumpNRun.game.language.GraphicKills);
         } else {
-            leftLbl.setText(String.valueOf(respawnsLeft1) + " Respawns übrig");
-            rightLbl.setText(String.valueOf(respawnsLeft1) + " Respawns übrig");
+            leftLbl.setText(String.valueOf(respawnsLeft1) + JumpNRun.game.language.GraphicRespawnsLeft);
+            rightLbl.setText(String.valueOf(respawnsLeft1) + JumpNRun.game.language.GraphicRespawnsLeft);
         }
 
         leftLbl.setLayoutX(JumpNRun.spawnXDist);
@@ -139,7 +140,7 @@ public class Graphic extends Group {
 
         timeLabel.setLayoutY(lblYDist);
         timeLabel.setLayoutX(JumpNRun.getWidth() / 2);
-        timeLabel.setFont(new Font("Cooper Black", 70));
+        timeLabel.setFont(JumpNRun.game.language.getHeadingFont());
         timeLabel.setBorder(new Border(new BorderStroke(Color.DARKGRAY, BorderStrokeStyle.SOLID, new CornerRadii(100), new BorderWidths(10))));
 
         protagonist1 = prot1;

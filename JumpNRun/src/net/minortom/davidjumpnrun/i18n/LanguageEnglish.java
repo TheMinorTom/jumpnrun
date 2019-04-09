@@ -29,6 +29,10 @@ public class LanguageEnglish extends Language{
         this.JNRCfgDirCorrectPopText1 = "Configuration files will be stored at: \n";
         this.JNRCfgDirCorrectPopText2 = "\nIf this location is incorrect terminate the program now!\nIf the location already was set this message can pop up because of an update.";
         
+        // Graphic.java
+        this.GraphicRespawnsLeft = " Respawns Left";
+        this.GraphicKills = " Kills";
+        
         // Main Menu
         this.MainMenuPlayBt = "Play Offline";
         this.MainMenuNetworkBt = "Play Online";

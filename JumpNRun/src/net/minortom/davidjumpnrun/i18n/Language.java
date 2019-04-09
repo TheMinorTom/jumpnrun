@@ -39,6 +39,10 @@ public class Language implements Serializable {
     public transient String JNRCfgDirCorrectPopText1;
     public transient String JNRCfgDirCorrectPopText2;
     
+    // Graphic.java
+    public transient String GraphicRespawnsLeft;
+    public transient String GraphicKills;
+    
     // Main Menu
     public transient String MainMenuPlayBt;
     public transient String MainMenuNetworkBt;
