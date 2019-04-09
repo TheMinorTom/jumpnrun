@@ -59,7 +59,11 @@ public class MapHelper {
         
         for (String currMap : tempArr){
             String[] tempArrM = currMap.split(";");
-            retMap.put(tempArrM[1], new Map(tempArrM[0],tempArrM[1],tempArrM[2],tempArrM[3]));
+            try {
+                retMap.put(tempArrM[1], new Map(tempArrM[0],tempArrM[1],tempArrM[2],tempArrM[3]));
+            } catch (ArrayIndexOutOfBoundsException e) {
+                e.printStackTrace();
+            }
         }
         
         return retMap;

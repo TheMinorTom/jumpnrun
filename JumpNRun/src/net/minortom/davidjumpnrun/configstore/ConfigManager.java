@@ -108,7 +108,7 @@ public class ConfigManager {
     }
 
     public static String getStorageLocation() {
-        if (game.config == null || game.config.customPath.isEmpty()) {
+        if (game == null || game.config == null || game.config.customPath.isEmpty()) {
             return getAppdataLocation();
         } else {
             return game.config.customPath;

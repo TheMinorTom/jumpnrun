@@ -4,8 +4,13 @@
  */
 package net.minortom.davidjumpnrun.server;
 
+import java.net.DatagramSocket;
+import java.net.SocketException;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import jumpnrun.JumpNRun;
@@ -38,6 +43,9 @@ public class OnlGame implements Runnable {
     public Vector<Vector<Block>> worldVector;
     public double worldWidth;
     public double blockSize;
+    
+    public int udpPort;
+    public DatagramSocket udpSocket;
 
     public OnlGame(Server server, String gameName, int playersMax, String gamemode, double timeLimit, int respawnLimit, String mapName, String playerOneId, String playerOneSkin) {
         this.server = server;
@@ -174,6 +182,14 @@ public class OnlGame implements Runnable {
     //Game main-loop
     @Override
     public void run() {
+        Random random = new Random();
+        udpPort = random.nextInt(26670-26660)+26660;
+        try {
+            udpSocket = new DatagramSocket(udpPort);
+        } catch (SocketException ex) {
+            ex.printStackTrace();
+        }
+        
         for (java.util.Map.Entry<String, RemotePlayer> entry : players.entrySet()) {
             (new Thread(entry.getValue())).start();
         }
