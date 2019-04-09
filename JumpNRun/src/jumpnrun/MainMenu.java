@@ -20,8 +20,16 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import net.minortom.davidjumpnrun.i18n.Language;
 import net.minortom.davidjumpnrun.i18n.LanguageEnglish;
@@ -34,11 +42,11 @@ import net.minortom.davidjumpnrun.i18n.LanguageGerman;
 public class MainMenu extends VBox {
 
     private Button playBt, exitBt, onlineBt, fontSizePBt, fontSizeMBt, creditsBt, worldEditorBt;
-    private Label fontSizeLabel, langLabel;
+    private Label fontSizeLabel, langLabel, settingsLbl;
     private HBox fontSizeBox;
     RadioButton langSelectEN;
     RadioButton langSelectDE;
-    private VBox fontSizeVBox, langBox;
+    private VBox fontSizeVBox, langBox, settingsBox;
     
     JumpNRun game;
 
@@ -68,6 +76,8 @@ public class MainMenu extends VBox {
         
         // The following sections are licensed under the MIT License. You should have already received a copy located at ../net/minortom/LICENSE.txt
         // Copyright 2019 MinorTom <mail in license file>
+        
+        settingsLbl = new Label("ERR");
         
         creditsBt = new Button("ERR");
         creditsBt.setOnAction((ActionEvent e) -> {
@@ -149,7 +159,16 @@ public class MainMenu extends VBox {
                 break;
         }
         
+        String cssLayout = "-fx-border-color: black;\n" +
+                   "-fx-border-insets: 5;\n" +
+                   "-fx-border-width: 3;\n";// +
+        //           "-fx-border-style: dashed;\n";
         
+        settingsBox = new VBox(settingsLbl, fontSizeVBox, langBox);
+        settingsBox.setAlignment(Pos.CENTER);
+        settingsBox.setSpacing(game.language.getFontSize());
+        settingsBox.setPadding(new Insets(10, 0, 20, 0));
+        settingsBox.setStyle(cssLayout);
         
         updateStrings();
         
@@ -157,7 +176,7 @@ public class MainMenu extends VBox {
         
         setSpacing(game.language.getFontSize());
         
-        getChildren().addAll(playBt, onlineBt, worldEditorBt, fontSizeVBox, langBox, creditsBt, exitBt);
+        getChildren().addAll(playBt, onlineBt, worldEditorBt, settingsBox, creditsBt, exitBt);
         setAlignment(Pos.CENTER);
     }
     
@@ -186,6 +205,8 @@ public class MainMenu extends VBox {
         creditsBt.setText(game.language.MainMenuCreditsBt);
         worldEditorBt.setFont(btFont);
         worldEditorBt.setText(game.language.MainMenuWorldEditorBt);
+        settingsLbl.setFont(btFont);
+        settingsLbl.setText(game.language.MainMenuSettingsLbl);
     }
 
 }

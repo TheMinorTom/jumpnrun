@@ -53,6 +53,7 @@ public class Language implements Serializable {
     public transient String MainMenuLangLabel;
     public transient String MainMenuCreditsBt;
     public transient String MainMenuWorldEditorBt;
+    public transient String MainMenuSettingsLbl;
     
     // Credits Screen
     public transient String CreditsHeader;

@@ -43,6 +43,7 @@ public class LanguageEnglish extends Language{
         this.MainMenuLangLabel = "Language";
         this.MainMenuCreditsBt = "Credits";
         this.MainMenuWorldEditorBt = "Open WorldEditor";
+        this.MainMenuSettingsLbl = "Settings";
         
         // Credits Screen
         this.CreditsHeader = "Credits";
