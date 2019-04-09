@@ -123,6 +123,22 @@ public class LanguageEnglish extends Language{
         
         // Gameplay
         this.playerNameLocalPlayer = "You";
+        
+        // IO
+        this.IOReadErrorTitle = "Read Error";
+        this.IOReadErrorTextA = "File at ";
+        this.IOReadErrorTextB = " not found. This could be because the program was incorrectly installed.";
+    
+        // World Editor
+        this.WorldEditTitle = "World Editor";
+        this.WorldEditMainMenu = "Main Menu";
+        this.WorldEditFile = "File";
+        this.WorldEditSave = "Save";
+        this.WorldEditSaveAt = "Save at";
+        this.WorldEditOpen = "Open";
+        this.WorldEditAddBlock = "Add a block";
+        this.WorldEditMainMenuOpen = "Open";
+        this.WorldEditErrOnlyNumbers = "Only Numbers";
     }
     
     @Override

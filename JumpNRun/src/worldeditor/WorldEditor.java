@@ -25,7 +25,7 @@ public class WorldEditor {
 
     public static void main(String... args) {
         initBlocksArr();
-        gui = new GUI();
+        gui = new GUI(null);
     }
 
     public static void setBlocks(Block[] b) {

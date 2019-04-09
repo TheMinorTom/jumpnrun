@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.util.Vector;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import jumpnrun.JumpNRun;
 import net.minortom.davidjumpnrun.configstore.ConfigManager;
 
 /**
@@ -344,13 +345,11 @@ public class IO {
             InputStream in = new FileInputStream(uri);
             return in;
         } catch(FileNotFoundException e){
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Game");
-            alert.setHeaderText("Error");
-            alert.setContentText("File at " + uri + " not found. This could be because the program was incorrectly installed.");
-            alert.setResizable(true);
-            alert.getDialogPane().setPrefSize(480, 320);
-            alert.showAndWait();
+            if(JumpNRun.game==null) {
+                ConfigManager.error("Error", "File at " + uri + " not found. This could be because the program was incorrectly installed.");
+            } else {
+                ConfigManager.error(JumpNRun.game.language.IOReadErrorTitle, JumpNRun.game.language.IOReadErrorTextA + uri + JumpNRun.game.language.IOReadErrorTextB);
+            }
             return null;
         }
     }

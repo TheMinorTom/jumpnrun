@@ -132,6 +132,23 @@ public class Language implements Serializable {
     // Gameplay
     public transient String playerNameLocalPlayer;
     
+    // IO
+    public transient String IOReadErrorTitle;
+    public transient String IOReadErrorTextA;
+    public transient String IOReadErrorTextB;
+    
+    // World Editor
+    public transient String WorldEditTitle;
+    public transient String WorldEditMainMenu;
+    public transient String WorldEditFile;
+    public transient String WorldEditSave;
+    public transient String WorldEditSaveAt;
+    public transient String WorldEditOpen;
+    public transient String WorldEditAddBlock;
+    public transient String WorldEditMainMenuOpen;
+    public transient String WorldEditErrOnlyNumbers;
+    
+    
     public transient int changeB;
     
     public transient JumpNRun game;

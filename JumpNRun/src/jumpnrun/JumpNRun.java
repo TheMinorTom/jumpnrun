@@ -33,6 +33,7 @@ import net.minortom.davidjumpnrun.i18n.LanguageEnglish;
 import net.minortom.davidjumpnrun.i18n.LanguageGerman;
 import net.minortom.davidjumpnrun.netcode.NetworkManager;
 import net.minortom.davidjumpnrun.server.Server;
+import worldeditor.GUI;
 import worldeditor.InGameSceneWorldEditor;
 import worldeditor.WorldEditor;
 
@@ -65,6 +66,8 @@ public class JumpNRun extends Application {
     private static GameLoopOnline loopOnline;
     private static Stage primStage;
     public static Scene scene;
+    public static Scene worldEditScene;
+    public static GUI worldEditGUI;
     private static double summonTimer, summonTime;
     private static Vector<Updatable> updatables;
     private static Parent mainMenu, gameScene, chooseGamemodeScreen, winScreen, offlineSkinChooseScreen1, offlineSkinChooseScreen2, onlineSkinChooseCreateGame, onlineSkinChooseJoinGame;
@@ -86,8 +89,6 @@ public class JumpNRun extends Application {
     private Gamemode onlineGamemode;
     private HashMap<String, ProtagonistOnlineClient> onlineProts;
     private String gameName;
-
-    InGameSceneWorldEditor worldEditor;
     
     private boolean[] keysDown;
 
@@ -152,11 +153,13 @@ public class JumpNRun extends Application {
             //chooseSkinScreen = new SkinChooseMenu(this);
             //((SkinChooseMenu)chooseSkinScreen).updateStrings();
             //scene = new Scene(chooseSkinScreen);
-            worldEditor = new InGameSceneWorldEditor();
+            
+            WorldEditor.initBlocksArr();
+            worldEditGUI = new GUI(this);
             
             scene = new Scene(mainMenu);
 
-            primaryStage.setTitle("Jump-N-Run");
+            primaryStage.setTitle(game.language.GWindowName);
             primaryStage.setScene(scene);
             primaryStage.setMaximized(true);
             primaryStage.show();
@@ -453,6 +456,12 @@ public class JumpNRun extends Application {
     }
 
     public void openMainMenu() {
+        if(!(primStage.getScene().equals(scene))) {
+            primStage.setTitle(game.language.GWindowName);
+            primStage.setMaximized(false);
+            primStage.setScene(scene);
+            primStage.setMaximized(true);
+        }
         scene.setRoot(mainMenu);
         ((MainMenu) mainMenu).updateStrings();
     }
@@ -491,8 +500,8 @@ public class JumpNRun extends Application {
 
     public void openWorldEditor() {
         Platform.runLater(()->{
-            WorldEditor.main();
-            //worldEditor.start(getPrimStage());
+            //WorldEditor.main();
+            worldEditGUI.start(getPrimStage());
         });
 
     }

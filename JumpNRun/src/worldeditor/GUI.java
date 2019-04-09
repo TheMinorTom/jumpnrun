@@ -26,6 +26,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import jumpnrun.JumpNRun;
 
 /**
  *
@@ -41,6 +42,8 @@ public class GUI extends Application {
     private static Rectangle r;
     private static MenuBar menuBar;
     private static Menu file;
+    private static Menu mainMenu;
+    private static MenuItem mainMenuOpen;
     private static MenuItem save, saveAt, open, addBlock;
     private static FileChooser fileChooser;
     private static File saveFile;
@@ -51,6 +54,9 @@ public class GUI extends Application {
     private static Vector<int[]> dragBlockIndEntered;
     private static Label rx, ry;
 
+    public static Scene scene;
+    public static JumpNRun jumpnrun;
+    
     @Override
     public void start(Stage primaryStage) {
 
@@ -63,28 +69,38 @@ public class GUI extends Application {
         ry = new Label();
         ry.setLayoutX(200);
 
-        saveFile = new File("D:\\David\\Gespeichert.txt");
+        if((jumpnrun==null)) saveFile = new File("D:\\David\\Gespeichert.txt");
+        if(!(jumpnrun==null)) saveFile = new File(JumpNRun.sourcePath + "worlds/");
         world = new Group();
         blockChose = new BlockChose();
         worldVector = new Vector<Vector<Block>>();
 
+        mainMenu = new Menu("Hauptmenü");
+        if(!(jumpnrun==null)) mainMenu.setText(jumpnrun.language.WorldEditMainMenu);
+        
         file = new Menu("Datei");
+        if(!(jumpnrun==null)) file.setText(jumpnrun.language.WorldEditFile);
 
         fileChooser = new FileChooser();
-        //fileChooser.setInitialDirectory(saveFile);
+        fileChooser.setInitialDirectory(saveFile);
 
         selectedBlock = WorldEditor.blocks[0];
 
         menuBar = new MenuBar();
         menuBar.getMenus().addAll(file);
+        if(!(jumpnrun==null)) {
+            menuBar.getMenus().addAll(mainMenu);
+        }
 
         save = new MenuItem("Speichern");
-
+        if(!(jumpnrun==null)) save.setText(jumpnrun.language.WorldEditSave);
+        
         save.setOnAction((ActionEvent e) -> {
             IO.saveWorld(worldVector, saveFile, blockSize);
         });
 
         saveAt = new MenuItem("Speichern unter");
+        if(!(jumpnrun==null)) saveAt.setText(jumpnrun.language.WorldEditSaveAt);
 
         saveAt.setOnAction((ActionEvent e) -> {
             File newSaveFile = fileChooser.showSaveDialog(primaryStage);
@@ -96,6 +112,7 @@ public class GUI extends Application {
         });
 
         open = new MenuItem("Öffnen");
+        if(!(jumpnrun==null)) open.setText(jumpnrun.language.WorldEditOpen);
 
         open.setOnAction(((event) -> {
             File openFile = fileChooser.showOpenDialog(primaryStage);
@@ -106,13 +123,25 @@ public class GUI extends Application {
         }));
 
         addBlock = new MenuItem("Neuen Block hinzufügen");
+        if(!(jumpnrun==null)) addBlock.setText(jumpnrun.language.WorldEditAddBlock);
 
         addBlock.setOnAction((ActionEvent e) -> {
 
         });
+        
+        mainMenuOpen = new MenuItem("Öffnen");
+        if(!(jumpnrun==null)) mainMenuOpen.setText(jumpnrun.language.WorldEditMainMenuOpen);
+        
+        if(!(jumpnrun==null)) {
+            mainMenu.getItems().addAll(mainMenuOpen);
+            
+            mainMenuOpen.setOnAction(((event) -> {
+                jumpnrun.openMainMenu();
+            }));
+        }
 
         file.getItems().addAll(save, saveAt, open);
-
+        
         menuBar.setVisible(true);
 
         r = new Rectangle();
@@ -132,6 +161,7 @@ public class GUI extends Application {
                 r.setHeight(blockSize);
             } catch (NumberFormatException e) {
                 blockSizeTextField.setText("Bitte nur Zahlen!");
+                if(!(jumpnrun==null)) blockSizeTextField.setText(jumpnrun.language.WorldEditErrOnlyNumbers);
             }
         });
 
@@ -140,11 +170,12 @@ public class GUI extends Application {
         Scene scene = new Scene(world, 300, 250);
 
         primaryStage.setTitle("Hello World!");
+        if(!(jumpnrun==null)) primaryStage.setTitle(jumpnrun.language.WorldEditTitle);
 
         primaryStage.setScene(scene);
         primaryStage.setMaximized(true);
 
-        primaryStage.show();
+        //primaryStage.show();
 
         scene.setCursor(Cursor.HAND);
 
@@ -198,8 +229,9 @@ public class GUI extends Application {
                 });
     }
     
-    public GUI() {
-        start(new Stage());
+    public GUI(JumpNRun game) {
+        this.jumpnrun = game;
+        //start(new Stage());
     }
 
     public static int test(int i) {
