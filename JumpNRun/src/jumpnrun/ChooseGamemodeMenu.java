@@ -5,6 +5,7 @@
  */
 package jumpnrun;
 
+import java.io.File;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.MapChangeListener;
@@ -97,7 +98,9 @@ public class ChooseGamemodeMenu extends VBox {
         
         customMapBt = new RadioButton("Map auswählen");
         customMapBt.setOnAction((ActionEvent e)->{
-            customPath = (new FileChooser().showOpenDialog(game.getPrimStage())).getPath();
+            FileChooser fc = new FileChooser();
+            fc.setInitialDirectory(new File(JumpNRun.sourcePath + "worlds/"));
+            customPath = (fc.showOpenDialog(game.getPrimStage())).getPath();
             if(!customPath.endsWith(".david")) {
                 customPath = "";
                 ConfigManager.error("Game", "Selected file is not a valid world (.david)");
