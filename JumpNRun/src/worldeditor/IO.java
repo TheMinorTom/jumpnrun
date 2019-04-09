@@ -348,7 +348,7 @@ public class IO {
             if(JumpNRun.game==null) {
                 ConfigManager.error("Error", "File at " + uri + " not found. This could be because the program was incorrectly installed.");
             } else {
-                ConfigManager.error(JumpNRun.game.language.IOReadErrorTitle, JumpNRun.game.language.IOReadErrorTextA + uri + JumpNRun.game.language.IOReadErrorTextB);
+                ConfigManager.error(JumpNRun.game.language.IOReadErrorTitle, JumpNRun.game.language.IOReadErrorTextA + uri + JumpNRun.game.language.IOReadErrorTextB + JumpNRun.sourcePath);
             }
             return null;
         }

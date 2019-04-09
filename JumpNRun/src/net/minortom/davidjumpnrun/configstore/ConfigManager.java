@@ -32,7 +32,7 @@ public class ConfigManager {
 
     public static boolean osiderrorshown = false;
 
-    public static final String configFolderName = "davidjumpnrun";
+    public static final String configFolderName = "tompkg/3883801c-d419-416d-b3e8-0c881044693d";
     public static final String configFileName = "config.ser";
 
     public static Configuration loadConfiguration() {
@@ -141,8 +141,9 @@ public class ConfigManager {
             InputStream in = new FileInputStream(appdataUri + spezUri);
             return in;
         } catch (FileNotFoundException e) {
-            error("World not Found!", "File at " + appdataUri + spezUri + " not found. \nSelect new sourcepath!");
+            error("World not Found!", "File at " + appdataUri + spezUri + " not found.");
             DirectoryChooser dirChooser = new DirectoryChooser();
+            dirChooser.setTitle("Select a file source path, the default one didn't work");
             File file = dirChooser.showDialog(game.getPrimStage());
             game.config.customPath = file.getPath() + "/";
             saveConfiguration(game.config);

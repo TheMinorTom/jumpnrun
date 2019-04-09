@@ -127,7 +127,7 @@ public class LanguageEnglish extends Language{
         // IO
         this.IOReadErrorTitle = "Read Error";
         this.IOReadErrorTextA = "File at ";
-        this.IOReadErrorTextB = " not found. This could be because the program was incorrectly installed.";
+        this.IOReadErrorTextB = " not found. This could be because the program was incorrectly installed. Expected files at: ";
     
         // World Editor
         this.WorldEditTitle = "World Editor";
