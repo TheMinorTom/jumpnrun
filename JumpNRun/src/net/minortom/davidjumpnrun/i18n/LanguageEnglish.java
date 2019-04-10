@@ -22,7 +22,7 @@ public class LanguageEnglish extends Language{
         this.langDE = "German";
         
         // Global
-        this.GWindowName = "Jump-N-Run";
+        this.GWindowName = "Forks n' Bullets";
         
         // JumpNRun.java
         this.JNRCfgDirCorrectPopTitle = "Storage location";
