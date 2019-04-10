@@ -175,6 +175,7 @@ public class MainMenu extends VBox {
         // End licensed sections
         
         setSpacing(game.language.getFontSize());
+        double temp = game.language.getFontSize();
         
         getChildren().addAll(playBt, onlineBt, worldEditorBt, settingsBox, creditsBt, exitBt);
         setAlignment(Pos.CENTER);

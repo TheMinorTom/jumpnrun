@@ -19,9 +19,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
@@ -165,9 +167,11 @@ public class GUI extends Application {
             }
         });
 
-        world.getChildren().addAll(r, menuBar, blockSizeTextField, rx, ry);
-
-        Scene scene = new Scene(world, 300, 250);
+        world.getChildren().addAll(r);
+        ScrollPane scroll = new ScrollPane(world);
+        scroll.setMinSize(10000, 5000);
+        VBox ultraRoot = new VBox(menuBar, blockSizeTextField, scroll);
+        Scene scene = new Scene(ultraRoot);
 
         primaryStage.setTitle("Hello World!");
         if(!(jumpnrun==null)) primaryStage.setTitle(jumpnrun.language.WorldEditTitle);
@@ -181,8 +185,8 @@ public class GUI extends Application {
 
         blockSizeTextField.setLayoutY(menuBar.getHeight());
 
-        scene.setOnMouseMoved((MouseEvent e) -> {
-            updateRect(e.getSceneX(), e.getSceneY());
+        scroll.setOnMouseMoved((MouseEvent e) -> {
+            updateRect(e.getX(), e.getY());
 
         });
 

@@ -20,6 +20,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import static javafx.scene.input.KeyCode.*;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import jumpnrun.SkinChooseMenu.Skin;
@@ -95,7 +96,6 @@ public class JumpNRun extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         primStage = primaryStage;
-
         try {
             game = this;
             // The following sections are licensed under the MIT License. You should have already received a copy located at ../net/minortom/LICENSE.txt
@@ -502,6 +502,9 @@ public class JumpNRun extends Application {
         Platform.runLater(()->{
             //WorldEditor.main();
             worldEditGUI.start(getPrimStage());
+            primStage.setMaximized(false);
+            primStage.setMaximized(true);
+
         });
 
     }

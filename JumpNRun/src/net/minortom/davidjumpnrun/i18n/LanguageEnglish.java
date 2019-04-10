@@ -135,7 +135,7 @@ public class LanguageEnglish extends Language{
         this.IOReadErrorTextB = " not found. This could be because the program was incorrectly installed. Expected files at: ";
     
         // World Editor
-        this.WorldEditTitle = "World Editor";
+        this.WorldEditTitle = "Hello world!";
         this.WorldEditMainMenu = "Main Menu";
         this.WorldEditFile = "File";
         this.WorldEditSave = "Save";

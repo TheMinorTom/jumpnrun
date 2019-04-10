@@ -42,9 +42,9 @@ public class ChooseGamemodeMenu extends VBox {
     private double timeLimit;   //In sekunden
     private double deathLimit;
     private static JumpNRun game;
-    
+
     private String customPath = "";
-    
+
     public ChooseGamemodeMenu(JumpNRun game) {
         this.game = game;
 
@@ -72,7 +72,6 @@ public class ChooseGamemodeMenu extends VBox {
 
         endlessBt = new RadioButton("Unendlich");
         endlessBt.setToggleGroup(toggleGroup);
-        
 
         timeBt = new RadioButton("Zeitbegrenzung: ");
         timeBt.setToggleGroup(toggleGroup);
@@ -95,13 +94,13 @@ public class ChooseGamemodeMenu extends VBox {
         deathsLbl = new Label(" Respawns");
 
         deathsBox = new HBox(deathsBt, deathsTF, deathsLbl);
-        
+
         customMapBt = new RadioButton("Map auswählen");
-        customMapBt.setOnAction((ActionEvent e)->{
+        customMapBt.setOnAction((ActionEvent e) -> {
             FileChooser fc = new FileChooser();
             fc.setInitialDirectory(new File(JumpNRun.sourcePath + "worlds/"));
             customPath = (fc.showOpenDialog(game.getPrimStage())).getPath();
-            if(!customPath.endsWith(".david")) {
+            if (!customPath.endsWith(".david")) {
                 customPath = "";
                 ConfigManager.error("Game", "Selected file is not a valid world (.david)");
                 defaultMapBt.setSelected(true);
@@ -109,7 +108,7 @@ public class ChooseGamemodeMenu extends VBox {
         });
         defaultMapBt = new RadioButton("Standard map");
         defaultMapBt.setSelected(true);
-        defaultMapBt.setOnAction((ActionEvent e)->{
+        defaultMapBt.setOnAction((ActionEvent e) -> {
             customPath = "";
         });
         ToggleGroup mapToggle = new ToggleGroup();
@@ -124,21 +123,21 @@ public class ChooseGamemodeMenu extends VBox {
 
         okBt = new Button("Ok");
         okBt.setDisable(true);
-        
+
         btBox = new HBox(backBt, okBt);
         btBox.setAlignment(Pos.CENTER_LEFT);
         btBox.setSpacing(100);
         btBox.setPadding(new Insets(0, 0, 0, 100));
-        
+
         updateStrings();
-        
+
         setAlignment(Pos.CENTER_LEFT);
         setSpacing(50);
         setPadding(new Insets(0, 0, 0, 150));
         getChildren().addAll(timeBox, deathsBox, endlessBt, new Separator(), mapBox, btBox);
     }
-    
-    public void updateStrings(){
+
+    public void updateStrings() {
         Font defaultFont = game.language.getFont();
         endlessBt.setFont(defaultFont);
         timeBt.setFont(defaultFont);
@@ -151,7 +150,7 @@ public class ChooseGamemodeMenu extends VBox {
         okBt.setFont(defaultFont);
         customMapBt.setFont(defaultFont);
         defaultMapBt.setFont(defaultFont);
-        
+
         backBt.setText(game.language.backBt);
         endlessBt.setText(game.language.ChoGmEndlessBt);
         timeBt.setText(game.language.ChoGmTimeBt);
@@ -161,7 +160,7 @@ public class ChooseGamemodeMenu extends VBox {
         okBt.setText(game.language.ChoGmOkBt);
         customMapBt.setText(game.language.ChoGmCMBt);
         defaultMapBt.setText(game.language.ChoGmDMBt);
-        
+
         okBt.setOnAction((ActionEvent e) -> {
             game.setWorldPath(customPath);
             if (timeBt.isSelected()) {
@@ -171,8 +170,9 @@ public class ChooseGamemodeMenu extends VBox {
                     game.openOfflineSkinChooseMenu1();
                 } catch (NumberFormatException n) {
                     timeTF.setText(game.language.ChoGmErrOnlyNumbers);
+                    game.setTimeLimit(timeLimit * 60);
                 }
-                game.setTimeLimit(timeLimit);
+
             } else if (deathsBt.isSelected()) {
                 try {
                     game.setDeathLimit(Integer.parseInt(deathsTF.getText()));

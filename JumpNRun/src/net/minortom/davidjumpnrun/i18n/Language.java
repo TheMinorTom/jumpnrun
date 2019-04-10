@@ -213,11 +213,16 @@ public class Language implements Serializable {
     }
     
     public void setFontFileNC(){
-        try {
-            standardFont = Font.loadFont(new File(sourcePath + fontUrl).toURI().toURL().toString(), getFontSize());
-            headerFont = Font.loadFont(new File(sourcePath + fontUrl).toURI().toURL().toString(), getHeaderSize());
-        } catch (MalformedURLException ex) {
-            ex.printStackTrace();
+        if(true){
+            standardFont = new Font(fontName, getFontSize());
+            headerFont = new Font(fontName, getHeaderSize());
+        } else {
+            try {
+                standardFont = Font.loadFont(new File(sourcePath + fontUrl).toURI().toURL().toString(), getFontSize());
+                headerFont = Font.loadFont(new File(sourcePath + fontUrl).toURI().toURL().toString(), getHeaderSize());
+            } catch (MalformedURLException ex) {
+                ex.printStackTrace();
+            }
         }
     }
     
