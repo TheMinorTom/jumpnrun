@@ -137,7 +137,9 @@ public class JumpNRun extends Application {
             worldeditor.WorldEditor.initBlocksArr();
             language = config.gameLanguage;
             //language = Language.setNewLangNC(language, language);
-
+            
+            language.setFontFileNC();
+            
             networkManager = new NetworkManager(this);
             // End licensed sections
 

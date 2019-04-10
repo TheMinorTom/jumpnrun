@@ -25,6 +25,8 @@ import javafx.scene.layout.Region;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import jumpnrun.JumpNRun;
+import net.minortom.davidjumpnrun.server.OperationFailedException;
+import net.minortom.davidjumpnrun.server.Server;
 
 public class ConfigManager {
 
@@ -133,28 +135,40 @@ public class ConfigManager {
     }
 
     public static InputStream getFileStream(String spezUri) {
-        String appdataUri = game.config.customPath;
-        if (appdataUri.isEmpty()) {
-            appdataUri = JumpNRun.sourcePath;
-        }
-        try {
-            InputStream in = new FileInputStream(appdataUri + spezUri);
-            return in;
-        } catch (FileNotFoundException e) {
-            error("World not Found!", "File at " + appdataUri + spezUri + " not found.");
-            DirectoryChooser dirChooser = new DirectoryChooser();
-            dirChooser.setTitle("Select a file source path, the default one didn't work");
-            File file = dirChooser.showDialog(game.getPrimStage());
-            game.config.customPath = file.getPath() + "/";
-            saveConfiguration(game.config);
-            InputStream in;
+        if ((game == null)&&(!(Server.server==null))) {
             try {
-                in = new FileInputStream(game.config.customPath + spezUri);
-            } catch (FileNotFoundException ex) {
-                return null;
+                InputStream in = new FileInputStream(spezUri);
+                return in;
+            } catch (FileNotFoundException e) {
+                System.err.println("Invalid Storage Location");
+               throw new OperationFailedException();
             }
-
-            return in;
+        } else if ((!(game == null))&&((Server.server==null))) {
+            String appdataUri = game.config.customPath;
+            if (appdataUri.isEmpty()) {
+                appdataUri = JumpNRun.sourcePath;
+            }
+            try {
+                InputStream in = new FileInputStream(appdataUri + spezUri);
+                return in;
+            } catch (FileNotFoundException e) {
+                error("World not Found!", "File at " + appdataUri + spezUri + " not found.");
+                DirectoryChooser dirChooser = new DirectoryChooser();
+                dirChooser.setTitle("Select a file source path, the default one didn't work");
+                File file = dirChooser.showDialog(game.getPrimStage());
+                game.config.customPath = file.getPath() + "/";
+                saveConfiguration(game.config);
+                InputStream in;
+                try {
+                    in = new FileInputStream(game.config.customPath + spezUri);
+                } catch (FileNotFoundException ex) {
+                    return null;
+                }
+                
+                return in;
+            }
+        } else {
+            throw new UnsupportedOperationException("Invalid configuration");
         }
     }
 

@@ -213,7 +213,7 @@ public class Language implements Serializable {
     }
     
     public void setFontFileNC(){
-        if(true){
+        if(false){
             standardFont = new Font(fontName, getFontSize());
             headerFont = new Font(fontName, getHeaderSize());
         } else {
