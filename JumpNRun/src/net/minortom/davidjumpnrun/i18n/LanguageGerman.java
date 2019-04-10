@@ -22,7 +22,6 @@ public class LanguageGerman extends Language{
         this.langDE = "Deutsch";
         
         // Global
-        this.GWindowName = "Forks n' Bullets";
         
         // JumpNRun.java
         this.JNRCfgDirCorrectPopTitle = "Speicherort";

@@ -165,6 +165,9 @@ public class Language implements Serializable {
         game = newGame;
         
         setFontFileNC(fontUrl, fontName);
+        
+        // Global
+        this.GWindowName = "Forks n' Bullets";
     }
     
     public void setFontSize(int size){
