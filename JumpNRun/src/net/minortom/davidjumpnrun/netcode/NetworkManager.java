@@ -89,6 +89,8 @@ public class NetworkManager extends VBox {
         joinGameBt.setFont(defaultFont);
         createGameBt.setText(game.language.NetworManagerCreateGameBt);
         createGameBt.setFont(defaultFont);
+        
+        setSpacing(game.language.getFontSize());
     }
     
     public void openLoginScreen(){

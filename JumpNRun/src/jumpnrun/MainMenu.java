@@ -208,6 +208,8 @@ public class MainMenu extends VBox {
         worldEditorBt.setText(game.language.MainMenuWorldEditorBt);
         settingsLbl.setFont(btFont);
         settingsLbl.setText(game.language.MainMenuSettingsLbl);
+        
+        setSpacing(game.language.getFontSize());
     }
 
 }

@@ -187,6 +187,8 @@ public class ChooseGamemodeMenu extends VBox {
             }
 
         });
+        
+        setSpacing(game.language.getFontSize());
     }
 
 }

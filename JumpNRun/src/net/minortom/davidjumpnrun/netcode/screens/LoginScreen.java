@@ -113,5 +113,7 @@ public class LoginScreen extends VBox {
         login.setFont(defaultFont);
         pass.setFont(defaultFont);
         server.setFont(defaultFont);
+        
+        setSpacing(game.language.getFontSize());
     }
 }

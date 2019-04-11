@@ -90,6 +90,8 @@ public class JoinGameScreen extends VBox {
         skinBt.setText(game.language.GSkinBt);
 
         nameField.setFont(game.language.getFont());
+        
+        setSpacing(game.language.getFontSize());
     }
 
     public Button getOkBt() {

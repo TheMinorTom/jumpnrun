@@ -271,7 +271,7 @@ public class CreateGameScreen extends VBox {
         players2Lbl.setText(game.language.CreateGPlayers2Lbl);
         nameLbl.setText(game.language.CreateGNameLbl);
         
-        
+        setSpacing(game.language.getFontSize());
         
         // End licensed sections
     }

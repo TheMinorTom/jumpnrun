@@ -13,6 +13,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
@@ -26,8 +27,8 @@ public class CreditsScreen extends VBox {
     Label headerLabel;
     WebView textView;
     WebEngine webEngine;
-    
     Button backBt, closeBt;
+    HBox btnBox;
     
     boolean loadedother;
     
@@ -49,12 +50,16 @@ public class CreditsScreen extends VBox {
         
         headerLabel = new Label("Please Wait");
         
+        btnBox = new HBox(backBt, closeBt);
+        btnBox.setAlignment(Pos.CENTER);
+        btnBox.setPadding(new Insets(0, 0, 0, 0));
+        
         updateStrings();
         
         setAlignment(Pos.CENTER);
         setSpacing(50);
         setPadding(new Insets(0, 0, 0, 0));
-        getChildren().addAll(headerLabel, textView, backBt, closeBt);
+        getChildren().addAll(headerLabel, textView, backBt, btnBox);
     }
     
     public void updateStrings(){
@@ -71,6 +76,8 @@ public class CreditsScreen extends VBox {
         } catch (MalformedURLException ex) {
             ex.printStackTrace();
         }
+        
+        setSpacing(game.language.getFontSize());
     }
 
 }

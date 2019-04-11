@@ -67,6 +67,8 @@ public class ChooseMapScreen extends VBox {
         
         backBt.setDisable(true);
         
+        setSpacing(game.language.getFontSize());
+        
         getChildren().addAll(backBt);
     }
     
