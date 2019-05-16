@@ -11,6 +11,7 @@ import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.geometry.BoundingBox;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -154,6 +155,7 @@ public class GUI extends Application {
 
         blockSizeTextField = new TextField(Double.toString(blockSize));
         blockSizeTextField.setLayoutX(0);
+        blockSizeTextField.setLayoutY(menuBar.getHeight());
 
         blockSizeTextField.setOnAction((ActionEvent) -> {
             try {
@@ -169,8 +171,11 @@ public class GUI extends Application {
 
         world.getChildren().addAll(r);
         ScrollPane scroll = new ScrollPane(world);
-        scroll.setMinSize(10000, 5000);
-        VBox ultraRoot = new VBox(menuBar, blockSizeTextField, scroll);
+        scroll.setLayoutY(menuBar.getHeight() + blockSizeTextField.getHeight());
+        scroll.setViewportBounds(new BoundingBox(0, 0, 100, 100));
+        scroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+
+        Group ultraRoot = new Group(menuBar, blockSizeTextField, scroll);
         Scene scene = new Scene(ultraRoot);
 
         primaryStage.setTitle("Hello World!");
@@ -183,7 +188,6 @@ public class GUI extends Application {
 
         scene.setCursor(Cursor.HAND);
 
-        blockSizeTextField.setLayoutY(menuBar.getHeight());
 
         scroll.setOnMouseMoved((MouseEvent e) -> {
             updateRect(e.getX(), e.getY());
@@ -194,7 +198,7 @@ public class GUI extends Application {
             switch (e.getButton()) {
                 case SECONDARY:
                     if (e.getSceneY() > (menuBar.getHeight() + blockSizeTextField.getHeight())) {
-                        blockChose.show(r, e.getSceneX(), e.getSceneY());
+                        blockChose.show(r, e.getX(), e.getY() + menuBar.getHeight() + blockSizeTextField.getHeight());
                     }
                     break;
                 case PRIMARY:
@@ -204,7 +208,7 @@ public class GUI extends Application {
 
         });
 
-        scene.setOnMouseDragged((MouseEvent e) -> {
+        scroll.setOnMouseDragged((MouseEvent e) -> {
             dragDoing = true;
             updateRect(e.getX(), e.getY());
 
@@ -224,13 +228,14 @@ public class GUI extends Application {
 
         });
 
-        scene.setOnMouseReleased(
+        scroll.setOnMouseReleased(
                 (MouseEvent e) -> {
                     if (dragDoing) {
                         dragDoing = false;
                         dragBlockIndEntered.clear();
                     }
                 });
+        scroll.requestFocus();
     }
     
     public GUI(JumpNRun game) {
