@@ -197,15 +197,16 @@ public class OnlGame implements Runnable {
         }
 
         while (!ended) {
-            try {
-                Thread.sleep(20);
 
-                players.forEach((id, p) -> {
-                    sendAllTCP(ServerCommand.OGAME_UPDATEPROT, new String[]{p.pubId, String.valueOf(p.getXPos()), String.valueOf(p.getYPos()), String.valueOf(p.getAnimationStateAsInt())});
-                });
-            } catch (InterruptedException ex) {
-                Logger.getLogger(OnlGame.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            players.forEach((id, p) -> {
+                sendAllTCP(ServerCommand.OGAME_UPDATEPROT, new String[]{p.pubId, String.valueOf(p.getXPos()), String.valueOf(p.getYPos()), String.valueOf(p.getAnimationStateAsInt())});
+                try {
+                    Thread.sleep(20);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(OnlGame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            });
+
         }
     }
 
