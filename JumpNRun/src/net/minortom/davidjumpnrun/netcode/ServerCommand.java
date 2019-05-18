@@ -34,6 +34,7 @@ public enum ServerCommand {
     OGAME_INITGAME,     //server          playerAmount, spawnY, gamemode, limit, gameName
     OGAME_UPDATEPROT,   //server          id, x, y, animationState (int)
     OGAME_KEYPRESS,     //client          playerId, gameName, action (RIGHT, LEFT, JUMP, HIT, SHOOT, USE)
-    OGAME_KEYRELEASE;   //client          playerId, gameName, action
+    OGAME_KEYRELEASE,   //client          playerId, gameName, action
+    OGAME_START;         //server          -
 
 }

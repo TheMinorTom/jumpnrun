@@ -25,45 +25,23 @@ public class GameLoopOnline extends AnimationTimer {
 
     protected JumpNRun game;
 
-    private ProtagonistOnlineClient[] protagonists;
+    private HashMap<String, ProtagonistOnlineClient> protagonists;
     private double[] xPositions, yPositions;    //index = protagonists id
     private Protagonist.CostumeViewport[] viewports; //-""-
     private final int playerAmount;
     
-    public GameLoopOnline(ProtagonistOnlineClient[] prots) {
+    public GameLoopOnline(HashMap<String, ProtagonistOnlineClient> prots) {
         super();
-        playerAmount = prots.length;
-        xPositions = new double[playerAmount];
-        yPositions = new double[playerAmount];
-        viewports = new Protagonist.CostumeViewport[playerAmount];
+        playerAmount = prots.size();
         protagonists = prots;
-        isInited = false;
-        oldTime = 0;
-        runTime = 0;
     }
 
     @Override
     public void handle(long now) {
-        if (!isInited) {
-            oldTime = now;
-            isInited = true;
-        }
-        timeElapsed = now - oldTime;
-        oldTime = now;
-        timeElapsedSecond = timeElapsed / (1000.0d * 1000.0d * 1000.0d);
-        runTime += timeElapsedSecond;
-        
-        /*
-        
-            Get x, y and viewport from server and fill it to arrays
-        Example: Protagonist with id=0 is at x=20 and y=40
-        => xPositions[0] = 20; yPositions[0] = 40;
-                               
-        */
-
-        for(int i = 0; i < protagonists.length; i++) {
-            protagonists[i].update(xPositions[i], yPositions[i], viewports[i]);
-        }
+        protagonists.forEach((String id, ProtagonistOnlineClient p)->{
+            System.out.println("update");
+            p.updatePos();
+        });
     }
 
 }

@@ -151,6 +151,7 @@ public class OnlGame implements Runnable {
             });
         });
         (new Thread(this)).start();
+
     }
 
     public void startGameNow() {
@@ -184,6 +185,7 @@ public class OnlGame implements Runnable {
     //Game main-loop
     @Override
     public void run() {
+        sendAllTCP(ServerCommand.OGAME_START, new String[]{});
         Random random = new Random();
         udpPort = random.nextInt(26670 - 26660) + 26660;
         try {
@@ -201,7 +203,7 @@ public class OnlGame implements Runnable {
             players.forEach((id, p) -> {
                 sendAllTCP(ServerCommand.OGAME_UPDATEPROT, new String[]{p.pubId, String.valueOf(p.getXPos()), String.valueOf(p.getYPos()), String.valueOf(p.getAnimationStateAsInt())});
                 try {
-                    Thread.sleep(20);
+                    Thread.sleep(5);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(OnlGame.class.getName()).log(Level.SEVERE, null, ex);
                 }

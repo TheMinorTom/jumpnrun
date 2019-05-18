@@ -171,7 +171,7 @@ public class Graphic extends Group {
         getChildren().add(worldGroup);
     }
 
-    public void addOtherOnlineProt(String name, String skinFileName, int indexId, String pubId, int playerAmount, double spawnY) {
+    public ProtagonistOnlineClient generateOtherOnlineProt(String name, String skinFileName, int indexId, String pubId, int playerAmount, double spawnY) {
         double worldWidth = worldVector.size() * blockSize;
         double spawnX = (worldWidth / (playerAmount + 1)) * (indexId + 1);
         ProtagonistOnlineClient addProt = new ProtagonistOnlineClient(indexId, spawnX, spawnY, skinFileName, name, pubId, LEFT, RIGHT, UP, P, O, I);
@@ -179,10 +179,10 @@ public class Graphic extends Group {
         Platform.runLater(() -> {
             worldGroup.getChildren().addAll(addProt, addProt.getNameLabel());
         });
-        JumpNRun.game.getOnlineProts().put(pubId, addProt);
+        return addProt;
     }
 
-    public void addLocalOnlineProt(String name, String skinFileName, int indexId, String pubId, int playerAmount, double spawnY) {
+    public ProtagonistOnlineClient generateLocalOnlineProt(String name, String skinFileName, int indexId, String pubId, int playerAmount, double spawnY) {
         double worldWidth = worldVector.size() * blockSize;
         double spawnX = (worldWidth / (playerAmount + 1)) * (indexId + 1);
         ProtagonistOnlineClient addProt = new ProtagonistOnlineClient(indexId, spawnX, spawnY, skinFileName, JumpNRun.game.language.playerNameLocalPlayer, pubId, LEFT, RIGHT, UP, P, O, I);
@@ -191,7 +191,7 @@ public class Graphic extends Group {
         Platform.runLater(() -> {
             worldGroup.getChildren().addAll(addProt, addProt.getNameLabel());
         });
-        JumpNRun.game.getOnlineProts().put(pubId, addProt);
+        return addProt;
     }
 
     public static double getBlockSize() {

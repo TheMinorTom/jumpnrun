@@ -102,6 +102,10 @@ public class NetworkTCPReceiverClient extends Thread {
                             break;
                         case OGAME_UPDATEPROT:
                             game.updateProt(packageContent[2], packageContent[3], packageContent[4], packageContent[5]);
+                            break;
+                        case OGAME_START:
+                            game.startOnlineGame();
+                            break;
                         default:
                             break;
                     }

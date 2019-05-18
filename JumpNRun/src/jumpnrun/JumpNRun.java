@@ -188,9 +188,9 @@ public class JumpNRun extends Application {
         }
 
         /*
-        List<String> templeft = Arrays.asList(args);
-        templeft.remove(starttype);
-        String[] rArgs = (String[]) templeft.toArray();
+         List<String> templeft = Arrays.asList(args);
+         templeft.remove(starttype);
+         String[] rArgs = (String[]) templeft.toArray();
          */
         // TODO: Fix shift left
         String[] rArgs = new String[]{};
@@ -278,6 +278,11 @@ public class JumpNRun extends Application {
 
     }
 
+    public void startOnlineGame() {
+        loopOnline = new GameLoopOnline(onlineProts);
+        loopOnline.start();
+    }
+
     public void initMap(String mapAsString) {
         worldVector = IO.openWorld(mapAsString, "sprites\\blocks\\");
         graphic = new Graphic(worldVector);
@@ -287,11 +292,11 @@ public class JumpNRun extends Application {
     }
 
     public void initOtherProt(String name, String skinFileName, int index, String pubId) {
-        graphic.addOtherOnlineProt(name, skinFileName, index, pubId, this.playerAmount, onlineSpawnY);
+        onlineProts.put(pubId, graphic.generateOtherOnlineProt(name, skinFileName, index, pubId, this.playerAmount, onlineSpawnY));
     }
 
     public void initLocalProt(String name, String skinFileName, int index, String pubId) {
-        graphic.addLocalOnlineProt(name, skinFileName, index, pubId, this.playerAmount, onlineSpawnY);
+        onlineProts.put(pubId, graphic.generateLocalOnlineProt(name, skinFileName, index, pubId, this.playerAmount, onlineSpawnY));
     }
 
     public void setLocalProt(ProtagonistOnlineClient p) {
