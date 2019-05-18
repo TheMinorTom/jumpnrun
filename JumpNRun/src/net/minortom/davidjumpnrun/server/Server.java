@@ -11,7 +11,7 @@ import net.minortom.davidjumpnrun.configstore.ConfigManager;
 import net.minortom.davidjumpnrun.netcode.NetworkManager;
 
 public class Server {
-
+    public static String storageLocation;
     public static Server server;
     
     public final String infoSeperator = NetworkManager.infoSeperator;
@@ -33,6 +33,7 @@ public class Server {
             System.err.println("Invalid argument: Port");
             System.exit(1);
         } */
+        storageLocation = "H:\\Eigene Dateien\\Informatik1819\\meine_programme\\JumpNRun\\jumpnrun-master2\\jumpnrun-master\\JumpNRun\\appdata\\";
         Server.server = this;
         
         System.out.println("Server Hello World");
@@ -49,11 +50,11 @@ public class Server {
     }
     
     public static String getMapFolder(){
-        return Server.getStorageLocation() + "worlds/";
+        return storageLocation + "worlds\\";
     }
     
     public static String getBlocksFolder() {
-        return Server.getStorageLocation() + "sprites/blocks/";
+        return storageLocation + "sprites\\blocks\\";
     }
     
     public static String getStorageLocation() {

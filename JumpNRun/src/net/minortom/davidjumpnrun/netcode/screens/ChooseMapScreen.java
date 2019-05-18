@@ -18,6 +18,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.VBox;
 import jumpnrun.JumpNRun;
+import net.minortom.davidjumpnrun.netcode.ServerCommand;
 
 public class ChooseMapScreen extends VBox {
     
@@ -78,9 +79,8 @@ public class ChooseMapScreen extends VBox {
     }
     
     public void userRequest(){
-        game.networkManager.serverConnection.out.println(
-        game.networkManager.keyword + game.networkManager.infoSeperator + "MAP-LISTREQ"
-        );
+        //game.networkManager.serverConnection.out.println(game.networkManager.keyword + game.networkManager.infoSeperator + "MAP-LISTREQ");
+        game.networkManager.serverConnection.getCommandHandler().sendCommand(ServerCommand.MAP_LISTREQ, new String[]{});
         System.out.println("Map Request Sent"); ////////!!!!!!!!!!!!!!
     }
 }

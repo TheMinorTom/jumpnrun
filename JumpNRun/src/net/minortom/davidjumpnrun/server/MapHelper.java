@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.Arrays;
 import java.util.HashMap;
+import net.minortom.davidjumpnrun.configstore.ConfigManager;
 
 public class MapHelper {
     public static String[] listMaps(){
@@ -36,8 +37,8 @@ public class MapHelper {
     public static HashMap<String, Map> getMapCfgFile(){
         
         String everything = "";
-        
-        try(BufferedReader br = new BufferedReader(new FileReader(Server.getMapFolder() + "maps.jnrmapcfg"))) {
+        String mapConfigLocation = Server.getMapFolder() + "maps.jnrmapcfg";
+        try(BufferedReader br = new BufferedReader(new FileReader(mapConfigLocation))) {
             StringBuilder sb = new StringBuilder();
             String line = br.readLine();
             

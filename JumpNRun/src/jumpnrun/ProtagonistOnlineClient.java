@@ -73,7 +73,7 @@ public class ProtagonistOnlineClient extends ImageView{
         yPos = y;
         setX(xPos);
         setY(yPos);
-        setViewport(viewPort.getRect());
+        //setViewport(viewPort.getRect());
         nameLbl.setLayoutX((xPos + width/2)-(nameLbl.getWidth()/2));
         nameLbl.setLayoutY(yPos-40);
     }

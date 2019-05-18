@@ -152,12 +152,14 @@ public class NetworkManager extends VBox {
     }
     
     public void sendKeyPress(String id, String gameName, String action) {
-        serverConnection.out.println(keyword + infoSeperator + "OGAME-KEYPRESS" + infoSeperator + id + infoSeperator + gameName + infoSeperator + action);
-        System.out.println("Messege sent: " + keyword + infoSeperator + "OGAME-KEYPRESS" + infoSeperator + id + infoSeperator + gameName + infoSeperator + action);
+        serverConnection.getCommandHandler().sendCommand(ServerCommand.OGAME_KEYPRESS, new String[]{id, gameName, action});
+        //serverConnection.out.println(keyword + infoSeperator + "OGAME-KEYPRESS" + infoSeperator + id + infoSeperator + gameName + infoSeperator + action);
+        
     }
     
     public void sendKeyRelease (String id, String gameName, String action) {
-        serverConnection.out.println(keyword + infoSeperator + "OGAME-KEYRELEASE" + infoSeperator + id + infoSeperator + gameName + infoSeperator + action);
-        System.out.println("Messege sent: " + keyword + infoSeperator + "OGAME-KEYRELEASE" + infoSeperator + id + infoSeperator + gameName + infoSeperator + action);
+        serverConnection.getCommandHandler().sendCommand(ServerCommand.OGAME_KEYRELEASE, new String[]{id, gameName, action});
+        // serverConnection.out.println(keyword + infoSeperator + "OGAME-KEYRELEASE" + infoSeperator + id + infoSeperator + gameName + infoSeperator + action);
+        
     }
 }

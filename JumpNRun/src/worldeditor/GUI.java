@@ -8,10 +8,11 @@ package worldeditor;
 import java.io.File;
 import java.util.Vector;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.geometry.BoundingBox;
+import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -35,7 +36,7 @@ import jumpnrun.JumpNRun;
  *
  * @author User
  */
-public class GUI extends Application {
+public class GUI extends VBox {
 
     //private static ObservableList<ObservableList<Block>> worldList;
     private static Vector<Vector<Block>> worldVector;
@@ -58,11 +59,10 @@ public class GUI extends Application {
     private static Label rx, ry;
 
     public static Scene scene;
-    public static JumpNRun jumpnrun;
-    
-    @Override
-    public void start(Stage primaryStage) {
+    public static JumpNRun game;
 
+    public GUI(JumpNRun game) {
+        this.game = game;
         blockSize = 60;
         dragBlockIndEntered = new Vector<int[]>();
         dragDoing = false;
@@ -72,17 +72,18 @@ public class GUI extends Application {
         ry = new Label();
         ry.setLayoutX(200);
 
-        if((jumpnrun==null)) saveFile = new File("D:\\David\\Gespeichert.txt");
-        if(!(jumpnrun==null)) saveFile = new File(JumpNRun.sourcePath + "worlds/");
+        saveFile = new File(JumpNRun.sourcePath + "worlds/");
+
         world = new Group();
         blockChose = new BlockChose();
         worldVector = new Vector<Vector<Block>>();
 
         mainMenu = new Menu("Hauptmenü");
-        if(!(jumpnrun==null)) mainMenu.setText(jumpnrun.language.WorldEditMainMenu);
-        
+
+        mainMenu.setText(game.language.WorldEditMainMenu);
+
         file = new Menu("Datei");
-        if(!(jumpnrun==null)) file.setText(jumpnrun.language.WorldEditFile);
+        file.setText(game.language.WorldEditFile);
 
         fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(saveFile);
@@ -91,22 +92,22 @@ public class GUI extends Application {
 
         menuBar = new MenuBar();
         menuBar.getMenus().addAll(file);
-        if(!(jumpnrun==null)) {
-            menuBar.getMenus().addAll(mainMenu);
-        }
+
+        menuBar.getMenus().addAll(mainMenu);
 
         save = new MenuItem("Speichern");
-        if(!(jumpnrun==null)) save.setText(jumpnrun.language.WorldEditSave);
-        
+
+        save.setText(game.language.WorldEditSave);
+
         save.setOnAction((ActionEvent e) -> {
             IO.saveWorld(worldVector, saveFile, blockSize);
         });
 
         saveAt = new MenuItem("Speichern unter");
-        if(!(jumpnrun==null)) saveAt.setText(jumpnrun.language.WorldEditSaveAt);
+        saveAt.setText(game.language.WorldEditSaveAt);
 
         saveAt.setOnAction((ActionEvent e) -> {
-            File newSaveFile = fileChooser.showSaveDialog(primaryStage);
+            File newSaveFile = fileChooser.showSaveDialog(game.getPrimStage());
             if (newSaveFile != null) {
                 saveFile = newSaveFile;
                 IO.saveWorld(worldVector, saveFile, blockSize);
@@ -115,10 +116,10 @@ public class GUI extends Application {
         });
 
         open = new MenuItem("Öffnen");
-        if(!(jumpnrun==null)) open.setText(jumpnrun.language.WorldEditOpen);
+        open.setText(game.language.WorldEditOpen);
 
         open.setOnAction(((event) -> {
-            File openFile = fileChooser.showOpenDialog(primaryStage);
+            File openFile = fileChooser.showOpenDialog(game.getPrimStage());
             if (openFile != null) {
                 worldVector = IO.openWorld(openFile);
                 drawWorld();
@@ -126,25 +127,23 @@ public class GUI extends Application {
         }));
 
         addBlock = new MenuItem("Neuen Block hinzufügen");
-        if(!(jumpnrun==null)) addBlock.setText(jumpnrun.language.WorldEditAddBlock);
+        addBlock.setText(game.language.WorldEditAddBlock);
 
         addBlock.setOnAction((ActionEvent e) -> {
 
         });
-        
+
         mainMenuOpen = new MenuItem("Öffnen");
-        if(!(jumpnrun==null)) mainMenuOpen.setText(jumpnrun.language.WorldEditMainMenuOpen);
-        
-        if(!(jumpnrun==null)) {
-            mainMenu.getItems().addAll(mainMenuOpen);
-            
-            mainMenuOpen.setOnAction(((event) -> {
-                jumpnrun.openMainMenu();
-            }));
-        }
+        mainMenuOpen.setText(game.language.WorldEditMainMenuOpen);
+
+        mainMenu.getItems().addAll(mainMenuOpen);
+
+        mainMenuOpen.setOnAction(((event) -> {
+            game.openMainMenu();
+        }));
 
         file.getItems().addAll(save, saveAt, open);
-        
+
         menuBar.setVisible(true);
 
         r = new Rectangle();
@@ -155,7 +154,6 @@ public class GUI extends Application {
 
         blockSizeTextField = new TextField(Double.toString(blockSize));
         blockSizeTextField.setLayoutX(0);
-        blockSizeTextField.setLayoutY(menuBar.getHeight());
 
         blockSizeTextField.setOnAction((ActionEvent) -> {
             try {
@@ -165,40 +163,32 @@ public class GUI extends Application {
                 r.setHeight(blockSize);
             } catch (NumberFormatException e) {
                 blockSizeTextField.setText("Bitte nur Zahlen!");
-                if(!(jumpnrun==null)) blockSizeTextField.setText(jumpnrun.language.WorldEditErrOnlyNumbers);
+
+                blockSizeTextField.setText(game.language.WorldEditErrOnlyNumbers);
+
             }
         });
 
+        Label mousePosLbl = new Label("Mouseposition: | ");
+
         world.getChildren().addAll(r);
-        ScrollPane scroll = new ScrollPane(world);
-        scroll.setLayoutY(menuBar.getHeight() + blockSizeTextField.getHeight());
-        scroll.setViewportBounds(new BoundingBox(0, 0, 100, 100));
-        scroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
 
-        Group ultraRoot = new Group(menuBar, blockSizeTextField, scroll);
-        Scene scene = new Scene(ultraRoot);
+        getChildren().addAll(menuBar, blockSizeTextField, mousePosLbl, world);
 
-        primaryStage.setTitle("Hello World!");
-        if(!(jumpnrun==null)) primaryStage.setTitle(jumpnrun.language.WorldEditTitle);
+        game.getPrimStage().setTitle("Hello World!");
 
-        primaryStage.setScene(scene);
-        primaryStage.setMaximized(true);
+        blockSizeTextField.setLayoutY(menuBar.getHeight());
 
-        //primaryStage.show();
-
-        scene.setCursor(Cursor.HAND);
-
-
-        scroll.setOnMouseMoved((MouseEvent e) -> {
+        setOnMouseMoved((MouseEvent e) -> {
             updateRect(e.getX(), e.getY());
-
+            mousePosLbl.setText("Rectposition: " + (int) r.getLayoutX() + " | " + (int) r.getLayoutY());
         });
 
-        scene.setOnMouseClicked((MouseEvent e) -> {
+        setOnMouseClicked((MouseEvent e) -> {
             switch (e.getButton()) {
                 case SECONDARY:
                     if (e.getSceneY() > (menuBar.getHeight() + blockSizeTextField.getHeight())) {
-                        blockChose.show(r, e.getX(), e.getY() + menuBar.getHeight() + blockSizeTextField.getHeight());
+                        blockChose.show(r, e.getSceneX(), e.getSceneY());
                     }
                     break;
                 case PRIMARY:
@@ -207,8 +197,8 @@ public class GUI extends Application {
             }
 
         });
-
-        scroll.setOnMouseDragged((MouseEvent e) -> {
+        
+        setOnMouseDragged((MouseEvent e) -> {
             dragDoing = true;
             updateRect(e.getX(), e.getY());
 
@@ -228,19 +218,17 @@ public class GUI extends Application {
 
         });
 
-        scroll.setOnMouseReleased(
+        setOnMouseReleased(
                 (MouseEvent e) -> {
                     if (dragDoing) {
                         dragDoing = false;
                         dragBlockIndEntered.clear();
                     }
                 });
-        scroll.requestFocus();
-    }
-    
-    public GUI(JumpNRun game) {
-        this.jumpnrun = game;
-        //start(new Stage());
+        
+        world.requestFocus();
+        world.requestLayout();
+
     }
 
     public static int test(int i) {
@@ -319,10 +307,12 @@ public class GUI extends Application {
 
     private void updateRect(double xPos, double yPos) {
         if ((yPos > (menuBar.getHeight() + blockSizeTextField.getHeight())) && !blockChose.isShowing()) {
-            r.setX(blockSize * (Math.floor(xPos / blockSize)));
-            r.setY(blockSize * (Math.floor(yPos / blockSize)));
+
+            r.setLayoutX(blockSize * (Math.floor((xPos) / blockSize)));
+            r.setLayoutY(blockSize * (Math.floor((yPos) / blockSize)));
 
         }
+
     }
 
     class SlideListener implements ChangeListener {

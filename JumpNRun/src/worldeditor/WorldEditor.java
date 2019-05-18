@@ -20,13 +20,7 @@ public class WorldEditor {
     public static final String configFolderName = "davidjumpnrun";
     public static final String blocksPath = "sprites/blocks/";
     public static Block[] blocks;
-    static GUI gui;
     FileWriter output;
-
-    public static void main(String... args) {
-        initBlocksArr();
-        gui = new GUI(null);
-    }
 
     public static void setBlocks(Block[] b) {
         blocks = b;

@@ -8,13 +8,14 @@ import java.io.*;
 import java.net.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import net.minortom.davidjumpnrun.netcode.OnlineCommandHandler;
 
 public class TCPServer {
     Server server;
     
     public static ServerSocket serverSocket;
     Socket clientSocket;
-    PrintWriter out;
+    private OnlineCommandHandler commandHandler;
     BufferedReader in;
     NetworkTCPReceiverServer tcpReceiver;
     
@@ -30,8 +31,8 @@ public class TCPServer {
         
         try{
             clientSocket = serverSocket.accept();
-            out =
-                new PrintWriter(clientSocket.getOutputStream(), true);                   
+            commandHandler = new OnlineCommandHandler(
+                new PrintWriter(clientSocket.getOutputStream(), true));                   
             in = new BufferedReader(
                 new InputStreamReader(clientSocket.getInputStream()));
         }catch(Exception e){
@@ -49,5 +50,9 @@ public class TCPServer {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+    }
+    
+    public OnlineCommandHandler getCommandHandler() {
+        return commandHandler;
     }
 }

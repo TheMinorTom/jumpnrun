@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import jumpnrun.JumpNRun;
+import net.minortom.davidjumpnrun.netcode.ServerCommand;
 import worldeditor.Block;
 import worldeditor.IO;
 
@@ -43,7 +44,7 @@ public class OnlGame implements Runnable {
     public Vector<Vector<Block>> worldVector;
     public double worldWidth;
     public double blockSize;
-    
+
     public int udpPort;
     public DatagramSocket udpSocket;
 
@@ -80,8 +81,6 @@ public class OnlGame implements Runnable {
         blockSize = worldVector.get(0).get(0).getFitWidth();
         players = new HashMap<>();
         playerSkins = new HashMap<>();
-        
-        
 
         addPlayer(playerOneId, playerOneSkin);
     }
@@ -91,25 +90,26 @@ public class OnlGame implements Runnable {
         String name = server.tcpServer.get(pubId).userName;
         RemotePlayer addPlayer = new RemotePlayer(server, this, pubId, skin, name, players.size(), playersMax);
         players.put(pubId, addPlayer);
-        sendAllTCP(server.keyword + server.infoSeperator + "OGAME-PJOINED" + server.infoSeperator + name + server.infoSeperator + pubId + server.infoSeperator + playersMax);
+        sendAllTCP(ServerCommand.OGAME_PJOINED, new String[]{name, pubId, String.valueOf(playersMax)});
         if (isReadyToStart()) {
             startGame();
         }
     }
 
-    public void sendAllTCP(String text) {
+    public void sendAllTCP(ServerCommand command, String[] args) {
         players.forEach((k, v) -> {
-            server.tcpServer.get(k).out.println(text);
+            server.tcpServer.get(k).getCommandHandler().sendCommand(command, args);
 
         });
     }
 
-    public void sendAllUDP(String text) {
+    public void sendAllUDP(ServerCommand command, String[] args) {
         if (!willStart) {
             return;
         }
         players.forEach((k, v) -> {
-            server.tcpServer.get(k).out.println(text);
+            server.tcpServer.get(k).getCommandHandler().sendCommand(command, args);
+
         });
     }
 
@@ -134,10 +134,12 @@ public class OnlGame implements Runnable {
         } else {
             limit = "0";
         }
-        sendAllTCP(server.keyword + server.infoSeperator + "OGAME-INITGAME" + server.infoSeperator + String.valueOf(playersMax) + server.infoSeperator + String.valueOf(spawnY) + server.infoSeperator + gamemodeAsUpperString + server.infoSeperator + limit + server.infoSeperator + gameName);
+        // sendAllTCP(server.keyword + server.infoSeperator + "OGAME-INITGAME" + server.infoSeperator + String.valueOf(playersMax) + server.infoSeperator + String.valueOf(spawnY) + server.infoSeperator + gamemodeAsUpperString + server.infoSeperator + limit + server.infoSeperator + gameName);
+        sendAllTCP(ServerCommand.OGAME_INITGAME, new String[]{String.valueOf(playersMax), String.valueOf(spawnY), gamemodeAsUpperString, limit, gameName});
 
         System.out.println("World successfully loaded!");
-        sendAllTCP(server.keyword + server.infoSeperator + "OGAME-INITMAP" + server.infoSeperator + mapText);
+        // sendAllTCP(server.keyword + server.infoSeperator + "OGAME-INITMAP" + server.infoSeperator + mapText);
+        sendAllTCP(ServerCommand.OGAME_INITMAP, new String[]{mapText});
 
         players.forEach((id1, p1) -> {
             players.forEach((id2, p2) -> {
@@ -183,19 +185,27 @@ public class OnlGame implements Runnable {
     @Override
     public void run() {
         Random random = new Random();
-        udpPort = random.nextInt(26670-26660)+26660;
+        udpPort = random.nextInt(26670 - 26660) + 26660;
         try {
             udpSocket = new DatagramSocket(udpPort);
         } catch (SocketException ex) {
             ex.printStackTrace();
         }
-        
+
         for (java.util.Map.Entry<String, RemotePlayer> entry : players.entrySet()) {
             (new Thread(entry.getValue())).start();
         }
 
         while (!ended) {
+            try {
+                Thread.sleep(20);
 
+                players.forEach((id, p) -> {
+                    sendAllTCP(ServerCommand.OGAME_UPDATEPROT, new String[]{p.pubId, String.valueOf(p.getXPos()), String.valueOf(p.getYPos()), String.valueOf(p.getAnimationStateAsInt())});
+                });
+            } catch (InterruptedException ex) {
+                Logger.getLogger(OnlGame.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 

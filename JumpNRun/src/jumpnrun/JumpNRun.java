@@ -71,7 +71,7 @@ public class JumpNRun extends Application {
     public static GUI worldEditGUI;
     private static double summonTimer, summonTime;
     private static Vector<Updatable> updatables;
-    private static Parent mainMenu, gameScene, chooseGamemodeScreen, winScreen, offlineSkinChooseScreen1, offlineSkinChooseScreen2, onlineSkinChooseCreateGame, onlineSkinChooseJoinGame;
+    private static Parent mainMenu, gameScene, chooseGamemodeScreen, winScreen, offlineSkinChooseScreen1, offlineSkinChooseScreen2, onlineSkinChooseCreateGame, onlineSkinChooseJoinGame, worldEditorScreen;
     private static CreditsScreen creditsScreen;
     private Gamemode currGamemode;
     private static int deathLimit;
@@ -90,7 +90,7 @@ public class JumpNRun extends Application {
     private Gamemode onlineGamemode;
     private HashMap<String, ProtagonistOnlineClient> onlineProts;
     private String gameName;
-    
+
     private boolean[] keysDown;
 
     @Override
@@ -137,9 +137,9 @@ public class JumpNRun extends Application {
             worldeditor.WorldEditor.initBlocksArr();
             language = config.gameLanguage;
             //language = Language.setNewLangNC(language, language);
-            
+
             language.setFontFileNC();
-            
+
             networkManager = new NetworkManager(this);
             // End licensed sections
 
@@ -152,13 +152,13 @@ public class JumpNRun extends Application {
             onlineSkinChooseCreateGame = new SkinChooseMenu(this, SkinChooseMenu.SkinChooseMode.ONLINE_CREATE_GAME);
             onlineSkinChooseJoinGame = new SkinChooseMenu(this, SkinChooseMenu.SkinChooseMode.ONLINE_JOIN_GAME);
             creditsScreen = new CreditsScreen(this);
+            worldEditorScreen = new GUI(this);
             //chooseSkinScreen = new SkinChooseMenu(this);
             //((SkinChooseMenu)chooseSkinScreen).updateStrings();
             //scene = new Scene(chooseSkinScreen);
-            
+
             WorldEditor.initBlocksArr();
-            worldEditGUI = new GUI(this);
-            
+
             scene = new Scene(mainMenu);
 
             primaryStage.setTitle(game.language.GWindowName);
@@ -186,16 +186,21 @@ public class JumpNRun extends Application {
         } catch (ArrayIndexOutOfBoundsException e) {
             starttype = "client";
         }
-        
+
         /*
         List<String> templeft = Arrays.asList(args);
         templeft.remove(starttype);
         String[] rArgs = (String[]) templeft.toArray();
-        */
-        
+         */
         // TODO: Fix shift left
-        String[] rArgs = args;
-        
+        String[] rArgs = new String[]{};
+        if (args.length > 0) {
+            rArgs = new String[args.length - 1];
+            for (int i = 1; i < args.length; i++) {
+                rArgs[i - 1] = args[i];
+            }
+        }
+
         switch (starttype) {
             case "server":
                 Server.main(rArgs);
@@ -274,7 +279,7 @@ public class JumpNRun extends Application {
     }
 
     public void initMap(String mapAsString) {
-        worldVector = IO.openWorld(mapAsString, blocksDirPath);
+        worldVector = IO.openWorld(mapAsString, "sprites\\blocks\\");
         graphic = new Graphic(worldVector);
         gameScene = new Group(graphic);
         scene.setRoot(gameScene);
@@ -419,7 +424,7 @@ public class JumpNRun extends Application {
     }
 
     void setWorldPath(String customPath) {
-        if(!customPath.isEmpty()) {
+        if (!customPath.isEmpty()) {
             worldAbsPath = customPath;
         }
     }
@@ -458,7 +463,7 @@ public class JumpNRun extends Application {
     }
 
     public void openMainMenu() {
-        if(!(primStage.getScene().equals(scene))) {
+        if (!(primStage.getScene().equals(scene))) {
             primStage.setTitle(game.language.GWindowName);
             primStage.setMaximized(false);
             primStage.setScene(scene);
@@ -501,11 +506,9 @@ public class JumpNRun extends Application {
     }
 
     public void openWorldEditor() {
-        Platform.runLater(()->{
+        Platform.runLater(() -> {
             //WorldEditor.main();
-            worldEditGUI.start(getPrimStage());
-            primStage.setMaximized(false);
-            primStage.setMaximized(true);
+            scene.setRoot(new GUI(this));
 
         });
 

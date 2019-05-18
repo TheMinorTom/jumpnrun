@@ -14,6 +14,7 @@ import javafx.scene.shape.Rectangle;
 import jumpnrun.Gun;
 import jumpnrun.Pitchfork;
 import jumpnrun.Protagonist;
+import net.minortom.davidjumpnrun.netcode.ServerCommand;
 import worldeditor.Block;
 
 public class RemotePlayer extends Protagonist implements Runnable {
@@ -37,7 +38,7 @@ public class RemotePlayer extends Protagonist implements Runnable {
     private RemoteObject remotePitchfork, remoteGun;
 
     private static final double fpsLimit = 60;
-    
+
     public RemotePlayer(Server server, OnlGame game, String pubId, String skin, String name, int index, int maxPlayer) {
         super(index, (game.worldWidth / (maxPlayer + 1)) * (index + 1), OnlGame.spawnY);
         this.server = server;
@@ -65,16 +66,15 @@ public class RemotePlayer extends Protagonist implements Runnable {
             timeElapsed = now - oldTime;
             oldTime = now;
             timeElapsedSeconds = timeElapsed / (1000.0d * 1000.0d * 1000.0d);
-            double fpsCheck = 1/fpsLimit - timeElapsedSeconds;
-            if(fpsCheck > 0) {
-                try {
-                    Thread.sleep((long)((fpsCheck) * 1000));
-                } catch (InterruptedException ex) {
-                    
-                }
+            try {
+                Thread.sleep(20);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(RemotePlayer.class.getName()).log(Level.SEVERE, null, ex);
             }
             update();
-            game.sendAllTCP(server.keyword + server.infoSeperator + "OGAME-UPDATEPROT" + server.infoSeperator + pubId + server.infoSeperator + String.valueOf(xPos) + server.infoSeperator + String.valueOf(yPos) + server.infoSeperator + String.valueOf(animationStateAsInt));
+            // game.sendAllTCP(server.keyword + server.infoSeperator + "OGAME-UPDATEPROT" + server.infoSeperator + pubId + server.infoSeperator + String.valueOf(xPos) + server.infoSeperator + String.valueOf(yPos) + server.infoSeperator + String.valueOf(animationStateAsInt));
+            // game.sendAllTCP(ServerCommand.OGAME_UPDATEPROT, new String[]{pubId, String.valueOf(xPos), String.valueOf(yPos), String.valueOf(animationStateAsInt)});
+
             //server.tcpServer.get(pubId).out.println(server.keyword + server.infoSeperator + "OGAME-UPDATEPROT" + server.infoSeperator + pubId + server.infoSeperator + String.valueOf(xPos) + server.infoSeperator + String.valueOf(yPos) + server.infoSeperator + String.valueOf(animationStateAsInt));
         }
     }
@@ -119,7 +119,7 @@ public class RemotePlayer extends Protagonist implements Runnable {
                     updateAnimation(timeElapsedSeconds);
                 }
                 intersects = collisionCheck(game.worldVector, game.players);
-                if(intersects) {
+                if (intersects) {
                     yPos -= 50;
                 }
             }
@@ -150,6 +150,18 @@ public class RemotePlayer extends Protagonist implements Runnable {
 
         }
         animationStateAsInt = currCostume.ordinal();
+    }
+
+    public double getXPos() {
+        return xPos;
+    }
+    
+    public double getYPos() {
+        return yPos;
+    }
+    
+    public int getAnimationStateAsInt() {
+        return animationStateAsInt;
     }
 
     public boolean intersectsPlayer(HashMap<String, RemotePlayer> players) {
@@ -214,11 +226,13 @@ public class RemotePlayer extends Protagonist implements Runnable {
     }
 
     void initClientOtherPlayer(RemotePlayer p2) {
-        server.tcpServer.get(pubId).out.println(server.keyword + server.infoSeperator + "OGAME-INITPROT" + server.infoSeperator + p2.name + server.infoSeperator + p2.skin + server.infoSeperator + String.valueOf(p2.index) + server.infoSeperator + p2.pubId + server.infoSeperator + "0");
+        server.tcpServer.get(pubId).getCommandHandler().sendCommand(ServerCommand.OGAME_INITPROT, new String[]{p2.name, p2.skin, String.valueOf(p2.index), p2.pubId, "0"});
+        // server.tcpServer.get(pubId).out.println(server.keyword + server.infoSeperator + "OGAME-INITPROT" + server.infoSeperator + p2.name + server.infoSeperator + p2.skin + server.infoSeperator + String.valueOf(p2.index) + server.infoSeperator + p2.pubId + server.infoSeperator + "0");
     }
 
     void initClientPendant(RemotePlayer p2) {
-        server.tcpServer.get(pubId).out.println(server.keyword + server.infoSeperator + "OGAME-INITPROT" + server.infoSeperator + p2.name + server.infoSeperator + p2.skin + server.infoSeperator + String.valueOf(p2.index) + server.infoSeperator + p2.pubId + server.infoSeperator + "1");
+        server.tcpServer.get(pubId).getCommandHandler().sendCommand(ServerCommand.OGAME_INITPROT, new String[]{p2.name, p2.skin, String.valueOf(p2.index), p2.pubId, "1"});
+        //server.tcpServer.get(pubId).out.println(server.keyword + server.infoSeperator + "OGAME-INITPROT" + server.infoSeperator + p2.name + server.infoSeperator + p2.skin + server.infoSeperator + String.valueOf(p2.index) + server.infoSeperator + p2.pubId + server.infoSeperator + "1");
     }
 
     void handleKeyPress(String action) {
@@ -361,7 +375,7 @@ public class RemotePlayer extends Protagonist implements Runnable {
             setAnimationState(CostumeViewport.MID);
 
         }
-                */
+         */
     }
 
 }

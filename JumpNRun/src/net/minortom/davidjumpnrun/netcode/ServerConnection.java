@@ -25,7 +25,7 @@ public class ServerConnection {
     private NetworkTCPReceiverClient tcpreceiver;
     
     private Socket socket;
-    public PrintWriter out;
+    private OnlineCommandHandler commandHandler;
     public BufferedReader in;
     JumpNRun game;
     
@@ -50,8 +50,8 @@ public class ServerConnection {
         currentConnState = ConnState.CONNECTING;
         try{
             socket = new Socket(hostName, hostPort);
-            out =
-                new PrintWriter(socket.getOutputStream(), true);
+            commandHandler = new OnlineCommandHandler(
+                new PrintWriter(socket.getOutputStream(), true));
             in =
                 new BufferedReader(
                     new InputStreamReader(socket.getInputStream()));
@@ -65,7 +65,8 @@ public class ServerConnection {
         tcpreceiver = new NetworkTCPReceiverClient(game, this);
         tcpreceiver.start();
         
-        out.println(NetworkManager.keyword + NetworkManager.infoSeperator + "AUTH-REQ" + NetworkManager.infoSeperator + username + NetworkManager.infoSeperator + pass);
+        commandHandler.sendCommand(ServerCommand.AUTH_REQ, new String[]{username, pass});
+        //out.println(NetworkManager.keyword + NetworkManager.infoSeperator + "AUTH-REQ" + NetworkManager.infoSeperator + username + NetworkManager.infoSeperator + pass);
         
         
         while (currentConnState == ConnState.CONNECTING){
@@ -93,7 +94,8 @@ public class ServerConnection {
     
     public void end(){
         try {
-            out.println(NetworkManager.keyword + NetworkManager.infoSeperator + "AUTH-LOGOUT");
+            commandHandler.sendCommand(ServerCommand.AUTH_LOGOUT, new String[]{});
+            // out.println(NetworkManager.keyword + NetworkManager.infoSeperator + "AUTH-LOGOUT");
         } catch (Exception e) {}
         tcpreceiver.stop();
         game.networkManager.serverConnection = null;
@@ -102,5 +104,9 @@ public class ServerConnection {
     @Override
     public String toString(){
         return "State: " + currentConnState + "\nUser: " + username + "\nPass: " + pass + "\nHost: " + hostName + ":" + hostPort;
+    }
+    
+    public OnlineCommandHandler getCommandHandler() {
+        return commandHandler;
     }
 }

@@ -55,8 +55,7 @@ public class WinScreen extends GridPane {
             leftLbl.setText("Gewonnen!");
             leftLbl.setTextFill(Color.GOLD);
             leftLbl.setFont(font1);
-            //rightLbl.setText("Verloren...\nViel Glück beim nächsten mal!");
-            rightLbl.setText("Ha nigga u gay!");
+            rightLbl.setText("Verloren...\nViel Glück beim nächsten mal!");
             rightLbl.setTextFill(Color.GRAY);
 
             rightLbl.setFont(font2);
@@ -64,8 +63,7 @@ public class WinScreen extends GridPane {
             rightLbl.setText("Gewonnen!");
             rightLbl.setTextFill(Color.GOLD);
             rightLbl.setFont(font2);
-            //leftLbl.setText("Verloren...\nViel Glück beim nächsten mal!");
-            leftLbl.setText("Ha nigga u gay!");
+            leftLbl.setText("Verloren...\nViel Glück beim nächsten mal!");
             leftLbl.setTextFill(Color.GRAY);
             leftLbl.setFont(font2);
 

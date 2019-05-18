@@ -19,6 +19,7 @@ import javafx.scene.text.Font;
 import jumpnrun.JumpNRun;
 import jumpnrun.SkinChooseMenu;
 import net.minortom.davidjumpnrun.netcode.NetworkManager;
+import net.minortom.davidjumpnrun.netcode.ServerCommand;
 import net.minortom.davidjumpnrun.netcode.screens.WaitScreen.WaitAnimation;
 
 public class CreateGameScreen extends VBox {
@@ -248,7 +249,8 @@ public class CreateGameScreen extends VBox {
                 limit = timeTF.getText();
             }
             String skin = skinUrl.split("/")[skinUrl.split("/").length - 1];
-            game.networkManager.serverConnection.out.println(NetworkManager.keyword + NetworkManager.infoSeperator + "OGAME-CREATE" + NetworkManager.infoSeperator + nameTF.getText() + NetworkManager.infoSeperator + playersTF.getText() + NetworkManager.infoSeperator + gameMode + NetworkManager.infoSeperator + limit + NetworkManager.infoSeperator + mapNameLbl.getText() + NetworkManager.infoSeperator + skin);
+            // game.networkManager.serverConnection.out.println(NetworkManager.keyword + NetworkManager.infoSeperator + "OGAME-CREATE" + NetworkManager.infoSeperator + nameTF.getText() + NetworkManager.infoSeperator + playersTF.getText() + NetworkManager.infoSeperator + gameMode + NetworkManager.infoSeperator + limit + NetworkManager.infoSeperator + mapNameLbl.getText() + NetworkManager.infoSeperator + skin);
+            game.networkManager.serverConnection.getCommandHandler().sendCommand(ServerCommand.OGAME_CREATE, new String[]{nameTF.getText(), playersTF.getText(), gameMode, limit, mapNameLbl.getText(), skin});
             
         });
         
