@@ -119,9 +119,6 @@ public class RemotePlayer extends Protagonist implements Runnable {
                     updateAnimation(timeElapsedSeconds);
                 }
                 intersects = collisionCheck(game.worldVector, game.players);
-                if (intersects) {
-                    yPos -= 50;
-                }
             }
 
             xPos += xSpeed * spdFactor * timeElapsedSeconds;
@@ -133,13 +130,6 @@ public class RemotePlayer extends Protagonist implements Runnable {
                 xPos -= xSpeed * spdFactor * timeElapsedSeconds;
                 xSpeed = 0;
                 //resetAnimation();
-            }
-            setX(xPos);
-            setY(yPos);
-
-            intersects = intersectsPlayer(game.players);
-            if (intersects) {
-                //yPos -= height + 5;
             }
 
             setX(xPos);

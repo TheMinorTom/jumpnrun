@@ -79,6 +79,7 @@ public class Protagonist extends ImageView implements Updatable {
         xPos = x;
         yPos = y;
         setVisible(true);
+        stepsPerSecond = 5;
         
         spdFactor = defaultSpdFactor;
 
