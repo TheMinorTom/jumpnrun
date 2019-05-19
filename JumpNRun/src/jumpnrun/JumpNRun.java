@@ -376,6 +376,26 @@ public class JumpNRun extends Application {
                     onlineGameObjects.put(objectId, addGun);
                     updateOnlineObject(objectId, objectTypeAsIntAsString, xPosString, yPosString, animationStateAsIntAsString);
                 }
+                break;
+            case SHOOT:
+                if (alreadyExists) {
+                    Shoot shoot = (Shoot) onlineGameObjects.get(objectId);
+                    shoot.setLayoutX(xPos);
+                    shoot.setLayoutY(yPos);
+                    try {
+                        shoot.setViewport(Shoot.AnimationState.values()[animationStateAsInt].getRect());
+                    } catch (ArrayIndexOutOfBoundsException e) {
+
+                    }
+                } else {
+                    Shoot addShoot = new Shoot();
+                    Platform.runLater(() -> {
+                        graphic.getChildren().add(addShoot);
+                    });
+                    onlineGameObjects.put(objectId, addShoot);
+                    updateOnlineObject(objectId, objectTypeAsIntAsString, xPosString, yPosString, animationStateAsIntAsString);
+                }
+                break;
 
         }
     }

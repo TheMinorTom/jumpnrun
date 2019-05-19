@@ -10,6 +10,7 @@ import javafx.geometry.Point3D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.transform.Rotate;
 import net.minortom.davidjumpnrun.configstore.ConfigManager;
 import worldeditor.Block;
 import worldeditor.IO;
@@ -44,6 +45,15 @@ public class Shoot extends ImageView implements Updatable{
         gravAccY = 200;
         
     }
+    
+    public Shoot(){
+        Image image = new Image(ConfigManager.getFileStream(imageSource));
+        setImage(image);
+        getTransforms().add(new Rotate(calcRotation(xSpd, ySpd)));
+        breakAccX = 200;
+        gravAccY = 200;
+        
+    }
 
     
     @Override
@@ -59,7 +69,7 @@ public class Shoot extends ImageView implements Updatable{
             JumpNRun.removeNode(this);
             JumpNRun.removeUpdatable(this);
         }
-        setRotate(calcRotation(xSpd, ySpd)); 
+        getTransforms().add(new Rotate(calcRotation(xSpd, ySpd)));
         ySpd += ySpdAdd;
         xPos += xSpd * timeElapsedSeconds;
         yPos += ySpd * timeElapsedSeconds;
