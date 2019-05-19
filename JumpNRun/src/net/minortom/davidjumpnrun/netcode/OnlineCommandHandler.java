@@ -28,9 +28,9 @@ public class OnlineCommandHandler {
         }
 
         out.println(message);
-        if (!command.equals(ServerCommand.OGAME_UPDATEPROT)) {
+        //if (!command.equals(ServerCommand.OGAME_UPDATEOBJECT)) {
             System.out.println(message);
-        }
+        //}
 
     }
 }

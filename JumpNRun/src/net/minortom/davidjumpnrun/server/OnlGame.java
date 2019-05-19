@@ -11,6 +11,8 @@ import java.util.Random;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import jumpnrun.JumpNRun;
@@ -47,6 +49,10 @@ public class OnlGame implements Runnable {
 
     public int udpPort;
     public DatagramSocket udpSocket;
+    
+    public HashMap<String, OnlineGameObject> onlineGameObjects;
+    
+    private int currObjectId = Integer.MIN_VALUE;
 
     public OnlGame(Server server, String gameName, int playersMax, String gamemode, double timeLimit, int respawnLimit, String mapName, String playerOneId, String playerOneSkin) {
         this.server = server;
@@ -81,19 +87,30 @@ public class OnlGame implements Runnable {
         blockSize = worldVector.get(0).get(0).getFitWidth();
         players = new HashMap<>();
         playerSkins = new HashMap<>();
-
+        
+        onlineGameObjects = new HashMap<>();
         addPlayer(playerOneId, playerOneSkin);
     }
 
     public void addPlayer(String pubId, String skin) {
         playerSkins.put(pubId, skin);
         String name = server.tcpServer.get(pubId).userName;
-        RemotePlayer addPlayer = new RemotePlayer(server, this, pubId, skin, name, players.size(), playersMax);
+        String addObjectId = nextObjectId();
+        RemotePlayer addPlayer = new RemotePlayer(server, this, pubId, addObjectId, skin, name, players.size(), playersMax);
+        onlineGameObjects.put(addObjectId, addPlayer);
         players.put(pubId, addPlayer);
+        
         sendAllTCP(ServerCommand.OGAME_PJOINED, new String[]{name, pubId, String.valueOf(playersMax)});
         if (isReadyToStart()) {
             startGame();
         }
+    }
+    
+    
+    public synchronized String nextObjectId() {
+        String returnId = String.valueOf(currObjectId);
+        currObjectId++;
+        return returnId;
     }
 
     public void sendAllTCP(ServerCommand command, String[] args) {
@@ -199,7 +216,8 @@ public class OnlGame implements Runnable {
         }
 
         while (!ended) {
-
+            
+            /*
             players.forEach((id, p) -> {
                 sendAllTCP(ServerCommand.OGAME_UPDATEPROT, new String[]{p.pubId, String.valueOf(p.getXPos()), String.valueOf(p.getYPos()), String.valueOf(p.getAnimationStateAsInt())});
                 try {
@@ -208,6 +226,16 @@ public class OnlGame implements Runnable {
                     Logger.getLogger(OnlGame.class.getName()).log(Level.SEVERE, null, ex);
                 }
             });
+                    */
+            players.forEach((id, p) -> {
+                p.update();
+            });
+            
+            try {
+                Thread.sleep(5);
+            } catch(InterruptedException i) {
+                
+            }
 
         }
     }

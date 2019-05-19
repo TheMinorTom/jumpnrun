@@ -30,11 +30,13 @@ public enum ServerCommand {
     OGAME_ERR,          //client          fatal, code
     OGAME_INITMAP,      //server          map
     OGAME_INITPENDANT,  //server          -
-    OGAME_INITPROT,     //server          name, skin, index, id, is local player (0 = false, 1 = true)  
+    OGAME_INITPROT,     //server          name, skin, index, pubId, objectId, is local player (0 = false, 1 = true)  
     OGAME_INITGAME,     //server          playerAmount, spawnY, gamemode, limit, gameName
+    @Deprecated //use updateobject
     OGAME_UPDATEPROT,   //server          id, x, y, animationState (int)
     OGAME_KEYPRESS,     //client          playerId, gameName, action (RIGHT, LEFT, JUMP, HIT, SHOOT, USE)
     OGAME_KEYRELEASE,   //client          playerId, gameName, action
-    OGAME_START;         //server          -
+    OGAME_START,        //server          -
+    OGAME_UPDATEOBJECT; //server          objectId, objectType(int), xPos, yPos, animationState(int)       
 
 }

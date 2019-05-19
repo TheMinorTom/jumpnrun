@@ -32,7 +32,9 @@ import worldeditor.IO;
 import net.minortom.davidjumpnrun.i18n.Language;
 import net.minortom.davidjumpnrun.i18n.LanguageEnglish;
 import net.minortom.davidjumpnrun.i18n.LanguageGerman;
+import net.minortom.davidjumpnrun.netcode.GameObjectType;
 import net.minortom.davidjumpnrun.netcode.NetworkManager;
+import net.minortom.davidjumpnrun.server.OnlineGameObject;
 import net.minortom.davidjumpnrun.server.Server;
 import worldeditor.GUI;
 import worldeditor.InGameSceneWorldEditor;
@@ -89,6 +91,7 @@ public class JumpNRun extends Application {
     private int onlineRespawnLimit;
     private Gamemode onlineGamemode;
     private HashMap<String, ProtagonistOnlineClient> onlineProts;
+    private HashMap<String, Object> onlineGameObjects;
     private String gameName;
 
     private boolean[] keysDown;
@@ -248,6 +251,7 @@ public class JumpNRun extends Application {
 
     public void initOnlineGame(String playerAmount, String spawnY, String gamemode, String limit, String gameName) {
         onlineProts = new HashMap();
+        onlineGameObjects = new HashMap<>();
         this.gameName = gameName;
         try {
             this.playerAmount = Integer.parseInt(playerAmount);
@@ -291,12 +295,16 @@ public class JumpNRun extends Application {
         setUpOnlineKeyHandlers();
     }
 
-    public void initOtherProt(String name, String skinFileName, int index, String pubId) {
-        onlineProts.put(pubId, graphic.generateOtherOnlineProt(name, skinFileName, index, pubId, this.playerAmount, onlineSpawnY));
+    public void initOtherProt(String name, String skinFileName, int index, String pubId, String objectId) {
+        ProtagonistOnlineClient addProt = graphic.generateOtherOnlineProt(name, skinFileName, index, pubId, playerAmount, onlineSpawnY);
+        onlineProts.put(pubId, addProt);
+        onlineGameObjects.put(objectId, addProt);
     }
 
-    public void initLocalProt(String name, String skinFileName, int index, String pubId) {
-        onlineProts.put(pubId, graphic.generateLocalOnlineProt(name, skinFileName, index, pubId, this.playerAmount, onlineSpawnY));
+    public void initLocalProt(String name, String skinFileName, int index, String pubId, String objectId) {
+        ProtagonistOnlineClient addProt = graphic.generateLocalOnlineProt(name, skinFileName, index, pubId, playerAmount, onlineSpawnY);
+        onlineProts.put(pubId, addProt);
+        onlineGameObjects.put(objectId, addProt);
     }
 
     public void setLocalProt(ProtagonistOnlineClient p) {
@@ -309,6 +317,67 @@ public class JumpNRun extends Application {
         int animationStateInt = Integer.parseInt(animationsState);
         Protagonist.CostumeViewport viewPort = Protagonist.CostumeViewport.values()[animationStateInt];
         onlineProts.get(id).update(xPos, yPos, viewPort);
+    }
+
+    public void updateOnlineObject(String objectId, String objectTypeAsIntAsString, String xPosString, String yPosString, String animationStateAsIntAsString) {
+        GameObjectType objectType = GameObjectType.values()[Integer.parseInt(objectTypeAsIntAsString)];
+        double xPos = Double.parseDouble(xPosString);
+        double yPos = Double.parseDouble(yPosString);
+        int animationStateAsInt = Integer.parseInt(animationStateAsIntAsString);
+        boolean alreadyExists = onlineGameObjects.containsKey(objectId);
+        if (alreadyExists) {
+            Node currNode = (Node) onlineGameObjects.get(objectId);
+            if (animationStateAsInt < 0) {
+                currNode.setVisible(false);
+            } else {
+                currNode.setVisible(true);
+            }
+        }
+
+        switch (objectType) {
+            case PROTAGONIST:
+                Protagonist.CostumeViewport viewPort = Protagonist.CostumeViewport.values()[animationStateAsInt];
+                ((ProtagonistOnlineClient) onlineGameObjects.get(objectId)).update(xPos, yPos, viewPort);
+                break;
+            case PITCHFORK:
+                if (alreadyExists) {
+                    Pitchfork pitchfork = (Pitchfork) onlineGameObjects.get(objectId);
+                    pitchfork.setX(xPos);
+                    pitchfork.setY(yPos);
+                    try {
+                        pitchfork.setViewport(Pitchfork.AnimationState.values()[animationStateAsInt].getRect());
+                    } catch (ArrayIndexOutOfBoundsException e) {
+
+                    }
+                } else {
+                    Pitchfork addPitchfork = new Pitchfork();
+                    Platform.runLater(() -> {
+                        graphic.getChildren().add(addPitchfork);
+                    });
+                    onlineGameObjects.put(objectId, addPitchfork);
+                    updateOnlineObject(objectId, objectTypeAsIntAsString, xPosString, yPosString, animationStateAsIntAsString);
+                }
+                break;
+            case GUN:
+                if (alreadyExists) {
+                    Gun gun = (Gun) onlineGameObjects.get(objectId);
+                    gun.setLayoutX(xPos);
+                    gun.setLayoutY(yPos);
+                    try {
+                        gun.setViewport(Gun.AnimationState.values()[animationStateAsInt].getRect());
+                    } catch (ArrayIndexOutOfBoundsException e) {
+
+                    }
+                } else {
+                    Gun addGun = new Gun();
+                    Platform.runLater(() -> {
+                        graphic.getChildren().add(addGun);
+                    });
+                    onlineGameObjects.put(objectId, addGun);
+                    updateOnlineObject(objectId, objectTypeAsIntAsString, xPosString, yPosString, animationStateAsIntAsString);
+                }
+
+        }
     }
 
     public HashMap<String, ProtagonistOnlineClient> getOnlineProts() {

@@ -39,7 +39,6 @@ public class GameLoopOnline extends AnimationTimer {
     @Override
     public void handle(long now) {
         protagonists.forEach((String id, ProtagonistOnlineClient p)->{
-            System.out.println("update");
             p.updatePos();
         });
     }

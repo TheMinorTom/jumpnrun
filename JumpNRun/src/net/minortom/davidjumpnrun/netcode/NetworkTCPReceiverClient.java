@@ -91,10 +91,10 @@ public class NetworkTCPReceiverClient extends Thread {
                             game.initMap(packageContent[2]);
                             break;
                         case OGAME_INITPROT:
-                            if (packageContent[6].equals("1")) {
-                                game.initLocalProt(packageContent[2], packageContent[3], Integer.valueOf(packageContent[4]), packageContent[5]);
+                            if (packageContent[7].equals("1")) {
+                                game.initLocalProt(packageContent[2], packageContent[3], Integer.valueOf(packageContent[4]), packageContent[5], packageContent[6]);
                             } else {
-                                game.initOtherProt(packageContent[2], packageContent[3], Integer.valueOf(packageContent[4]), packageContent[5]);
+                                game.initOtherProt(packageContent[2], packageContent[3], Integer.valueOf(packageContent[4]), packageContent[5], packageContent[6]);
                             }
                             break;
                         case OGAME_INITGAME:
@@ -102,6 +102,9 @@ public class NetworkTCPReceiverClient extends Thread {
                             break;
                         case OGAME_UPDATEPROT:
                             game.updateProt(packageContent[2], packageContent[3], packageContent[4], packageContent[5]);
+                            break;
+                        case OGAME_UPDATEOBJECT:
+                            game.updateOnlineObject(packageContent[2], packageContent[3], packageContent[4], packageContent[5], packageContent[6]);
                             break;
                         case OGAME_START:
                             game.startOnlineGame();
