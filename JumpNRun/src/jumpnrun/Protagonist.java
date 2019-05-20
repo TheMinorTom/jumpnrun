@@ -74,10 +74,17 @@ public class Protagonist extends ImageView implements Updatable {
         respawnTimer = 0;
         machinePistolTimer = 0;
         
+        hitDoing = false;
+        shootDoing = false;
+        jumpDone = false;
+        respawnDoing = false;
+        
         setX(x);
         setY(y);
         xPos = x;
         yPos = y;
+        xSpawn = xPos;
+        ySpawn = yPos;
         setVisible(true);
         stepsPerSecond = 5;
         

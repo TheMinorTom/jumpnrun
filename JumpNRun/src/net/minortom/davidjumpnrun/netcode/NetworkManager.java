@@ -23,6 +23,8 @@ import net.minortom.davidjumpnrun.netcode.screens.WaitScreen.WaitAnimation;
 public class NetworkManager extends VBox {
     
     public static final String infoSeperator = "!";//Character.toString((char) 31);
+    public static final String differentObjectsSeperator = "|";
+    public static final String subArgsSeperator = "/";
     public static final String keyword = "JUMPNRUN";
     
     public java.util.Map<String,String> onlineWaitScreenPlayers; // PubID, name

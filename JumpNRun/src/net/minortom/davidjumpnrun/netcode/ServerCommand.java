@@ -29,6 +29,7 @@ public enum ServerCommand {
     OGAME_WILLSTART,    //server          TODO
     OGAME_ERR,          //client          fatal, code
     OGAME_INITMAP,      //server          map
+    @Deprecated
     OGAME_INITPENDANT,  //server          -
     OGAME_INITPROT,     //server          name, skin, index, pubId, objectId, is local player (0 = false, 1 = true)  
     OGAME_INITGAME,     //server          playerAmount, spawnY, gamemode, limit, gameName
@@ -37,6 +38,8 @@ public enum ServerCommand {
     OGAME_KEYPRESS,     //client          playerId, gameName, action (RIGHT, LEFT, JUMP, HIT, SHOOT, USE)
     OGAME_KEYRELEASE,   //client          playerId, gameName, action
     OGAME_START,        //server          -
-    OGAME_UPDATEOBJECT; //server          objectId, objectType(int), xPos, yPos, animationState(int)       
+    @Deprecated
+    OGAME_UPDATEOBJECT, //server          objectId, objectType(int), xPos, yPos, animationState(int)
+    OGAME_UPDATEOBJECTS;//server          List of OGAME_UPDATEOBJECT's args; different objects seperated by NetworkManager.updateObjectsSeperator; different args per objet seperated by NetworkManager.subArgsSeperator    
 
 }

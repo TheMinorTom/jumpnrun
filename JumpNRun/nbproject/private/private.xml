@@ -10,6 +10,7 @@
             <file>file:/E:/David/Java/NetBeansProjects/JumpNRun/git/jumpnrun/JumpNRun/src/jumpnrun/GameLoopOnline.java</file>
             <file>file:/E:/David/Java/NetBeansProjects/JumpNRun/git/jumpnrun/JumpNRun/src/net/minortom/davidjumpnrun/server/TCPServer.java</file>
             <file>file:/E:/David/Java/NetBeansProjects/JumpNRun/git/jumpnrun/JumpNRun/src/net/minortom/davidjumpnrun/netcode/screens/WaitScreen.java</file>
+            <file>file:/E:/David/Java/NetBeansProjects/JumpNRun/git/jumpnrun/JumpNRun/src/net/minortom/davidjumpnrun/server/OnlineGameObject.java</file>
             <file>file:/E:/David/Java/NetBeansProjects/JumpNRun/git/jumpnrun/JumpNRun/src/net/minortom/davidjumpnrun/server/RemotePlayer.java</file>
             <file>file:/E:/David/Java/NetBeansProjects/JumpNRun/git/jumpnrun/JumpNRun/src/jumpnrun/Graphic.java</file>
             <file>file:/E:/David/Java/NetBeansProjects/JumpNRun/git/jumpnrun/JumpNRun/src/net/minortom/davidjumpnrun/netcode/screens/LoginScreen.java</file>
@@ -30,7 +31,9 @@
             <file>file:/E:/David/Java/NetBeansProjects/JumpNRun/git/jumpnrun/JumpNRun/src/net/minortom/davidjumpnrun/netcode/screens/CreateGameScreen.java</file>
             <file>file:/E:/David/Java/NetBeansProjects/JumpNRun/git/jumpnrun/JumpNRun/src/jumpnrun/Protagonist.java</file>
             <file>file:/E:/David/Java/NetBeansProjects/JumpNRun/git/jumpnrun/JumpNRun/src/net/minortom/davidjumpnrun/server/OnlGame.java</file>
+            <file>file:/E:/David/Java/NetBeansProjects/JumpNRun/git/jumpnrun/JumpNRun/src/net/minortom/davidjumpnrun/netcode/GameObjectType.java</file>
             <file>file:/E:/David/Java/NetBeansProjects/JumpNRun/git/jumpnrun/JumpNRun/src/jumpnrun/Powerup.java</file>
+            <file>file:/E:/David/Java/NetBeansProjects/JumpNRun/git/jumpnrun/JumpNRun/src/net/minortom/davidjumpnrun/netcode/OnlineCommandHandler.java</file>
             <file>file:/E:/David/Java/NetBeansProjects/JumpNRun/git/jumpnrun/JumpNRun/src/jumpnrun/Shoot.java</file>
             <file>file:/E:/David/Java/NetBeansProjects/JumpNRun/git/jumpnrun/JumpNRun/src/net/minortom/davidjumpnrun/netcode/screens/JoinGameScreen.java</file>
             <file>file:/E:/David/Java/NetBeansProjects/JumpNRun/git/jumpnrun/JumpNRun/src/jumpnrun/PowerupCollect.java</file>

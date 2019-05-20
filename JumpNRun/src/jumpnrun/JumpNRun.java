@@ -399,6 +399,15 @@ public class JumpNRun extends Application {
 
         }
     }
+    
+    public void updateOnlineObjects(String message) {
+        String[] differentObjectsArr = message.split("\\" + NetworkManager.differentObjectsSeperator);
+        String[] currArgs = null;
+        for(String currObject: differentObjectsArr) {
+            currArgs = currObject.split("\\" + NetworkManager.subArgsSeperator);
+            updateOnlineObject(currArgs[0], currArgs[1], currArgs[2], currArgs[3], currArgs[4]);
+        }
+    }
 
     public HashMap<String, ProtagonistOnlineClient> getOnlineProts() {
         return onlineProts;

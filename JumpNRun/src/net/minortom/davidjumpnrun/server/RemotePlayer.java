@@ -5,9 +5,12 @@
 package net.minortom.davidjumpnrun.server;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.input.KeyCode;
 import javafx.scene.shape.Rectangle;
@@ -19,31 +22,33 @@ import net.minortom.davidjumpnrun.netcode.ServerCommand;
 import worldeditor.Block;
 
 public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObject {
-
+    
     public boolean udpConnected;
-
+    
     Server server;
     OnlGame game;
-
+    
     private boolean isInited = false;
-
+    
     public String pubId;
     public String skin;     //Skin fileName
     public String name;
     public int index; //Number >= 0
     private int animationStateAsInt;
-
+    
     private long startTime, now, oldTime, timeElapsed;
     private double timeElapsedSeconds;
-
+    
     private boolean intersectsPlayer = false;
-
+    
     private RemoteObject remotePitchfork, remoteGun;
-
+    
     private final GameObjectType objectType = GameObjectType.PROTAGONIST;
-
+    
     private final String objectId;
-
+    
+    private boolean weaponFacingLeft;
+    
     public RemotePlayer(Server server, OnlGame game, String pubId, String objectId, String skin, String name, int index, int maxPlayer) {
         super(index, (game.worldWidth / (maxPlayer + 1)) * (index + 1), OnlGame.spawnY);
         this.server = server;
@@ -55,21 +60,20 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         this.objectId = objectId;
         accPerSec = 1000;
         animationStateAsInt = currCostume.ordinal();
-        shootDoing = false;
-        hitDoing = false;
         remotePitchfork = new RemoteObject(Pitchfork.AnimationState.LEFT.getRect(), GameObjectType.PITCHFORK, game.nextObjectId());
         remoteGun = new RemoteObject(Gun.AnimationState.LEFT.getRect(), GameObjectType.GUN, game.nextObjectId());
         game.onlineGameObjects.put(remotePitchfork.getObjectId(), remotePitchfork);
         game.onlineGameObjects.put(remoteGun.getObjectId(), remoteGun);
+        weaponFacingLeft = true;
     }
-
+    
     @Override
     public void run() {
-
+        ObservableList<String[]> objectsUpdateArgs = FXCollections.observableArrayList();
         while (true) {
-
+            objectsUpdateArgs.clear();
             try {
-                Thread.sleep(20);
+                Thread.sleep(10);
             } catch (InterruptedException ex) {
                 Logger.getLogger(RemotePlayer.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -79,9 +83,10 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
              });
              */
             game.onlineGameObjects.forEach((String id, OnlineGameObject o) -> {
-                server.tcpServer.get(pubId).getCommandHandler().sendCommand(ServerCommand.OGAME_UPDATEOBJECT, new String[]{o.getObjectId(), String.valueOf(o.getObjectTypeAsInt()), String.valueOf((float)o.getXPos()), String.valueOf((float)o.getYPos()), String.valueOf(o.getAnimationStateAsInt())});
+                //server.tcpServer.get(pubId).getCommandHandler().sendCommand(ServerCommand.OGAME_UPDATEOBJECT, new String[]{o.getObjectId(), String.valueOf(o.getObjectTypeAsInt()), String.valueOf((float)o.getXPos()), String.valueOf((float)o.getYPos()), String.valueOf(o.getAnimationStateAsInt())});
+                objectsUpdateArgs.add(new String[]{o.getObjectId(), String.valueOf(o.getObjectTypeAsInt()), String.valueOf((float) o.getXPos()), String.valueOf((float) o.getYPos()), String.valueOf(o.getAnimationStateAsInt())});
             });
-
+            server.tcpServer.get(pubId).getCommandHandler().sendUpdateObjectsCommand(objectsUpdateArgs);
             /*
              update();
              // game.sendAllTCP(server.keyword + server.infoSeperator + "OGAME-UPDATEPROT" + server.infoSeperator + pubId + server.infoSeperator + String.valueOf(xPos) + server.infoSeperator + String.valueOf(yPos) + server.infoSeperator + String.valueOf(animationStateAsInt));
@@ -91,9 +96,9 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
              */
         }
     }
-
+    
     public void update() {
-
+        
         remotePitchfork.setX(xPos);
         remotePitchfork.setY(yPos);
         
@@ -108,22 +113,33 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         timeElapsed = now - oldTime;
         oldTime = now;
         timeElapsedSeconds = timeElapsed / (1000.0d * 1000.0d * 1000.0d);
-
+        
         if (yPos > 5000) {
             hitten();
         }
-
+        
         if (!respawnDoing) {
+            
+            if (hitDoing) {
+                updateHit(timeElapsedSeconds);
+            } else if (isMachinePistol) {
+                updateMachinePistol(timeElapsedSeconds);
+            } else if (shootDoing) {
+                goesRight = false;
+                goesLeft = false;
+                updateShoot(timeElapsedSeconds);
+            }
+            
             updateJump(timeElapsedSeconds);
             if (((!goesRight) && (!goesLeft)) && (ySpeed == 0)) {
                 if (xSpeed != 0) {
-
+                    
                     xSpeed -= (xSpeed / 10);
                     xSpeed = 0;
                     resetAnimation();
                 }
             }
-
+            
             if (!shootDoing) {
                 if (goesRight) {
                     xSpeed = defaultXSpeed;
@@ -132,15 +148,15 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
                     xSpeed = -1 * defaultXSpeed;
                 }
             }
-
+            
             intersects = false;
             ySpeed += timeElapsedSeconds * accPerSec;
             yPos += ySpeed * timeElapsedSeconds;
             setX(xPos);
             setY(yPos);
-
+            
             intersects = collisionCheck(game.worldVector, game.players);
-
+            
             if (intersects) {
                 yPos -= timeElapsedSeconds * ySpeed;
                 ySpeed = 0;
@@ -149,49 +165,48 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
                 }
                 intersects = collisionCheck(game.worldVector, game.players);
             }
-
+            
             xPos += xSpeed * spdFactor * timeElapsedSeconds;
             setX(xPos);
             setY(yPos);
-
+            
             intersects = collisionCheck(game.worldVector, game.players);
             if (intersects) {
                 xPos -= xSpeed * spdFactor * timeElapsedSeconds;
                 xSpeed = 0;
                 //resetAnimation();
             }
-
+            
             setX(xPos);
             setY(yPos);
-
+            
         } else {
             updateRespawn(timeElapsedSeconds);
-
+            
         }
         animationStateAsInt = currCostume.ordinal();
     }
-
+    
     @Override
     public double getXPos() {
         return xPos;
     }
-
+    
     @Override
     public double getYPos() {
         return yPos;
     }
-
+    
     @Override
     public String getObjectId() {
         return objectId;
     }
-
-
+    
     @Override
     public int getAnimationStateAsInt() {
         return animationStateAsInt;
     }
-
+    
     public boolean intersectsPlayer(HashMap<String, RemotePlayer> players) {
         intersectsPlayer = false;
         players.forEach((id, player) -> {
@@ -201,15 +216,15 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
                 }
             }
         });
-
+        
         return intersectsPlayer;
     }
-
+    
     @Override
     public int getObjectTypeAsInt() {
         return objectType.ordinal();
     }
-
+    
     public boolean collisionCheck(Vector<Vector<Block>> worldVec, HashMap<String, RemotePlayer> players) {
         double blockSize = game.blockSize;
         for (int i = 0; i < worldVec.size(); i++) {
@@ -218,7 +233,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
                     Block b = worldVec.get(i).get(j);
                     if (b.getIsSolid()) {
                         if (intersects(xPos, yPos, width, height, i * blockSize, j * blockSize, blockSize, blockSize)) {
-
+                            
                             return true;
                         }
                     }
@@ -230,25 +245,25 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         }
         return false;
     }
-
+    
     @Override
     public boolean intersectsPlayer(Protagonist p) {
         if (intersects(xPos, yPos, width, height, p.getX(), p.getY(), width, height)) {
             if (!p.isRespawning()) {
-
+                
                 return true;
             }
         }
         return false;
-
+        
     }
-
+    
     public boolean intersects(double x1, double y1, double w1, double h1, double x2, double y2, double w2, double h2) {
         double endX1 = x1 + w1;
         double endY1 = y1 + h1;
         double endX2 = x2 + w2;
         double endY2 = y2 + h2;
-
+        
         if (x2 > endX1
                 || endX2 < x1
                 || y2 > endY1
@@ -257,17 +272,17 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         }
         return true;
     }
-
+    
     void initClientOtherPlayer(RemotePlayer p2) {
         server.tcpServer.get(pubId).getCommandHandler().sendCommand(ServerCommand.OGAME_INITPROT, new String[]{p2.name, p2.skin, String.valueOf(p2.index), p2.pubId, p2.getObjectId(), "0"});
         // server.tcpServer.get(pubId).out.println(server.keyword + server.infoSeperator + "OGAME-INITPROT" + server.infoSeperator + p2.name + server.infoSeperator + p2.skin + server.infoSeperator + String.valueOf(p2.index) + server.infoSeperator + p2.pubId + server.infoSeperator + "0");
     }
-
+    
     void initClientPendant(RemotePlayer p2) {
         server.tcpServer.get(pubId).getCommandHandler().sendCommand(ServerCommand.OGAME_INITPROT, new String[]{p2.name, p2.skin, String.valueOf(p2.index), p2.pubId, p2.getObjectId(), "1"});
         //server.tcpServer.get(pubId).out.println(server.keyword + server.infoSeperator + "OGAME-INITPROT" + server.infoSeperator + p2.name + server.infoSeperator + p2.skin + server.infoSeperator + String.valueOf(p2.index) + server.infoSeperator + p2.pubId + server.infoSeperator + "1");
     }
-
+    
     void handleKeyPress(String action) {
         System.out.println("Keypress!"); /////!!!!!!!!!!!!!!!!!!!!
         switch (action.toUpperCase()) {
@@ -291,7 +306,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
                 break;
         }
     }
-
+    
     void handleKeyRelease(String action) {
         switch (action.toUpperCase()) {
             case "LEFT":
@@ -302,28 +317,38 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
                 break;
         }
     }
-
+    
     @Override
     public void doRight() {
         isFacingRight = true;
         goesRight = true;
         goesLeft = false;
+        weaponFacingLeft = false;
     }
-
+    
     @Override
     public void doLeft() {
         isFacingRight = false;
         goesLeft = true;
         goesRight = false;
+        weaponFacingLeft = true;
     }
-
+    
     @Override
     public void doJump() {
         if (ySpeed == 0) {
             jumpDone = true;
         }
     }
-
+    
+    @Override
+    public void hitten() {
+        xPos = xSpawn;
+        yPos = ySpawn;
+        setX(xPos);
+        setY(yPos);
+    }
+    
     @Override
     public void updateJump(double timeElapsedSeconds) {
         if (!jumpDone) {
@@ -334,7 +359,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
             } else if (remotePitchfork.getAnimationState() == 1) {
                 forkAnimationXPosAdd = -10;
             }
-
+            
             jumpTimer += timeElapsedSeconds;
             if (jumpTimer < 0.2) {
                 if (goesLeft) {
@@ -357,16 +382,17 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
             }
         }
     }
-
-    @Override
-    public void updateHit(double timeElapsedSeconds, Protagonist otherProt) {
+    
+    public void updateHit(double timeElapsedSeconds) {
         hitTimer += timeElapsedSeconds;
-        if (remotePitchfork.getAnimationState() == 0) {
+        if (weaponFacingLeft) {
             remotePitchfork.setX(xPos - 40); //- forkAnimationXPosAdd);
             setAnimationState(CostumeViewport.LEFT_HIT);
-        } else if (remotePitchfork.getAnimationState() == 1) {
+            remotePitchfork.setAnimationState(0);
+        } else {
             remotePitchfork.setX(xPos + 30); //+ forkAnimationXPosAdd);
             setAnimationState(CostumeViewport.RIGHT_HIT);
+            remotePitchfork.setAnimationState(1);
         }
         remotePitchfork.setY(yPos + 55);
         game.players.forEach((id, p) -> {
@@ -376,39 +402,39 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
                 }
             }
         });
-
+        
         if (hitTimer > 0.3) {
             hitDoing = false;
             remotePitchfork.setAnimationState(-1);
             hitTimer = 0;
             setAnimationState(CostumeViewport.MID);
-
+            
         }
     }
-
-    @Override
-    public void updateShoot(double timeElapsedSeconds, Protagonist otherProt) {
-        /*
-         shootTimer += timeElapsedSeconds;
-         gun.setVisible(true);
-         if (gun.getFacingLeft()) {
-         gun.setX(getX() - 20); //- forkAnimationXPosAdd);
-         setAnimationState(CostumeViewport.LEFT_SHOOT);
-         } else {
-         gun.setX(getX() + 5); //+ forkAnimationXPosAdd);
-         setAnimationState(CostumeViewport.RIGHT_SHOOT);
-         }
-         gun.setY(getY() + 22); ///
-         gun.updateShoot(shootTimer);
-
-         if (shootTimer > 2) {
-         shootDoing = false;
-         gun.setVisible(false);
-         shootTimer = 0;
-         setAnimationState(CostumeViewport.MID);
-
-         }
-         */
+    
+    public void updateShoot(double timeElapsedSeconds) {
+        
+        shootTimer += timeElapsedSeconds;
+        if (weaponFacingLeft) {
+            remoteGun.setX(getX() - 20); //- forkAnimationXPosAdd);
+            setAnimationState(CostumeViewport.LEFT_SHOOT);
+            remoteGun.setAnimationState(0);
+        } else {
+            remoteGun.setX(getX() + 5); //+ forkAnimationXPosAdd);
+            setAnimationState(CostumeViewport.RIGHT_SHOOT);
+            remoteGun.setAnimationState(1);
+        }
+        remoteGun.setY(getY() + 22); ///
+        // gun.updateShoot(shootTimer);
+        
+        if (shootTimer > 2) {
+            shootDoing = false;
+            remoteGun.setAnimationState(-1);
+            shootTimer = 0;
+            setAnimationState(CostumeViewport.MID);
+            
+        }
+        
     }
     
     public RemoteObject getRemotePitchfork() {
@@ -418,5 +444,5 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
     public RemoteObject getRemoteGun() {
         return remoteGun;
     }
-
+    
 }

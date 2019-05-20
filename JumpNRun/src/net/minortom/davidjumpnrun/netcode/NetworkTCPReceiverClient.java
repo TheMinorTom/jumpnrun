@@ -106,6 +106,8 @@ public class NetworkTCPReceiverClient extends Thread {
                         case OGAME_UPDATEOBJECT:
                             game.updateOnlineObject(packageContent[2], packageContent[3], packageContent[4], packageContent[5], packageContent[6]);
                             break;
+                        case OGAME_UPDATEOBJECTS:
+                            game.updateOnlineObjects(packageContent[2]);
                         case OGAME_START:
                             game.startOnlineGame();
                             break;
