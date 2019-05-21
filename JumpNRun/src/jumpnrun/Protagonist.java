@@ -56,7 +56,7 @@ public class Protagonist extends ImageView implements Updatable {
     private final int protId;
     protected boolean isDoubleSpeed, isMachinePistol;  //Powerup booleans
     protected Powerup powerup;
-    protected boolean isFacingRight;
+    protected boolean isFacingLeft;
     protected int deaths;
     
 
@@ -97,7 +97,7 @@ public class Protagonist extends ImageView implements Updatable {
         this.skin = skin;
         spritePath = skin.path;
         protId = id;
-        isFacingRight = false;
+        isFacingLeft = false;
         xSpeed = 0;
         isDoubleSpeed = false;
         isMachinePistol = false;
@@ -549,7 +549,7 @@ public class Protagonist extends ImageView implements Updatable {
     }
 
     public void doRight() {
-        isFacingRight = true;
+        isFacingLeft = true;
         goesRight = true;
         goesLeft = false;
         pitchfork.setFacingLeft(false);
@@ -557,7 +557,7 @@ public class Protagonist extends ImageView implements Updatable {
     }
 
     public void doLeft() {
-        isFacingRight = false;
+        isFacingLeft = false;
         goesLeft = true;
         goesRight = false;
         pitchfork.setFacingLeft(true);
@@ -683,7 +683,7 @@ public class Protagonist extends ImageView implements Updatable {
     }
 
     public boolean getFacingRight() {
-        return isFacingRight;
+        return isFacingLeft;
     }
 
     public boolean isRespawning() {

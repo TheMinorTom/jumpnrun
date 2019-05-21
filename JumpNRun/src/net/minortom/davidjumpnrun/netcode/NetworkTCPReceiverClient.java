@@ -100,9 +100,6 @@ public class NetworkTCPReceiverClient extends Thread {
                         case OGAME_INITGAME:
                             game.initOnlineGame(packageContent[2], packageContent[3], packageContent[4], packageContent[5], packageContent[6]);
                             break;
-                        case OGAME_UPDATEPROT:
-                            game.updateProt(packageContent[2], packageContent[3], packageContent[4], packageContent[5]);
-                            break;
                         case OGAME_UPDATEOBJECT:
                             game.updateOnlineObject(packageContent[2], packageContent[3], packageContent[4], packageContent[5], packageContent[6]);
                             break;
@@ -111,6 +108,8 @@ public class NetworkTCPReceiverClient extends Thread {
                         case OGAME_START:
                             game.startOnlineGame();
                             break;
+                        case OGAME_REMOVEOBJECT:
+                            game.removeOnlineObject(packageContent[2]);
                         default:
                             break;
                     }

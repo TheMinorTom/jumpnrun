@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Vector;
 import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
+import javafx.collections.ObservableList;
 import worldeditor.Block;
 
 /**
@@ -25,21 +26,19 @@ public class GameLoopOnline extends AnimationTimer {
 
     protected JumpNRun game;
 
-    private HashMap<String, ProtagonistOnlineClient> protagonists;
+    private ObservableList<OnlineUpdatableObject> objects;
     private double[] xPositions, yPositions;    //index = protagonists id
     private Protagonist.CostumeViewport[] viewports; //-""-
-    private final int playerAmount;
     
-    public GameLoopOnline(HashMap<String, ProtagonistOnlineClient> prots) {
+    public GameLoopOnline(ObservableList<OnlineUpdatableObject> objects) {
         super();
-        playerAmount = prots.size();
-        protagonists = prots;
+        this.objects = objects;
     }
 
     @Override
     public void handle(long now) {
-        protagonists.forEach((String id, ProtagonistOnlineClient p)->{
-            p.updatePos();
+        objects.forEach((o)->{
+            o.updateGraphic();
         });
     }
 

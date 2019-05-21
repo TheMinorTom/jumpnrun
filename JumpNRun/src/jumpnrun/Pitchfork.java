@@ -17,11 +17,12 @@ import worldeditor.IO;
  *
  * @author DavidPrivat
  */
-public class Pitchfork extends ImageView{
+public class Pitchfork extends ImageView implements OnlineUpdatableObject{
     
     private final static String imageSource = "sprites/pitchforkGes.png";
     private boolean facingLeft;
     private AnimationState currAnimationState;
+    private double xPos, yPos;
     Pitchfork()
     {
         setImage(new Image(ConfigManager.getFileStream(imageSource)));
@@ -59,6 +60,20 @@ public class Pitchfork extends ImageView{
     public boolean getFacingLeft()
     {
         return facingLeft;
+    }
+    
+    @Override
+    public void updatePos(double x, double y, int animationState) {
+        xPos = x;
+        yPos = y;
+        currAnimationState = AnimationState.values()[animationState];
+    }
+
+    @Override
+    public void updateGraphic() {
+        setX(xPos);
+        setY(yPos);
+        setViewport(currAnimationState.getRect());
     }
     
     public enum AnimationState{

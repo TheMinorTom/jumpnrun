@@ -15,10 +15,12 @@ import worldeditor.IO;
  *
  * @author Norbert
  */
-public class Gun extends ImageView {
+public class Gun extends ImageView implements OnlineUpdatableObject{
 
     private final static String imageSource = "sprites/GunGes.png";
     private boolean facingLeft, shootGenerated;
+    private double xPos, yPos;
+    private Rectangle2D currViewport;
 
     Gun() {
         shootGenerated = false;
@@ -91,6 +93,20 @@ public class Gun extends ImageView {
 
     public boolean getFacingLeft() {
         return facingLeft;
+    }
+
+    @Override
+    public void updatePos(double x, double y, int animationState) {
+        xPos = x;
+        yPos = y;
+        currViewport = AnimationState.values()[animationState].getRect();
+    }
+
+    @Override
+    public void updateGraphic() {
+        setX(xPos);
+        setY(yPos);
+        setViewport(currViewport);
     }
 
     public enum AnimationState {

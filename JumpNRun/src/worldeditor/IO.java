@@ -118,6 +118,8 @@ public class IO {
                         System.err.println(currBlock);
                     }
                     addBlock = new Block(addName, blockDir, addFileName, addIsSolid);
+                    addBlock.setX(xIndex * blockSize);
+                    addBlock.setY(yIndex * blockSize);
                     
                     if(!blocks.contains(addBlock)) {
                         blocks.add(addBlock);

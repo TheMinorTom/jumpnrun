@@ -24,7 +24,7 @@ import worldeditor.IO;
  *
  * @author DavidPrivat
  */
-public class ProtagonistOnlineClient extends ImageView {
+public class ProtagonistOnlineClient extends ImageView implements OnlineUpdatableObject {
 
     private static final double width = Protagonist.getWidth();
     private Label nameLbl;
@@ -47,7 +47,7 @@ public class ProtagonistOnlineClient extends ImageView {
         nameLbl = new Label(name);
         nameLbl.setFont(new Font(JumpNRun.game.language.getFontName(), 20));
         nameLbl.setVisible(true);
-        update(x, y, CostumeViewport.MID);
+        updatePos(x, y, CostumeViewport.MID.ordinal());
 
         spritePath = "sprites/protagonist/" + skinFileName;
         this.indexId = indexId;
@@ -72,13 +72,15 @@ public class ProtagonistOnlineClient extends ImageView {
 
     }
 
-    public void update(double x, double y, CostumeViewport viewPort) {
+    @Override
+    public void updatePos(double x, double y, int viewPort) {
         xPos = x;
         yPos = y;
-        currViewport = viewPort.getRect();
+        currViewport = CostumeViewport.values()[viewPort].getRect();
     }
 
-    public void updatePos() {
+    @Override
+    public void updateGraphic() {
         setX(xPos);
         setY(yPos);
         setViewport(currViewport);

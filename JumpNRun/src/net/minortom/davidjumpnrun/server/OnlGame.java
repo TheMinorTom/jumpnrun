@@ -14,8 +14,11 @@ import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import jumpnrun.JumpNRun;
+import jumpnrun.Shoot;
+import net.minortom.davidjumpnrun.netcode.GameObjectType;
 import net.minortom.davidjumpnrun.netcode.ServerCommand;
 import worldeditor.Block;
 import worldeditor.IO;
@@ -49,10 +52,15 @@ public class OnlGame implements Runnable {
 
     public int udpPort;
     public DatagramSocket udpSocket;
-    
+
     public HashMap<String, OnlineGameObject> onlineGameObjects;
-    
+    public ObservableList<RemoteUpdatableObject> movingObjects;
+    public ObservableList<RemoteUpdatableObject> shoots;
+
     private int currObjectId = Integer.MIN_VALUE;
+
+    // loop
+    private double timeElapsedSeconds;
 
     public OnlGame(Server server, String gameName, int playersMax, String gamemode, double timeLimit, int respawnLimit, String mapName, String playerOneId, String playerOneSkin) {
         this.server = server;
@@ -87,9 +95,11 @@ public class OnlGame implements Runnable {
         blockSize = worldVector.get(0).get(0).getFitWidth();
         players = new HashMap<>();
         playerSkins = new HashMap<>();
-        
+
         onlineGameObjects = new HashMap<>();
         addPlayer(playerOneId, playerOneSkin);
+        movingObjects = FXCollections.observableArrayList();
+        shoots = FXCollections.observableArrayList();
     }
 
     public void addPlayer(String pubId, String skin) {
@@ -99,14 +109,13 @@ public class OnlGame implements Runnable {
         RemotePlayer addPlayer = new RemotePlayer(server, this, pubId, addObjectId, skin, name, players.size(), playersMax);
         onlineGameObjects.put(addObjectId, addPlayer);
         players.put(pubId, addPlayer);
-        
+
         sendAllTCP(ServerCommand.OGAME_PJOINED, new String[]{name, pubId, String.valueOf(playersMax)});
         if (isReadyToStart()) {
             startGame();
         }
     }
-    
-    
+
     public synchronized String nextObjectId() {
         String returnId = String.valueOf(currObjectId);
         currObjectId++;
@@ -215,26 +224,62 @@ public class OnlGame implements Runnable {
             (new Thread(entry.getValue())).start();
         }
 
+        double now = System.nanoTime();
+        double startTime = now;
+        double oldTime = now;
+        double timeElapsed = 0;
+        timeElapsedSeconds = timeElapsed;
         while (!ended) {
-            
+            now = System.nanoTime();
+            timeElapsed = now - oldTime;
+            oldTime = now;
+            timeElapsedSeconds = timeElapsed / (1000.0d * 1000.0d * 1000.0d);
             /*
+             players.forEach((id, p) -> {
+             sendAllTCP(ServerCommand.OGAME_UPDATEPROT, new String[]{p.pubId, String.valueOf(p.getXPos()), String.valueOf(p.getYPos()), String.valueOf(p.getAnimationStateAsInt())});
+             try {
+             Thread.sleep(5);
+             } catch (InterruptedException ex) {
+             Logger.getLogger(OnlGame.class.getName()).log(Level.SEVERE, null, ex);
+             }
+             });
+             */
             players.forEach((id, p) -> {
-                sendAllTCP(ServerCommand.OGAME_UPDATEPROT, new String[]{p.pubId, String.valueOf(p.getXPos()), String.valueOf(p.getYPos()), String.valueOf(p.getAnimationStateAsInt())});
-                try {
-                    Thread.sleep(5);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(OnlGame.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                p.update(timeElapsedSeconds);
             });
-                    */
-            players.forEach((id, p) -> {
-                p.update();
+
+            movingObjects.forEach((o) -> {
+                o.update(timeElapsedSeconds);
             });
-            
+
+            try {
+                shoots.forEach((shoot) -> {
+                    players.forEach((id, player) -> {
+                        if (!player.equals(shoot.getOwner())) {
+                            if (shoot.intersects(player.getBoundsInLocal())) {
+                                deleteShoot(shoot);
+                                player.hitten();
+                            }
+                        }
+
+                    });
+
+                    worldVector.forEach((blockRow) -> {
+                        blockRow.forEach((block) -> {
+                            if (block.getIsSolid() && shoot.intersects(block.getBoundsInLocal())) {
+                                deleteShoot(shoot);
+                            }
+                        });
+                    });
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             try {
                 Thread.sleep(5);
-            } catch(InterruptedException i) {
-                
+            } catch (InterruptedException i) {
+
             }
 
         }
@@ -250,4 +295,28 @@ public class OnlGame implements Runnable {
         //}
         return false;
     }
+
+    public void deleteShoot(RemoteUpdatableObject o) {
+        movingObjects.remove(o);
+        onlineGameObjects.remove(o.getObjectId());
+        shoots.remove(o);
+        sendAllTCP(ServerCommand.OGAME_REMOVEOBJECT, new String[]{o.getObjectId()});
+    }
+
+    public void addShoot(RemoteUpdatableObject o) {
+        movingObjects.add(o);
+        onlineGameObjects.put(o.getObjectId(), o);
+        shoots.add(o);
+    }
+
+    public void generateShoot(RemotePlayer p) {
+        RemoteUpdatableObject shoot;
+        if (p.isFacingLeft()) {
+            shoot = new RemoteUpdatableObject(nextObjectId(), Shoot.AnimationState.LEFT.getRect(), GameObjectType.SHOOT, p.getRemoteGun().getX() + 40, p.getRemoteGun().getY(), -1000, 0, 0, 200, this, p, Shoot.AnimationState.RIGHT.ordinal());
+        } else {
+            shoot = new RemoteUpdatableObject(nextObjectId(), Shoot.AnimationState.LEFT.getRect(), GameObjectType.SHOOT, p.getRemoteGun().getX() + 40, p.getRemoteGun().getY(), 1000, 0, 0, 200, this, p, Shoot.AnimationState.RIGHT.ordinal());
+        }
+        addShoot(shoot);
+    }
+
 }

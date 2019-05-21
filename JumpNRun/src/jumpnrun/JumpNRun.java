@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Vector;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -92,6 +94,7 @@ public class JumpNRun extends Application {
     private Gamemode onlineGamemode;
     private HashMap<String, ProtagonistOnlineClient> onlineProts;
     private HashMap<String, Object> onlineGameObjects;
+    private ObservableList<OnlineUpdatableObject> onlineUpdatableObjects;
     private String gameName;
 
     private boolean[] keysDown;
@@ -251,6 +254,7 @@ public class JumpNRun extends Application {
 
     public void initOnlineGame(String playerAmount, String spawnY, String gamemode, String limit, String gameName) {
         onlineProts = new HashMap();
+        onlineUpdatableObjects = FXCollections.observableArrayList();
         onlineGameObjects = new HashMap<>();
         this.gameName = gameName;
         try {
@@ -283,7 +287,7 @@ public class JumpNRun extends Application {
     }
 
     public void startOnlineGame() {
-        loopOnline = new GameLoopOnline(onlineProts);
+        loopOnline = new GameLoopOnline(onlineUpdatableObjects);
         loopOnline.start();
     }
 
@@ -299,24 +303,18 @@ public class JumpNRun extends Application {
         ProtagonistOnlineClient addProt = graphic.generateOtherOnlineProt(name, skinFileName, index, pubId, playerAmount, onlineSpawnY);
         onlineProts.put(pubId, addProt);
         onlineGameObjects.put(objectId, addProt);
+        onlineUpdatableObjects.add(addProt);
     }
 
     public void initLocalProt(String name, String skinFileName, int index, String pubId, String objectId) {
         ProtagonistOnlineClient addProt = graphic.generateLocalOnlineProt(name, skinFileName, index, pubId, playerAmount, onlineSpawnY);
         onlineProts.put(pubId, addProt);
         onlineGameObjects.put(objectId, addProt);
+        onlineUpdatableObjects.add(addProt);
     }
 
     public void setLocalProt(ProtagonistOnlineClient p) {
         localProt = p;
-    }
-
-    public void updateProt(String id, String x, String y, String animationsState) {
-        double xPos = Double.parseDouble(x);
-        double yPos = Double.parseDouble(y);
-        int animationStateInt = Integer.parseInt(animationsState);
-        Protagonist.CostumeViewport viewPort = Protagonist.CostumeViewport.values()[animationStateInt];
-        onlineProts.get(id).update(xPos, yPos, viewPort);
     }
 
     public void updateOnlineObject(String objectId, String objectTypeAsIntAsString, String xPosString, String yPosString, String animationStateAsIntAsString) {
@@ -333,77 +331,75 @@ public class JumpNRun extends Application {
                 currNode.setVisible(true);
             }
         }
+        if (animationStateAsInt >= 0) {
+            switch (objectType) {
+                case PROTAGONIST:
+                    ((ProtagonistOnlineClient) onlineGameObjects.get(objectId)).updatePos(xPos, yPos, animationStateAsInt);
+                    break;
+                case PITCHFORK:
+                    if (alreadyExists) {
+                        Pitchfork pitchfork = (Pitchfork) onlineGameObjects.get(objectId);
+                        pitchfork.updatePos(xPos, yPos, animationStateAsInt);
 
-        switch (objectType) {
-            case PROTAGONIST:
-                Protagonist.CostumeViewport viewPort = Protagonist.CostumeViewport.values()[animationStateAsInt];
-                ((ProtagonistOnlineClient) onlineGameObjects.get(objectId)).update(xPos, yPos, viewPort);
-                break;
-            case PITCHFORK:
-                if (alreadyExists) {
-                    Pitchfork pitchfork = (Pitchfork) onlineGameObjects.get(objectId);
-                    pitchfork.setX(xPos);
-                    pitchfork.setY(yPos);
-                    try {
-                        pitchfork.setViewport(Pitchfork.AnimationState.values()[animationStateAsInt].getRect());
-                    } catch (ArrayIndexOutOfBoundsException e) {
-
+                    } else {
+                        Pitchfork addPitchfork = new Pitchfork();
+                        Platform.runLater(() -> {
+                            graphic.getChildren().add(addPitchfork);
+                        });
+                        onlineGameObjects.put(objectId, addPitchfork);
+                        onlineUpdatableObjects.add(addPitchfork);
+                        updateOnlineObject(objectId, objectTypeAsIntAsString, xPosString, yPosString, animationStateAsIntAsString);
                     }
-                } else {
-                    Pitchfork addPitchfork = new Pitchfork();
-                    Platform.runLater(() -> {
-                        graphic.getChildren().add(addPitchfork);
-                    });
-                    onlineGameObjects.put(objectId, addPitchfork);
-                    updateOnlineObject(objectId, objectTypeAsIntAsString, xPosString, yPosString, animationStateAsIntAsString);
-                }
-                break;
-            case GUN:
-                if (alreadyExists) {
-                    Gun gun = (Gun) onlineGameObjects.get(objectId);
-                    gun.setLayoutX(xPos);
-                    gun.setLayoutY(yPos);
-                    try {
-                        gun.setViewport(Gun.AnimationState.values()[animationStateAsInt].getRect());
-                    } catch (ArrayIndexOutOfBoundsException e) {
+                    break;
+                case GUN:
+                    if (alreadyExists) {
+                        Gun gun = (Gun) onlineGameObjects.get(objectId);
+                        gun.updatePos(xPos, yPos, animationStateAsInt);
 
+                    } else {
+                        Gun addGun = new Gun();
+                        Platform.runLater(() -> {
+                            graphic.getChildren().add(addGun);
+                        });
+                        onlineGameObjects.put(objectId, addGun);
+                        onlineUpdatableObjects.add(addGun);
+                        updateOnlineObject(objectId, objectTypeAsIntAsString, xPosString, yPosString, animationStateAsIntAsString);
                     }
-                } else {
-                    Gun addGun = new Gun();
-                    Platform.runLater(() -> {
-                        graphic.getChildren().add(addGun);
-                    });
-                    onlineGameObjects.put(objectId, addGun);
-                    updateOnlineObject(objectId, objectTypeAsIntAsString, xPosString, yPosString, animationStateAsIntAsString);
-                }
-                break;
-            case SHOOT:
-                if (alreadyExists) {
-                    Shoot shoot = (Shoot) onlineGameObjects.get(objectId);
-                    shoot.setLayoutX(xPos);
-                    shoot.setLayoutY(yPos);
-                    try {
-                        shoot.setViewport(Shoot.AnimationState.values()[animationStateAsInt].getRect());
-                    } catch (ArrayIndexOutOfBoundsException e) {
+                    break;
+                case SHOOT:
+                    if (alreadyExists) {
+                        Shoot shoot = (Shoot) onlineGameObjects.get(objectId);
+                        shoot.updatePos(xPos, yPos, animationStateAsInt);
 
+                    } else {
+                        Shoot addShoot = new Shoot();
+                        Platform.runLater(() -> {
+                            graphic.getChildren().add(addShoot);
+                        });
+                        onlineGameObjects.put(objectId, addShoot);
+                        onlineUpdatableObjects.add(addShoot);
+                        updateOnlineObject(objectId, objectTypeAsIntAsString, xPosString, yPosString, animationStateAsIntAsString);
                     }
-                } else {
-                    Shoot addShoot = new Shoot();
-                    Platform.runLater(() -> {
-                        graphic.getChildren().add(addShoot);
-                    });
-                    onlineGameObjects.put(objectId, addShoot);
-                    updateOnlineObject(objectId, objectTypeAsIntAsString, xPosString, yPosString, animationStateAsIntAsString);
-                }
-                break;
+                    break;
+            }
 
         }
     }
-    
+
+    public void removeOnlineObject(String objectId) {
+        Node removeObject = (Node) onlineGameObjects.get(objectId);
+        Platform.runLater(() -> {
+            graphic.getChildren().remove(removeObject);
+        });
+
+        onlineUpdatableObjects.remove(removeObject);
+        onlineGameObjects.remove(objectId);
+    }
+
     public void updateOnlineObjects(String message) {
         String[] differentObjectsArr = message.split("\\" + NetworkManager.differentObjectsSeperator);
         String[] currArgs = null;
-        for(String currObject: differentObjectsArr) {
+        for (String currObject : differentObjectsArr) {
             currArgs = currObject.split("\\" + NetworkManager.subArgsSeperator);
             updateOnlineObject(currArgs[0], currArgs[1], currArgs[2], currArgs[3], currArgs[4]);
         }

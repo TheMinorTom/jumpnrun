@@ -19,9 +19,9 @@ import worldeditor.IO;
  *
  * @author Norbert
  */
-public class Shoot extends ImageView implements Updatable{
+public class Shoot extends ImageView implements Updatable, OnlineUpdatableObject {
 
-    double xPos, yPos, xSpd, ySpd, breakAccX, gravAccY;
+    double xPos, yPos, xSpd, ySpd, breakAccX, gravAccY, lastXPos, lastYPos;
 
     private final static String imageSource = "sprites/ShootGes.png";
 
@@ -35,32 +35,38 @@ public class Shoot extends ImageView implements Updatable{
             xSpd = xSpeed;
         } else {
             setViewport(AnimationState.LEFT.getRect());
-            xSpd = -1*xSpeed;
+            xSpd = -1 * xSpeed;
         }
         ySpeed = ySpeed;
-        
-        xPos =x;
-        yPos =y;
+
+        xPos = x;
+        yPos = y;
         breakAccX = 200;
         gravAccY = 200;
-        
-    }
-    
-    public Shoot(){
-        Image image = new Image(ConfigManager.getFileStream(imageSource));
-        setImage(image);
-        getTransforms().add(new Rotate(calcRotation(xSpd, ySpd)));
-        breakAccX = 200;
-        gravAccY = 200;
-        
+
     }
 
-    
+    public Shoot() {
+        Image image = new Image(ConfigManager.getFileStream(imageSource));
+        setImage(image);
+        getTransforms().add(new Rotate());
+        breakAccX = 200;
+        gravAccY = 200;
+
+    }
+
+    public void updateRotation() {
+        ((Rotate) getTransforms().get(0)).setAngle(calcRotation(xPos - lastXPos, yPos - lastYPos));
+
+        lastXPos = xPos;
+        lastYPos = yPos;
+    }
+
     @Override
     public void update(double timeElapsedSeconds, Vector<Vector<Block>> worldVec, Protagonist protOne, Protagonist protTwo, Vector<PowerupCollect> powerupCollects) {
         double xSpdAdd = breakAccX * timeElapsedSeconds;
         double ySpdAdd = gravAccY * timeElapsedSeconds;
-        
+
         if (xSpd > xSpdAdd) {
             xSpd -= xSpdAdd;
         } else if (xSpd < -1 * xSpdAdd) {
@@ -75,28 +81,42 @@ public class Shoot extends ImageView implements Updatable{
         yPos += ySpd * timeElapsedSeconds;
         setLayoutX(xPos);
         setLayoutY(yPos);
-        
-        if(collisionCheck(worldVec, protOne, protTwo)) {
+
+        if (collisionCheck(worldVec, protOne, protTwo)) {
             JumpNRun.removeNode(this);
             JumpNRun.removeUpdatable(this);
         }
     }
-    
-    private double calcRotation (double deltaX, double deltaY) {
+
+    @Override
+    public void updatePos(double x, double y, int animationState) {
+        xPos = x;
+        yPos = y;
+
+    }
+
+    @Override
+    public void updateGraphic() {
+        setLayoutX(xPos);
+        setLayoutY(yPos);
+        updateRotation();
+    }
+
+    private double calcRotation(double deltaX, double deltaY) {
         /*
-        double tot1 = Math.sqrt(x1*x1+y1*y1);
-        double tot2 = Math.sqrt(x2*x2+y2*y2);
-        double cosAng = (x1*x2+y1*y2)/(tot1*tot2);
-        double ang = Math.acos(cosAng);
-        return ang;
-*/
-        double tot = Math.sqrt(deltaX*deltaX+deltaY*deltaY);
-        double cosAng = deltaX/tot;
-        double ang = Math.acos(cosAng);
+         double tot1 = Math.sqrt(x1*x1+y1*y1);
+         double tot2 = Math.sqrt(x2*x2+y2*y2);
+         double cosAng = (x1*x2+y1*y2)/(tot1*tot2);
+         double ang = Math.acos(cosAng);
+         return ang;
+         */
+        double tot = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        double cosAng = (deltaX) / tot;
+        double ang = (Math.toDegrees(Math.acos(cosAng)));
         return ang;
     }
-    
-     public boolean collisionCheck(Vector<Vector<Block>> worldVec, Protagonist protOne, Protagonist protTwo) {
+
+    public boolean collisionCheck(Vector<Vector<Block>> worldVec, Protagonist protOne, Protagonist protTwo) {
         for (int i = 0; i < worldVec.size(); i++) {
             for (int j = 0; j < worldVec.get(i).size(); j++) {
                 if (worldVec.get(i).get(j) != null) {
@@ -127,6 +147,7 @@ public class Shoot extends ImageView implements Updatable{
     }
 
     public enum AnimationState {
+
         LEFT(0, 0, 18, 12),
         RIGHT(19, 0, 37, 12);
         private Rectangle2D r;
@@ -139,5 +160,13 @@ public class Shoot extends ImageView implements Updatable{
             return r;
         }
 
+    }
+
+    public void updatePos(double x, double y) {
+        xPos = x;
+        yPos = y;
+        setLayoutX(x);
+        setLayoutY(y);
+        updateRotation();
     }
 }

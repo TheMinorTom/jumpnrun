@@ -15,8 +15,10 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.input.KeyCode;
 import javafx.scene.shape.Rectangle;
 import jumpnrun.Gun;
+import jumpnrun.JumpNRun;
 import jumpnrun.Pitchfork;
 import jumpnrun.Protagonist;
+import jumpnrun.Shoot;
 import net.minortom.davidjumpnrun.netcode.GameObjectType;
 import net.minortom.davidjumpnrun.netcode.ServerCommand;
 import worldeditor.Block;
@@ -47,7 +49,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
     
     private final String objectId;
     
-    private boolean weaponFacingLeft;
+    private boolean shootGenerated = false;
     
     public RemotePlayer(Server server, OnlGame game, String pubId, String objectId, String skin, String name, int index, int maxPlayer) {
         super(index, (game.worldWidth / (maxPlayer + 1)) * (index + 1), OnlGame.spawnY);
@@ -61,10 +63,11 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         accPerSec = 1000;
         animationStateAsInt = currCostume.ordinal();
         remotePitchfork = new RemoteObject(Pitchfork.AnimationState.LEFT.getRect(), GameObjectType.PITCHFORK, game.nextObjectId());
+        remotePitchfork.setAnimationState(-1);
         remoteGun = new RemoteObject(Gun.AnimationState.LEFT.getRect(), GameObjectType.GUN, game.nextObjectId());
+        remoteGun.setAnimationState(-1);
         game.onlineGameObjects.put(remotePitchfork.getObjectId(), remotePitchfork);
         game.onlineGameObjects.put(remoteGun.getObjectId(), remoteGun);
-        weaponFacingLeft = true;
     }
     
     @Override
@@ -97,7 +100,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         }
     }
     
-    public void update() {
+    public void update(double timeElapsedSeconds) {
         
         remotePitchfork.setX(xPos);
         remotePitchfork.setY(yPos);
@@ -320,18 +323,16 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
     
     @Override
     public void doRight() {
-        isFacingRight = true;
+        isFacingLeft = false;
         goesRight = true;
         goesLeft = false;
-        weaponFacingLeft = false;
     }
     
     @Override
     public void doLeft() {
-        isFacingRight = false;
+        isFacingLeft = true;
         goesLeft = true;
         goesRight = false;
-        weaponFacingLeft = true;
     }
     
     @Override
@@ -339,6 +340,11 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         if (ySpeed == 0) {
             jumpDone = true;
         }
+    }
+    
+    @Override
+    public void doShoot() {
+        shootDoing = true;
     }
     
     @Override
@@ -385,7 +391,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
     
     public void updateHit(double timeElapsedSeconds) {
         hitTimer += timeElapsedSeconds;
-        if (weaponFacingLeft) {
+        if (isFacingLeft) {
             remotePitchfork.setX(xPos - 40); //- forkAnimationXPosAdd);
             setAnimationState(CostumeViewport.LEFT_HIT);
             remotePitchfork.setAnimationState(0);
@@ -413,16 +419,27 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
     }
     
     public void updateShoot(double timeElapsedSeconds) {
-        
+        if ((shootTimer > 1) && (!shootGenerated)) {
+            game.generateShoot(this);
+            shootGenerated = true;
+        }
         shootTimer += timeElapsedSeconds;
-        if (weaponFacingLeft) {
+        if (isFacingLeft) {
             remoteGun.setX(getX() - 20); //- forkAnimationXPosAdd);
             setAnimationState(CostumeViewport.LEFT_SHOOT);
-            remoteGun.setAnimationState(0);
+            if (shootTimer < 1) {
+                remoteGun.setAnimationState(Gun.AnimationState.LEFT.ordinal());
+            } else {
+                remoteGun.setAnimationState(Gun.AnimationState.LEFT_SHOOT.ordinal());
+            }
         } else {
             remoteGun.setX(getX() + 5); //+ forkAnimationXPosAdd);
             setAnimationState(CostumeViewport.RIGHT_SHOOT);
-            remoteGun.setAnimationState(1);
+            if (shootTimer < 1) {
+                remoteGun.setAnimationState(Gun.AnimationState.RIGHT.ordinal());
+            } else {
+                remoteGun.setAnimationState(Gun.AnimationState.RIGHT_SHOOT.ordinal());
+            }
         }
         remoteGun.setY(getY() + 22); ///
         // gun.updateShoot(shootTimer);
@@ -432,6 +449,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
             remoteGun.setAnimationState(-1);
             shootTimer = 0;
             setAnimationState(CostumeViewport.MID);
+            shootGenerated = false;
             
         }
         
@@ -443,6 +461,10 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
     
     public RemoteObject getRemoteGun() {
         return remoteGun;
+    }
+    
+    public boolean isFacingLeft() {
+        return isFacingLeft;
     }
     
 }
