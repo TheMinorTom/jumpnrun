@@ -24,6 +24,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -59,6 +60,8 @@ public class GUI extends Group {
 
     public static Scene scene;
     public static JumpNRun game;
+    
+    private double xScroll, yScroll;
 
     public GUI(JumpNRun game) {
 
@@ -220,6 +223,28 @@ public class GUI extends Group {
                         dragBlockIndEntered.clear();
                     }
                 });
+        
+        setOnKeyPressed((KeyEvent e)->{
+            switch(e.getCode()) {
+                case UP:
+                    yScroll += blockSize;
+                    updateBlockPositions();
+                    break;
+                case DOWN:
+                    yScroll -= blockSize;
+                    updateBlockPositions();
+                    break;
+                case RIGHT:
+                    xScroll -= blockSize;
+                    updateBlockPositions();
+                    break;
+                case LEFT:
+                    xScroll += blockSize;
+                    updateBlockPositions();
+                    break;
+            }
+        });
+        requestFocus();
     }
 
     public static int test(int i) {
@@ -230,8 +255,8 @@ public class GUI extends Group {
 
     public void addBlock(Block b, double xPos, double yPos) {
 
-        int xIndex = (int) (xPos / blockSize);
-        int yIndex = (int) (yPos / blockSize);
+        int xIndex = (int) ((xPos-xScroll) / blockSize);
+        int yIndex = (int) ((yPos-yScroll) / blockSize);
 
         b.setX(xPos);
         b.setY(yPos);
@@ -262,6 +287,17 @@ public class GUI extends Group {
 
     }
 
+    public void updateBlockPositions() {
+        Block currBlock;
+        for(int i = 0; i < worldVector.size(); i++) {
+            for(int j = 0; j < worldVector.get(i).size(); j++) {
+                currBlock = worldVector.get(i).get(j);
+                currBlock.setX((i * blockSize) + xScroll);
+                currBlock.setY((j * blockSize) + yScroll);
+            }
+        }
+    }
+    
     public void refreshPositions() {
         blockSizeTextField.setLayoutY(30);
 
