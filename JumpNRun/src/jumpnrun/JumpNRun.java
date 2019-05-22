@@ -84,6 +84,8 @@ public class JumpNRun extends Application {
     public NetworkManager networkManager;
     public Language language;
     public Configuration config;
+    
+    private Scene worldEditorScene;
 
     //Online Stuff
     private ProtagonistOnlineClient localProt;
@@ -150,6 +152,8 @@ public class JumpNRun extends Application {
 
             primStage = primaryStage;
             mainMenu = new MainMenu(this);
+            scene = new Scene(mainMenu);
+            primaryStage.setScene(scene);
             chooseGamemodeScreen = new ChooseGamemodeMenu(this);
             winScreen = new WinScreen(this);
             offlineSkinChooseScreen1 = new SkinChooseMenu(this, SkinChooseMenu.SkinChooseMode.OFFLINE_PLAYER_1);
@@ -158,16 +162,15 @@ public class JumpNRun extends Application {
             onlineSkinChooseJoinGame = new SkinChooseMenu(this, SkinChooseMenu.SkinChooseMode.ONLINE_JOIN_GAME);
             creditsScreen = new CreditsScreen(this);
             worldEditorScreen = new GUI(this);
+            worldEditorScene = new Scene(worldEditorScreen);
             //chooseSkinScreen = new SkinChooseMenu(this);
             //((SkinChooseMenu)chooseSkinScreen).updateStrings();
             //scene = new Scene(chooseSkinScreen);
 
             WorldEditor.initBlocksArr();
 
-            scene = new Scene(mainMenu);
-
             primaryStage.setTitle(game.language.GWindowName);
-            primaryStage.setScene(scene);
+
             primaryStage.setMaximized(true);
             primaryStage.show();
             ((WinScreen) winScreen).setWinner(1); //!!!
@@ -605,8 +608,13 @@ public class JumpNRun extends Application {
 
     public void openWorldEditor() {
         Platform.runLater(() -> {
+            
+            ((GUI) worldEditorScreen).setUpHandlers(worldEditorScene);
+            ((GUI) worldEditorScreen).drawWorld();
             //WorldEditor.main();
-            scene.setRoot(new GUI(this));
+            primStage.setScene(worldEditorScene);
+            primStage.setMaximized(false);
+            primStage.setMaximized(true);
 
         });
 

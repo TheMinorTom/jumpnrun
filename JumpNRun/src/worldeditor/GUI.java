@@ -36,11 +36,10 @@ import jumpnrun.JumpNRun;
  *
  * @author User
  */
-public class GUI extends VBox {
+public class GUI extends Group {
 
     //private static ObservableList<ObservableList<Block>> worldList;
     private static Vector<Vector<Block>> worldVector;
-    private static Group world;
 
     private static double blockSize;
     private static Rectangle r;
@@ -62,6 +61,7 @@ public class GUI extends VBox {
     public static JumpNRun game;
 
     public GUI(JumpNRun game) {
+
         this.game = game;
         blockSize = 60;
         dragBlockIndEntered = new Vector<int[]>();
@@ -73,8 +73,6 @@ public class GUI extends VBox {
         ry.setLayoutX(200);
 
         saveFile = new File(JumpNRun.sourcePath + "worlds/");
-
-        world = new Group();
         blockChose = new BlockChose();
         worldVector = new Vector<Vector<Block>>();
 
@@ -153,7 +151,6 @@ public class GUI extends VBox {
         r.setStroke(Color.RED);
 
         blockSizeTextField = new TextField(Double.toString(blockSize));
-        blockSizeTextField.setLayoutX(0);
 
         blockSizeTextField.setOnAction((ActionEvent) -> {
             try {
@@ -169,22 +166,20 @@ public class GUI extends VBox {
             }
         });
 
-        Label mousePosLbl = new Label("Mouseposition: | ");
-
-        world.getChildren().addAll(r);
-
-        getChildren().addAll(menuBar, blockSizeTextField, mousePosLbl, world);
+        getChildren().addAll(menuBar, blockSizeTextField, r);
 
         game.getPrimStage().setTitle("Hello World!");
 
         blockSizeTextField.setLayoutY(menuBar.getHeight());
 
-        setOnMouseMoved((MouseEvent e) -> {
-            updateRect(e.getX(), e.getY());
-            mousePosLbl.setText("Rectposition: " + (int) r.getLayoutX() + " | " + (int) r.getLayoutY());
-        });
+    }
 
-        setOnMouseClicked((MouseEvent e) -> {
+    public void setUpHandlers(Scene scene) {
+        scene.setOnMouseMoved((MouseEvent e) -> {
+            updateRect(e.getX(), e.getY());
+
+        });
+        scene.setOnMouseClicked((MouseEvent e) -> {
             switch (e.getButton()) {
                 case SECONDARY:
                     if (e.getSceneY() > (menuBar.getHeight() + blockSizeTextField.getHeight())) {
@@ -197,8 +192,8 @@ public class GUI extends VBox {
             }
 
         });
-        
-        setOnMouseDragged((MouseEvent e) -> {
+
+        scene.setOnMouseDragged((MouseEvent e) -> {
             dragDoing = true;
             updateRect(e.getX(), e.getY());
 
@@ -218,17 +213,13 @@ public class GUI extends VBox {
 
         });
 
-        setOnMouseReleased(
+        scene.setOnMouseReleased(
                 (MouseEvent e) -> {
                     if (dragDoing) {
                         dragDoing = false;
                         dragBlockIndEntered.clear();
                     }
                 });
-        
-        world.requestFocus();
-        world.requestLayout();
-
     }
 
     public static int test(int i) {
@@ -237,7 +228,7 @@ public class GUI extends VBox {
         return i;
     }
 
-    public static void addBlock(Block b, double xPos, double yPos) {
+    public void addBlock(Block b, double xPos, double yPos) {
 
         int xIndex = (int) (xPos / blockSize);
         int yIndex = (int) (yPos / blockSize);
@@ -255,26 +246,32 @@ public class GUI extends VBox {
         }
         Vector<Block> yList = worldVector.get(xIndex);
 
-        for (int i = 0; i < world.getChildren().size(); i++) {
-            Node testNode = world.getChildren().get(i);
+        for (int i = 0; i < getChildren().size(); i++) {
+            Node testNode = getChildren().get(i);
             if (testNode.getClass().equals(Block.class)) {
-                Block testBlock = (Block) world.getChildren().get(i);
+                Block testBlock = (Block) getChildren().get(i);
                 if ((testBlock.getX() == b.getX() && (testBlock.getY() == b.getY()))) {
-                    world.getChildren().remove(i);
-                    i = world.getChildren().size();
+                    getChildren().remove(i);
+                    i = getChildren().size();
                 }
             }
         }
-        world.getChildren().add(b);
+        getChildren().add(b);
 
         yList.set(yIndex, b);
 
     }
 
-    public static void drawWorld() {
+    public void refreshPositions() {
+        blockSizeTextField.setLayoutY(30);
+
+    }
+
+    public void drawWorld() {
+        refreshPositions();
         //world = new Group();
-        world.getChildren().clear();
-        world.getChildren().addAll(r, blockSizeTextField, menuBar);
+        getChildren().clear();
+        getChildren().addAll(r, blockSizeTextField, menuBar);
         for (int i = 0; i < worldVector.size(); i++) {
             for (int j = 0; j < worldVector.get(i).size(); j++) {
                 if (worldVector.get(i).get(j) != null) {
@@ -282,7 +279,7 @@ public class GUI extends VBox {
                     b.setLayoutX(i * blockSize);
                     b.setLayoutY(j * blockSize);
 
-                    world.getChildren().add(b);
+                    getChildren().add(b);
 
                 }
             }
@@ -308,8 +305,8 @@ public class GUI extends VBox {
     private void updateRect(double xPos, double yPos) {
         if ((yPos > (menuBar.getHeight() + blockSizeTextField.getHeight())) && !blockChose.isShowing()) {
 
-            r.setLayoutX(blockSize * (Math.floor((xPos) / blockSize)));
-            r.setLayoutY(blockSize * (Math.floor((yPos) / blockSize)));
+            r.setX(blockSize * (Math.floor((xPos) / blockSize)));
+            r.setY(blockSize * (Math.floor((yPos) / blockSize)));
 
         }
 
