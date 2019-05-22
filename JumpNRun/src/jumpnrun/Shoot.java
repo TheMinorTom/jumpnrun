@@ -28,16 +28,15 @@ public class Shoot extends ImageView implements Updatable, OnlineUpdatableObject
     public Shoot(double x, double y, double xSpeed, double ySpeed, boolean facingRight) {
         Image image = new Image(ConfigManager.getFileStream(imageSource));
         setImage(image);
-        setRotationAxis(new Point3D(xPos, yPos, 0));
-        setRotate(calcRotation(xSpd, ySpd));
+        getTransforms().add(new Rotate());
+        setViewport(AnimationState.RIGHT.getRect());
         if (facingRight) {
-            setViewport(AnimationState.RIGHT.getRect());
+
             xSpd = xSpeed;
         } else {
-            setViewport(AnimationState.LEFT.getRect());
             xSpd = -1 * xSpeed;
         }
-        ySpeed = ySpeed;
+        ySpd = ySpeed;
 
         xPos = x;
         yPos = y;
@@ -49,9 +48,10 @@ public class Shoot extends ImageView implements Updatable, OnlineUpdatableObject
     public Shoot() {
         Image image = new Image(ConfigManager.getFileStream(imageSource));
         setImage(image);
-        getTransforms().add(new Rotate());
+        getTransforms().add(new Rotate(0, AnimationState.RIGHT.getRect().getWidth()/2, AnimationState.RIGHT.getRect().getHeight()/2));
         breakAccX = 200;
         gravAccY = 200;
+        setViewport(AnimationState.RIGHT.getRect());
 
     }
 
@@ -75,7 +75,7 @@ public class Shoot extends ImageView implements Updatable, OnlineUpdatableObject
             JumpNRun.removeNode(this);
             JumpNRun.removeUpdatable(this);
         }
-        getTransforms().add(new Rotate(calcRotation(xSpd, ySpd)));
+        updateRotation();
         ySpd += ySpdAdd;
         xPos += xSpd * timeElapsedSeconds;
         yPos += ySpd * timeElapsedSeconds;
@@ -160,13 +160,5 @@ public class Shoot extends ImageView implements Updatable, OnlineUpdatableObject
             return r;
         }
 
-    }
-
-    public void updatePos(double x, double y) {
-        xPos = x;
-        yPos = y;
-        setLayoutX(x);
-        setLayoutY(y);
-        updateRotation();
     }
 }

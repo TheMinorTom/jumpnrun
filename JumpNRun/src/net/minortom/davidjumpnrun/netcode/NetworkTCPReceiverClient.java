@@ -115,6 +115,7 @@ public class NetworkTCPReceiverClient extends Thread {
                     }
 
                 } catch (NullPointerException e) {
+                    e.printStackTrace();
                 } catch (Exception e) {
                     System.err.println("Invalid package received");
                     e.printStackTrace();

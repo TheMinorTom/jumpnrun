@@ -235,7 +235,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
                 if (worldVec.get(i).get(j) != null) {
                     Block b = worldVec.get(i).get(j);
                     if (b.getIsSolid()) {
-                        if (intersects(xPos, yPos, width, height, i * blockSize, j * blockSize, blockSize, blockSize)) {
+                        if (intersects(xPos, yPos, width, height, b.getX(), b.getY(), blockSize, blockSize)) {
                             
                             return true;
                         }
@@ -270,7 +270,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         if (x2 > endX1
                 || endX2 < x1
                 || y2 > endY1
-                || endY2 < y2) {
+                || endY2 < y1) {
             return false;
         }
         return true;

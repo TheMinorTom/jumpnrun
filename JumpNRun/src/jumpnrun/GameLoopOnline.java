@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Vector;
 import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import worldeditor.Block;
 
@@ -26,20 +27,38 @@ public class GameLoopOnline extends AnimationTimer {
 
     protected JumpNRun game;
 
-    private ObservableList<OnlineUpdatableObject> objects;
     private double[] xPositions, yPositions;    //index = protagonists id
     private Protagonist.CostumeViewport[] viewports; //-""-
+    private ObservableList<OnlineUpdatableObject> updatableObjects, addObjects, removeObjects;
     
-    public GameLoopOnline(ObservableList<OnlineUpdatableObject> objects) {
+    public GameLoopOnline() {
         super();
-        this.objects = objects;
+        updatableObjects = FXCollections.observableArrayList();
+        addObjects = FXCollections.observableArrayList();
+        removeObjects = FXCollections.observableArrayList();
     }
 
     @Override
     public void handle(long now) {
-        objects.forEach((o)->{
+        updatableObjects.forEach((o)->{
             o.updateGraphic();
         });
+        if(addObjects.size() != 0) {
+            updatableObjects.addAll(addObjects);
+            addObjects.clear();
+        }
+        if(removeObjects.size() != 0) {
+            updatableObjects.removeAll(removeObjects);
+            removeObjects.clear();
+        }
+    }
+    
+    public void addObject(OnlineUpdatableObject addObj) {
+        addObjects.add(addObj);
+    }
+    
+    public void removeObject (OnlineUpdatableObject remObj) {
+        removeObjects.add(remObj);
     }
 
 }

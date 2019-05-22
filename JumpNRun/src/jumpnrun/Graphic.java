@@ -9,6 +9,7 @@ import java.util.Vector;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -248,5 +249,9 @@ public class Graphic extends Group {
 
     public double getRightLabelWidth() {
         return rightLbl.getWidth();
+    }
+    
+    public void addNode(Node n) {
+        worldGroup.getChildren().add(n);
     }
 }

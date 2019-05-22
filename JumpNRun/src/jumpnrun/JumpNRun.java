@@ -94,7 +94,6 @@ public class JumpNRun extends Application {
     private Gamemode onlineGamemode;
     private HashMap<String, ProtagonistOnlineClient> onlineProts;
     private HashMap<String, Object> onlineGameObjects;
-    private ObservableList<OnlineUpdatableObject> onlineUpdatableObjects;
     private String gameName;
 
     private boolean[] keysDown;
@@ -253,8 +252,8 @@ public class JumpNRun extends Application {
     }
 
     public void initOnlineGame(String playerAmount, String spawnY, String gamemode, String limit, String gameName) {
+        loopOnline = new GameLoopOnline();
         onlineProts = new HashMap();
-        onlineUpdatableObjects = FXCollections.observableArrayList();
         onlineGameObjects = new HashMap<>();
         this.gameName = gameName;
         try {
@@ -287,7 +286,7 @@ public class JumpNRun extends Application {
     }
 
     public void startOnlineGame() {
-        loopOnline = new GameLoopOnline(onlineUpdatableObjects);
+
         loopOnline.start();
     }
 
@@ -303,14 +302,14 @@ public class JumpNRun extends Application {
         ProtagonistOnlineClient addProt = graphic.generateOtherOnlineProt(name, skinFileName, index, pubId, playerAmount, onlineSpawnY);
         onlineProts.put(pubId, addProt);
         onlineGameObjects.put(objectId, addProt);
-        onlineUpdatableObjects.add(addProt);
+        loopOnline.addObject(addProt);
     }
 
     public void initLocalProt(String name, String skinFileName, int index, String pubId, String objectId) {
         ProtagonistOnlineClient addProt = graphic.generateLocalOnlineProt(name, skinFileName, index, pubId, playerAmount, onlineSpawnY);
         onlineProts.put(pubId, addProt);
         onlineGameObjects.put(objectId, addProt);
-        onlineUpdatableObjects.add(addProt);
+        loopOnline.addObject(addProt);
     }
 
     public void setLocalProt(ProtagonistOnlineClient p) {
@@ -347,7 +346,7 @@ public class JumpNRun extends Application {
                             graphic.getChildren().add(addPitchfork);
                         });
                         onlineGameObjects.put(objectId, addPitchfork);
-                        onlineUpdatableObjects.add(addPitchfork);
+                        loopOnline.addObject(addPitchfork);
                         updateOnlineObject(objectId, objectTypeAsIntAsString, xPosString, yPosString, animationStateAsIntAsString);
                     }
                     break;
@@ -362,7 +361,7 @@ public class JumpNRun extends Application {
                             graphic.getChildren().add(addGun);
                         });
                         onlineGameObjects.put(objectId, addGun);
-                        onlineUpdatableObjects.add(addGun);
+                        loopOnline.addObject(addGun);
                         updateOnlineObject(objectId, objectTypeAsIntAsString, xPosString, yPosString, animationStateAsIntAsString);
                     }
                     break;
@@ -377,7 +376,7 @@ public class JumpNRun extends Application {
                             graphic.getChildren().add(addShoot);
                         });
                         onlineGameObjects.put(objectId, addShoot);
-                        onlineUpdatableObjects.add(addShoot);
+                        loopOnline.addObject(addShoot);
                         updateOnlineObject(objectId, objectTypeAsIntAsString, xPosString, yPosString, animationStateAsIntAsString);
                     }
                     break;
@@ -392,7 +391,7 @@ public class JumpNRun extends Application {
             graphic.getChildren().remove(removeObject);
         });
 
-        onlineUpdatableObjects.remove(removeObject);
+        loopOnline.removeObject((OnlineUpdatableObject) removeObject);
         onlineGameObjects.remove(objectId);
     }
 
