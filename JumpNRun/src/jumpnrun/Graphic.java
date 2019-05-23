@@ -137,24 +137,46 @@ public class Graphic extends Group {
             timeLabel = new CountUpLabel();
         }
 
-        JumpNRun.addUpdatable((Updatable) timeLabel);
+        JumpNRun.addUpdatable(
+                (Updatable) timeLabel);
 
         timeLabel.setLayoutY(lblYDist);
+
         timeLabel.setLayoutX(JumpNRun.getWidth() / 2);
         timeLabel.setFont(JumpNRun.game.language.getHeadingFont());
-        timeLabel.setBorder(new Border(new BorderStroke(Color.DARKGRAY, BorderStrokeStyle.SOLID, new CornerRadii(100), new BorderWidths(10))));
+        timeLabel.setBorder(
+                new Border(new BorderStroke(Color.DARKGRAY, BorderStrokeStyle.SOLID, new CornerRadii(100), new BorderWidths(10))));
 
         protagonist1 = prot1;
         protagonist2 = prot2;
         //spriteGroup.getChildren().add(protagonist);
 
         worldGroup = GUI.drawWorld(worldVector, blockSize);
-        worldGroup.getChildren().addAll(leftLbl, rightLbl, timeLabel);
-        worldGroup.getChildren().addAll(protagonist1, protagonist2, protagonist1.getPitchfork(), protagonist2.getPitchfork(), protagonist1.getGun(), protagonist2.getGun(), protagonist1.getRespawnLabel(), protagonist2.getRespawnLabel());
 
-        getChildren().addAll(worldGroup);
+        worldGroup.getChildren()
+                .addAll(leftLbl, rightLbl, timeLabel);
+        worldGroup.getChildren()
+                .addAll(protagonist1, protagonist2, protagonist1.getPitchfork(), protagonist2.getPitchfork(), protagonist1.getGun(), protagonist2.getGun(), protagonist1.getRespawnLabel(), protagonist2.getRespawnLabel());
+
+        getChildren()
+                .addAll(worldGroup);
     }
 
+            
+
+    public void updateScrolling() {
+        for (int i = 0; i < worldVector.size(); i++) {
+            for (int j = 0; j < worldVector.get(i).size(); j++) {
+                Block block = worldVector.get(i).get(j);
+                if (block != null) {
+                    block.setX(blockSize * i + JumpNRun.game.getXScroll());
+                    block.setY(blockSize * j + JumpNRun.game.getYScroll());
+                }
+            }
+        }
+    }
+
+    
     public Graphic(Vector<Vector<Block>> worldVec) {
         worldVector = worldVec;
         for (int i = 0; i < worldVector.size(); i++) {
@@ -250,7 +272,7 @@ public class Graphic extends Group {
     public double getRightLabelWidth() {
         return rightLbl.getWidth();
     }
-    
+
     public void addNode(Node n) {
         worldGroup.getChildren().add(n);
     }

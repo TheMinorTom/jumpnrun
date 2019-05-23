@@ -32,7 +32,7 @@ public class ProtagonistOnlineClient extends ImageView implements OnlineUpdatabl
     private double spawnX, spawnY;
     private Label respawnTimerLabel;
     private String spritePath;
-    private double xPos, yPos;
+    private double xPos, yPos, xScroll, yScroll;
     private int indexId;
     private KeyCode[] protControlls;
     private Rectangle2D currViewport;
@@ -78,14 +78,19 @@ public class ProtagonistOnlineClient extends ImageView implements OnlineUpdatabl
         yPos = y;
         currViewport = CostumeViewport.values()[viewPort].getRect();
     }
+    
+    public void updateScroll(double xScroll, double yScroll) {
+        this.xScroll = xScroll;
+        this.yScroll = yScroll;
+    }
 
     @Override
     public void updateGraphic() {
-        setX(xPos);
-        setY(yPos);
+        setX(xPos + xScroll);
+        setY(yPos + yScroll);
         setViewport(currViewport);
-        nameLbl.setLayoutX((xPos + width / 2) - (nameLbl.getWidth() / 2));
-        nameLbl.setLayoutY(yPos - 40);
+        nameLbl.setLayoutX((getX() + width / 2) - (nameLbl.getWidth() / 2));
+        nameLbl.setLayoutY(getY() - 40);
     }
 
     public Label getNameLabel() {
@@ -94,5 +99,13 @@ public class ProtagonistOnlineClient extends ImageView implements OnlineUpdatabl
 
     public KeyCode[] getControls() {
         return protControlls;
+    }
+    
+    public double getRealX() {
+        return xPos;
+    }
+    
+    public double getRealY() {
+        return yPos;
     }
 }

@@ -99,6 +99,8 @@ public class JumpNRun extends Application {
     private String gameName;
 
     private boolean[] keysDown;
+    
+    private double xScroll, yScroll;
 
     @Override
     public void start(Stage primaryStage) throws IOException {
@@ -255,6 +257,8 @@ public class JumpNRun extends Application {
     }
 
     public void initOnlineGame(String playerAmount, String spawnY, String gamemode, String limit, String gameName) {
+        yScroll = 0;
+        xScroll = 0;
         loopOnline = new GameLoopOnline();
         onlineProts = new HashMap();
         onlineGameObjects = new HashMap<>();
@@ -320,6 +324,8 @@ public class JumpNRun extends Application {
     }
 
     public void updateOnlineObject(String objectId, String objectTypeAsIntAsString, String xPosString, String yPosString, String animationStateAsIntAsString) {
+        graphic.updateScrolling();
+        //xScroll = localProt.getRealX() - primStage.getWidth()/2;
         GameObjectType objectType = GameObjectType.values()[Integer.parseInt(objectTypeAsIntAsString)];
         double xPos = Double.parseDouble(xPosString);
         double yPos = Double.parseDouble(yPosString);
@@ -337,11 +343,12 @@ public class JumpNRun extends Application {
             switch (objectType) {
                 case PROTAGONIST:
                     ((ProtagonistOnlineClient) onlineGameObjects.get(objectId)).updatePos(xPos, yPos, animationStateAsInt);
+                    ((ProtagonistOnlineClient) onlineGameObjects.get(objectId)).updateScroll(xScroll, yScroll);
                     break;
                 case PITCHFORK:
                     if (alreadyExists) {
                         Pitchfork pitchfork = (Pitchfork) onlineGameObjects.get(objectId);
-                        pitchfork.updatePos(xPos, yPos, animationStateAsInt);
+                        pitchfork.updatePos(xPos + xScroll, yPos + yScroll, animationStateAsInt);
 
                     } else {
                         Pitchfork addPitchfork = new Pitchfork();
@@ -356,7 +363,7 @@ public class JumpNRun extends Application {
                 case GUN:
                     if (alreadyExists) {
                         Gun gun = (Gun) onlineGameObjects.get(objectId);
-                        gun.updatePos(xPos, yPos, animationStateAsInt);
+                        gun.updatePos(xPos + xScroll, yPos + yScroll, animationStateAsInt);
 
                     } else {
                         Gun addGun = new Gun();
@@ -371,7 +378,7 @@ public class JumpNRun extends Application {
                 case SHOOT:
                     if (alreadyExists) {
                         Shoot shoot = (Shoot) onlineGameObjects.get(objectId);
-                        shoot.updatePos(xPos, yPos, animationStateAsInt);
+                        shoot.updatePos(xPos + xScroll, yPos + yScroll, animationStateAsInt);
 
                     } else {
                         Shoot addShoot = new Shoot();
@@ -386,6 +393,14 @@ public class JumpNRun extends Application {
             }
 
         }
+    }
+    
+    public double getXScroll() {
+        return xScroll;
+    }
+    
+    public double getYScroll() {
+        return yScroll;
     }
 
     public void removeOnlineObject(String objectId) {
