@@ -11,5 +11,5 @@ package jumpnrun;
  */
 public interface OnlineUpdatableObject {
     public void updatePos (double x, double y, int animationState);
-    public void updateGraphic();
+    public void updateGraphic(double xScroll, double yScroll);
 }

@@ -84,7 +84,7 @@ public class JumpNRun extends Application {
     public NetworkManager networkManager;
     public Language language;
     public Configuration config;
-    
+
     private Scene worldEditorScene;
 
     //Online Stuff
@@ -99,7 +99,7 @@ public class JumpNRun extends Application {
     private String gameName;
 
     private boolean[] keysDown;
-    
+
     private double xScroll, yScroll;
 
     @Override
@@ -323,13 +323,14 @@ public class JumpNRun extends Application {
         localProt = p;
     }
 
-    public void updateWorldScrolling(){
+    public void updateScrolling() {
         graphic.updateScrolling();
+        xScroll = -1 * (localProt.getXPos() - primStage.getWidth() / 2);
+        yScroll = -1 * (localProt.getYPos() - primStage.getHeight() / 4);
     }
-    
+
     public void updateOnlineObject(String objectId, String objectTypeAsIntAsString, String xPosString, String yPosString, String animationStateAsIntAsString) {
-        xScroll = -1* (localProt.getRealX() - primStage.getWidth()/2);
-        yScroll = -1* (localProt.getRealY() - primStage.getHeight()/4);
+
         GameObjectType objectType = GameObjectType.values()[Integer.parseInt(objectTypeAsIntAsString)];
         double xPos = Double.parseDouble(xPosString);
         double yPos = Double.parseDouble(yPosString);
@@ -347,12 +348,11 @@ public class JumpNRun extends Application {
             switch (objectType) {
                 case PROTAGONIST:
                     ((ProtagonistOnlineClient) onlineGameObjects.get(objectId)).updatePos(xPos, yPos, animationStateAsInt);
-                    ((ProtagonistOnlineClient) onlineGameObjects.get(objectId)).updateScroll(xScroll, yScroll);
                     break;
                 case PITCHFORK:
                     if (alreadyExists) {
                         Pitchfork pitchfork = (Pitchfork) onlineGameObjects.get(objectId);
-                        pitchfork.updatePos(xPos + xScroll, yPos + yScroll, animationStateAsInt);
+                        pitchfork.updatePos(xPos, yPos, animationStateAsInt);
 
                     } else {
                         Pitchfork addPitchfork = new Pitchfork();
@@ -367,7 +367,7 @@ public class JumpNRun extends Application {
                 case GUN:
                     if (alreadyExists) {
                         Gun gun = (Gun) onlineGameObjects.get(objectId);
-                        gun.updatePos(xPos + xScroll, yPos + yScroll, animationStateAsInt);
+                        gun.updatePos(xPos, yPos, animationStateAsInt);
 
                     } else {
                         Gun addGun = new Gun();
@@ -382,8 +382,7 @@ public class JumpNRun extends Application {
                 case SHOOT:
                     if (alreadyExists) {
                         Shoot shoot = (Shoot) onlineGameObjects.get(objectId);
-                        shoot.updatePos(xPos, yPos , animationStateAsInt);
-                        shoot.updateScrolling(xScroll, yScroll);
+                        shoot.updatePos(xPos, yPos, animationStateAsInt);
 
                     } else {
                         Shoot addShoot = new Shoot();
@@ -399,11 +398,11 @@ public class JumpNRun extends Application {
 
         }
     }
-    
+
     public double getXScroll() {
         return xScroll;
     }
-    
+
     public double getYScroll() {
         return yScroll;
     }
@@ -628,7 +627,7 @@ public class JumpNRun extends Application {
 
     public void openWorldEditor() {
         Platform.runLater(() -> {
-            
+
             ((GUI) worldEditorScreen).setUpHandlers(worldEditorScene);
             ((GUI) worldEditorScreen).drawWorld();
             //WorldEditor.main();

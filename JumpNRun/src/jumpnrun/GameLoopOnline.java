@@ -30,7 +30,7 @@ public class GameLoopOnline extends AnimationTimer {
     private double[] xPositions, yPositions;    //index = protagonists id
     private Protagonist.CostumeViewport[] viewports; //-""-
     private ObservableList<OnlineUpdatableObject> updatableObjects, addObjects, removeObjects;
-    
+
     public GameLoopOnline() {
         super();
         updatableObjects = FXCollections.observableArrayList();
@@ -41,25 +41,26 @@ public class GameLoopOnline extends AnimationTimer {
 
     @Override
     public void handle(long now) {
-        updatableObjects.forEach((o)->{
-            o.updateGraphic();
+        game.updateScrolling();
+        updatableObjects.forEach((o) -> {
+            o.updateGraphic(game.getXScroll(), game.getYScroll());
         });
-        if(addObjects.size() != 0) {
+        if (addObjects.size() != 0) {
             updatableObjects.addAll(addObjects);
             addObjects.clear();
         }
-        if(removeObjects.size() != 0) {
+        if (removeObjects.size() != 0) {
             updatableObjects.removeAll(removeObjects);
             removeObjects.clear();
         }
-        game.updateWorldScrolling();
+
     }
-    
+
     public void addObject(OnlineUpdatableObject addObj) {
         addObjects.add(addObj);
     }
-    
-    public void removeObject (OnlineUpdatableObject remObj) {
+
+    public void removeObject(OnlineUpdatableObject remObj) {
         removeObjects.add(remObj);
     }
 

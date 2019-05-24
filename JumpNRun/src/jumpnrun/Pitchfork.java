@@ -70,9 +70,9 @@ public class Pitchfork extends ImageView implements OnlineUpdatableObject{
     }
 
     @Override
-    public void updateGraphic() {
-        setX(xPos);
-        setY(yPos);
+    public void updateGraphic(double scrollX, double scrollY) {
+        setX(xPos + scrollX);
+        setY(yPos + scrollY);
         setViewport(currAnimationState.getRect());
     }
     
