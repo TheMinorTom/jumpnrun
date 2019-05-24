@@ -42,6 +42,7 @@ public class Graphic extends Group {
     private static double blockSize;
     private static Protagonist protagonist1, protagonist2;
     private static JumpNRun.Gamemode gamemode;
+    private static CountDownLabel onlinetimeLabel;
 
     public Graphic(Vector<Vector<Block>> worldVec, Protagonist prot1, Protagonist prot2, JumpNRun.Gamemode gamemode) {
         super();
@@ -84,53 +85,6 @@ public class Graphic extends Group {
         rightLbl.setTextFill(Color.BLUE);
         rightLbl.setFont(lblFont);
 
-        class CountDownLabel extends Label implements Updatable {
-
-            private int timeLeftMinutes;
-            private int timeLeftSeconds;
-            private final double startTime;
-            private double timeLeft;
-
-            public CountDownLabel() {
-                super(String.valueOf(JumpNRun.getTimeLimit()));
-                startTime = JumpNRun.getTimeLimit();
-                timeLeft = startTime;
-
-            }
-
-            @Override
-            public void update(double timeElapsed, Vector<Vector<Block>> world, Protagonist prot1, Protagonist prot2, Vector<PowerupCollect> powerupCollects) {
-                timeLeft = startTime - JumpNRun.getRunTime();
-                if (timeLeft < 10) {
-                    setTextFill(Color.RED);
-                }
-                timeLeftSeconds = ((int) timeLeft) % 60;
-                timeLeftMinutes = (int) (timeLeft / 60);
-                setText(String.valueOf(timeLeftMinutes) + " min, " + String.valueOf(timeLeftSeconds) + "s");
-                setLayoutX(JumpNRun.getWidth() / 2 - getWidth() / 2);
-            }
-
-        };
-
-        class CountUpLabel extends Label implements Updatable {
-
-            private int runTimeMinutes;
-            private int runTimeSeconds;
-
-            public CountUpLabel() {
-                super("0");
-            }
-
-            @Override
-            public void update(double timeElapsed, Vector<Vector<Block>> world, Protagonist prot1, Protagonist prot2, Vector<PowerupCollect> powerupCollects) {
-                runTimeSeconds = ((int) JumpNRun.getRunTime()) % 60;
-                runTimeMinutes = (int) (JumpNRun.getRunTime() / 60);
-                setText(String.valueOf(runTimeMinutes) + " min, " + String.valueOf(runTimeSeconds) + "s");
-                setLayoutX(JumpNRun.getWidth() / 2 - getWidth() / 2);
-            }
-
-        };
-
         if (gamemode == JumpNRun.Gamemode.TIME) {
             timeLabel = new CountDownLabel();
         } else {
@@ -162,23 +116,31 @@ public class Graphic extends Group {
                 .addAll(worldGroup);
     }
 
-            
-
     public void updateScrolling() {
         for (int i = 0; i < worldVector.size(); i++) {
             for (int j = 0; j < worldVector.get(i).size(); j++) {
                 Block block = worldVector.get(i).get(j);
                 if (block != null) {
-                    block.setX(blockSize * i + JumpNRun.game.getXScroll());
-                    block.setY(blockSize * j + JumpNRun.game.getYScroll());
+                    block.setX((blockSize * i) + JumpNRun.game.getXScroll());
+                    block.setY((blockSize * j) + JumpNRun.game.getYScroll());
                 }
             }
         }
     }
 
-    
     public Graphic(Vector<Vector<Block>> worldVec) {
+/*
+        onlinetimeLabel = new CountDownLabel();
+
+        JumpNRun.game.getOnlineLoop().addObject(onlinetimeLabel);
+        onlinetimeLabel.setLayoutY(lblYDist);
+        onlinetimeLabel.setLayoutX(JumpNRun.getWidth() / 2);
+        onlinetimeLabel.setFont(JumpNRun.game.language.getHeadingFont());
+        onlinetimeLabel.setBorder(
+                new Border(new BorderStroke(Color.DARKGRAY, BorderStrokeStyle.SOLID, new CornerRadii(100), new BorderWidths(10))));
+        */
         worldVector = worldVec;
+        /*
         for (int i = 0; i < worldVector.size(); i++) {
             for (int j = 0; j < worldVector.get(i).size(); j++) {
                 Block block = worldVector.get(i).get(j);
@@ -189,6 +151,7 @@ public class Graphic extends Group {
                 }
             }
         }
+                */
 
         worldGroup = GUI.drawWorld(worldVec, worldVec.get(0).get(0).getFitWidth());
         getChildren().add(worldGroup);
@@ -265,6 +228,68 @@ public class Graphic extends Group {
         }
     }
 
+    class CountDownLabel extends Label implements Updatable, OnlineUpdatableObject {
+
+        private int timeLeftMinutes;
+        private int timeLeftSeconds;
+        private final double startTime;
+        private double timeLeft;
+
+        public CountDownLabel() {
+            super(String.valueOf(JumpNRun.getTimeLimit()));
+            startTime = JumpNRun.getTimeLimit();
+            timeLeft = startTime;
+
+        }
+
+        @Override
+        public void update(double timeElapsed, Vector<Vector<Block>> world, Protagonist prot1, Protagonist prot2, Vector<PowerupCollect> powerupCollects) {
+            timeLeft = startTime - JumpNRun.getRunTime();
+            if (timeLeft < 10) {
+                setTextFill(Color.RED);
+            }
+            timeLeftSeconds = ((int) timeLeft) % 60;
+            timeLeftMinutes = (int) (timeLeft / 60);
+            setText(String.valueOf(timeLeftMinutes) + " min, " + String.valueOf(timeLeftSeconds) + "s");
+            setLayoutX(JumpNRun.getWidth() / 2 - getWidth() / 2);
+        }
+
+        @Override
+        public void updatePos(double d1, double d2, int val) {
+            timeLeftSeconds = ((int) val) % 60;
+            timeLeftMinutes = (int) (val / 60);
+
+        }
+
+        @Override
+        public void updateGraphic(double d1, double d2) {
+            setText(String.valueOf(timeLeftMinutes) + " min, " + String.valueOf(timeLeftSeconds) + "s");
+            setLayoutX(JumpNRun.getWidth() / 2 - getWidth() / 2);
+        }
+
+
+
+    };
+
+    class CountUpLabel extends Label implements Updatable {
+
+        private int runTimeMinutes;
+        private int runTimeSeconds;
+
+        public CountUpLabel() {
+            super("0");
+        }
+
+        @Override
+        public void update(double timeElapsed, Vector<Vector<Block>> world, Protagonist prot1, Protagonist prot2, Vector<PowerupCollect> powerupCollects) {
+            runTimeSeconds = ((int) JumpNRun.getRunTime()) % 60;
+            runTimeMinutes = (int) (JumpNRun.getRunTime() / 60);
+            setText(String.valueOf(runTimeMinutes) + " min, " + String.valueOf(runTimeSeconds) + "s");
+            setLayoutX(JumpNRun.getWidth() / 2 - getWidth() / 2);
+        }
+
+    };
+
     public double getLeftLabelWidth() {
         return leftLbl.getWidth();
     }
@@ -275,5 +300,9 @@ public class Graphic extends Group {
 
     public void addNode(Node n) {
         worldGroup.getChildren().add(n);
+    }
+    
+    public CountDownLabel getOnlineTimeLabel() {
+        return onlinetimeLabel;
     }
 }

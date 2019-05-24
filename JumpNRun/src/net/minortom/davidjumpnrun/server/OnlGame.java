@@ -61,30 +61,35 @@ public class OnlGame implements Runnable {
 
     // loop
     private double timeElapsedSeconds;
-    
+
+    private double gameTime;
+    private OnlineGameTimer gameTimer;
 
     public OnlGame(Server server, String gameName, int playersMax, String gamemode, double timeLimit, int respawnLimit, String mapName, String playerOneId, String playerOneSkin) {
         this.server = server;
 
         this.gameName = gameName;
         this.playersMax = playersMax;
+        onlineGameObjects = new HashMap<>();
 
         ended = false;
         gamemodeAsUpperString = gamemode.toUpperCase();
         switch (gamemodeAsUpperString) {
             case "DEATHS":
                 this.gamemode = JumpNRun.Gamemode.DEATHS;
+                gameTimer = new OnlineGameTimer(0, 0, 0, 0, GameObjectType.GAMETIMER, nextObjectId(), false, 0);
                 break;
             case "TIME":
                 this.gamemode = JumpNRun.Gamemode.TIME;
+                gameTimer = new OnlineGameTimer(0, 0, 0, 0, GameObjectType.GAMETIMER, nextObjectId(), true, timeLimit);
                 break;
             case "ENDLESS":
-                this.gamemode = JumpNRun.Gamemode.ENDLESS;
-                break;
             default:
                 this.gamemode = JumpNRun.Gamemode.ENDLESS;
+                gameTimer = new OnlineGameTimer(0, 0, 0, 0, GameObjectType.GAMETIMER, nextObjectId(), false, 0);
                 break;
         }
+        //onlineGameObjects.put(gameTimer.getObjectId(), gameTimer);
 
         this.timeLimit = timeLimit;
         this.respawnLimit = respawnLimit;
@@ -97,7 +102,6 @@ public class OnlGame implements Runnable {
         players = new HashMap<>();
         playerSkins = new HashMap<>();
 
-        onlineGameObjects = new HashMap<>();
         addPlayer(playerOneId, playerOneSkin);
         movingObjects = FXCollections.observableArrayList();
         shoots = FXCollections.observableArrayList();
@@ -277,12 +281,7 @@ public class OnlGame implements Runnable {
                 e.printStackTrace();
             }
 
-            try {
-                Thread.sleep(5);
-            } catch (InterruptedException i) {
-
-            }
-
+            gameTimer.update(timeElapsedSeconds);
         }
     }
 
@@ -318,6 +317,10 @@ public class OnlGame implements Runnable {
             shoot = new RemoteUpdatableObject(nextObjectId(), Shoot.AnimationState.LEFT.getRect(), GameObjectType.SHOOT, p.getRemoteGun().getX() + 40, p.getRemoteGun().getY(), 1000, 0, 0, 200, this, p, Shoot.AnimationState.RIGHT.ordinal());
         }
         addShoot(shoot);
+    }
+
+    public OnlineGameTimer getGameTimer() {
+        return gameTimer;
     }
 
 }

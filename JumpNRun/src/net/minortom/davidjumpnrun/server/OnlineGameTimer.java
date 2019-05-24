@@ -11,17 +11,30 @@ import net.minortom.davidjumpnrun.netcode.GameObjectType;
  *
  * @author DavidPrivat
  */
-public class OnlineGameTimer extends RemoteObject{
-    private int minutes, seconds;
+public class OnlineGameTimer extends RemoteObject {
+
     private double time;
     private boolean isCountdown;
-    
+
     public OnlineGameTimer(double x, double y, double w, double h, GameObjectType objectType, String objectId, boolean isCountdown, double startTime) {
         super(x, y, w, h, objectType, objectId);
-        minutes = 0;
-        seconds = 0;
+
         time = startTime;
         this.isCountdown = isCountdown;
     }
+
+    public void update(double timeElapsedSeconds) {
+        if (isCountdown) {
+            time -= timeElapsedSeconds;
+        } else {
+            time += timeElapsedSeconds;
+        }
+    }
     
+    @Override
+    public int getAnimationState() {
+        return ((int)time);
+    }
+
+
 }

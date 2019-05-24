@@ -102,8 +102,6 @@ public class JumpNRun extends Application {
 
     private double xScroll, yScroll;
     
-    public static final double defaultXScroll = 5000;
-    public static final double defaultYScroll = 5000;
 
     @Override
     public void start(Stage primaryStage) throws IOException {
@@ -291,7 +289,7 @@ public class JumpNRun extends Application {
                 onlineGamemode = Gamemode.ENDLESS;
                 break;
         }
-        this.worldVector = null; //Get world from server, maqybe to the constructor
+        this.worldVector = null;
 
     }
 
@@ -328,8 +326,8 @@ public class JumpNRun extends Application {
 
     public void updateScrolling() {
         graphic.updateScrolling();
-        xScroll = -1 * (defaultXScroll + localProt.getXPos() - primStage.getWidth() / 2);
-        yScroll = -1 * (defaultYScroll + localProt.getYPos() - primStage.getHeight() / 4);
+        xScroll = -1 * (localProt.getXPos() - primStage.getWidth() / 2);
+        yScroll = -1 * (localProt.getYPos() - primStage.getHeight() / 4);
     }
 
     public void updateOnlineObject(String objectId, String objectTypeAsIntAsString, String xPosString, String yPosString, String animationStateAsIntAsString) {
@@ -397,6 +395,8 @@ public class JumpNRun extends Application {
                         updateOnlineObject(objectId, objectTypeAsIntAsString, xPosString, yPosString, animationStateAsIntAsString);
                     }
                     break;
+                case GAMETIMER:
+                    graphic.getOnlineTimeLabel().updatePos(0, 0, animationStateAsInt);
             }
 
         } else {
@@ -756,6 +756,10 @@ public class JumpNRun extends Application {
 
     public Stage getPrimStage() {
         return primStage;
+    }
+    
+    public GameLoopOnline getOnlineLoop() {
+        return loopOnline;
     }
 
 }
