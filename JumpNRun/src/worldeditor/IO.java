@@ -121,6 +121,10 @@ public class IO {
                     addBlock.setX(xIndex * blockSize);
                     addBlock.setY(yIndex * blockSize);
                     
+                    addBlock.setLayoutX(xIndex * blockSize);
+                    addBlock.setLayoutY(yIndex * blockSize);
+                    
+                    
                     if(!blocks.contains(addBlock)) {
                         blocks.add(addBlock);
                     }
@@ -213,6 +217,8 @@ public class IO {
                         }
                         additBlock.setFitWidth(blockSize);
                         additBlock.setFitHeight(blockSize);
+                        additBlock.setX(blockSize * countX);
+                        additBlock.setY(blockSize * countY);
                         world.get(countX).set(countY, additBlock);
                         currentChar = (char) input.read();
                         if (currentChar == blockSep) {
@@ -311,6 +317,8 @@ public class IO {
                         }
                         additBlock.setFitWidth(blockSize);
                         additBlock.setFitHeight(blockSize);
+                        additBlock.setX(blockSize * countX);
+                        additBlock.setY(blockSize * countY);
 
                         world.get(countX).set(countY, additBlock);
                         currentChar = (char) input.read();

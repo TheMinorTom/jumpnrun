@@ -41,6 +41,7 @@ public enum ServerCommand {
     @Deprecated
     OGAME_UPDATEOBJECT, //server          objectId, objectType(int), xPos, yPos, animationState(int)
     OGAME_UPDATEOBJECTS,//server          List of OGAME_UPDATEOBJECT's args; different objects seperated by NetworkManager.updateObjectsSeperator; different args per objet seperated by NetworkManager.subArgsSeperator
-    OGAME_REMOVEOBJECT; //server          objectId
+    OGAME_REMOVEOBJECT, //server          objectId
+    OGAME_UPDATE_RESPAWNTIMER; //server   time
 
 }

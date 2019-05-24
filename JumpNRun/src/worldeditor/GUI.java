@@ -25,9 +25,11 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -60,8 +62,10 @@ public class GUI extends Group {
 
     public static Scene scene;
     public static JumpNRun game;
-    
+
     private double xScroll, yScroll;
+
+    private Line topLine, leftLine;
 
     public GUI(JumpNRun game) {
 
@@ -167,17 +171,25 @@ public class GUI extends Group {
                 blockSizeTextField.setText(game.language.WorldEditErrOnlyNumbers);
 
             }
+            requestFocus();
         });
 
-        getChildren().addAll(menuBar, blockSizeTextField, r);
+        topLine = new Line();
+        leftLine = new Line();
+
+        getChildren().addAll(leftLine, menuBar, blockSizeTextField, r, topLine);
 
         game.getPrimStage().setTitle("Hello World!");
 
         blockSizeTextField.setLayoutY(menuBar.getHeight());
 
+        updateLines();
+        topLine.setStrokeWidth(10);
+        leftLine.setStrokeWidth(10);
     }
 
     public void setUpHandlers(Scene scene) {
+
         scene.setOnMouseMoved((MouseEvent e) -> {
             updateRect(e.getX(), e.getY());
 
@@ -185,66 +197,93 @@ public class GUI extends Group {
         scene.setOnMouseClicked((MouseEvent e) -> {
             switch (e.getButton()) {
                 case SECONDARY:
-                    if (e.getSceneY() > (menuBar.getHeight() + blockSizeTextField.getHeight())) {
+                    if ((e.getSceneY() > (menuBar.getHeight() + blockSizeTextField.getHeight())) && e.getSceneY() > yScroll) {
                         blockChose.show(r, e.getSceneX(), e.getSceneY());
                     }
                     break;
                 case PRIMARY:
-                    addBlock(Block.createBlock(selectedBlock, r.getX(), r.getY()), r.getX(), r.getY());
-                    break;
+                    if (e.getSceneY() > yScroll) {
+                        {
+                            addBlock(Block.createBlock(selectedBlock, r.getX(), r.getY()), r.getX(), r.getY());
+                        }
+                        break;
+                    }
             }
 
         });
 
         scene.setOnMouseDragged((MouseEvent e) -> {
-            dragDoing = true;
-            updateRect(e.getX(), e.getY());
+            if (e.getButton().equals(MouseButton.PRIMARY) && (e.getSceneY() > yScroll)) {
+                dragDoing = true;
+                updateRect(e.getX(), e.getY());
 
-            int[] currBlockInd = new int[]{(int) (r.getX() / blockSize), (int) (r.getY() / blockSize)};
-            boolean exists = false;
-            for (int i = 0; i < dragBlockIndEntered.size(); i++) {
-                if (currBlockInd[0] == dragBlockIndEntered.get(i)[0] && currBlockInd[1] == dragBlockIndEntered.get(i)[1]) {
-                    exists = true;
+                int[] currBlockInd = new int[]{(int) (r.getX() / blockSize), (int) (r.getY() / blockSize)};
+                boolean exists = false;
+                for (int i = 0; i < dragBlockIndEntered.size(); i++) {
+                    if (currBlockInd[0] == dragBlockIndEntered.get(i)[0] && currBlockInd[1] == dragBlockIndEntered.get(i)[1]) {
+                        exists = true;
+                    }
                 }
-            }
-            if (!exists) {
-                dragBlockIndEntered.add(currBlockInd);
-                addBlock(Block.createBlock(selectedBlock), r.getX(), r.getY());
-                rx.setText(Double.toString(r.getX()));
-                ry.setText(Double.toString(r.getY()));
+                if (!exists) {
+                    dragBlockIndEntered.add(currBlockInd);
+                    addBlock(Block.createBlock(selectedBlock), r.getX(), r.getY());
+                    rx.setText(Double.toString(r.getX()));
+                    ry.setText(Double.toString(r.getY()));
+                }
             }
 
         });
 
         scene.setOnMouseReleased(
                 (MouseEvent e) -> {
-                    if (dragDoing) {
-                        dragDoing = false;
-                        dragBlockIndEntered.clear();
+                    if (e.getButton().equals(MouseButton.PRIMARY)) {
+                        if (dragDoing) {
+                            dragDoing = false;
+                            dragBlockIndEntered.clear();
+                        }
                     }
                 });
-        
-        setOnKeyPressed((KeyEvent e)->{
-            switch(e.getCode()) {
+
+        setOnKeyPressed((KeyEvent e) -> {
+            switch (e.getCode()) {
                 case UP:
                     yScroll += blockSize;
                     updateBlockPositions();
+                    updateLines();
                     break;
                 case DOWN:
                     yScroll -= blockSize;
                     updateBlockPositions();
+                    updateLines();
                     break;
                 case RIGHT:
                     xScroll -= blockSize;
                     updateBlockPositions();
+                    updateLines();
                     break;
                 case LEFT:
                     xScroll += blockSize;
                     updateBlockPositions();
+                    updateLines();
                     break;
             }
         });
         requestFocus();
+
+    }
+
+    public void updateLines() {
+
+        topLine.setStartX(0);
+        topLine.setStartY(yScroll);
+        topLine.setEndX(game.getWidth());
+        topLine.setEndY(yScroll);
+
+        leftLine.setStartX(xScroll);
+        leftLine.setStartY(0);
+        leftLine.setEndX(xScroll);
+        leftLine.setEndY(game.getHeight());
+
     }
 
     public static int test(int i) {
@@ -255,8 +294,8 @@ public class GUI extends Group {
 
     public void addBlock(Block b, double xPos, double yPos) {
 
-        int xIndex = (int) ((xPos-xScroll) / blockSize);
-        int yIndex = (int) ((yPos-yScroll) / blockSize);
+        int xIndex = (int) ((xPos - xScroll) / blockSize);
+        int yIndex = (int) ((yPos - yScroll) / blockSize);
 
         b.setX(xPos);
         b.setY(yPos);
@@ -282,22 +321,22 @@ public class GUI extends Group {
             }
         }
         getChildren().add(b);
-
+        yList.set(yIndex, null);
         yList.set(yIndex, b);
 
     }
 
     public void updateBlockPositions() {
         Block currBlock;
-        for(int i = 0; i < worldVector.size(); i++) {
-            for(int j = 0; j < worldVector.get(i).size(); j++) {
+        for (int i = 0; i < worldVector.size(); i++) {
+            for (int j = 0; j < worldVector.get(i).size(); j++) {
                 currBlock = worldVector.get(i).get(j);
                 currBlock.setX((i * blockSize) + xScroll);
                 currBlock.setY((j * blockSize) + yScroll);
             }
         }
     }
-    
+
     public void refreshPositions() {
         blockSizeTextField.setLayoutY(30);
 
@@ -307,13 +346,13 @@ public class GUI extends Group {
         refreshPositions();
         //world = new Group();
         getChildren().clear();
-        getChildren().addAll(r, blockSizeTextField, menuBar);
+        getChildren().addAll(r, blockSizeTextField, menuBar, topLine, leftLine);
         for (int i = 0; i < worldVector.size(); i++) {
             for (int j = 0; j < worldVector.get(i).size(); j++) {
                 if (worldVector.get(i).get(j) != null) {
                     Block b = Block.createBlock(worldVector.get(i).get(j));
-                    b.setLayoutX(i * blockSize);
-                    b.setLayoutY(j * blockSize);
+                    b.setX(i * blockSize);
+                    b.setY(j * blockSize);
 
                     getChildren().add(b);
 

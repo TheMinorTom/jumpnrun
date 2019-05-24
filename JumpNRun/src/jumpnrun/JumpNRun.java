@@ -101,6 +101,9 @@ public class JumpNRun extends Application {
     private boolean[] keysDown;
 
     private double xScroll, yScroll;
+    
+    public static final double defaultXScroll = 5000;
+    public static final double defaultYScroll = 5000;
 
     @Override
     public void start(Stage primaryStage) throws IOException {
@@ -325,8 +328,8 @@ public class JumpNRun extends Application {
 
     public void updateScrolling() {
         graphic.updateScrolling();
-        xScroll = -1 * (localProt.getXPos() - primStage.getWidth() / 2);
-        yScroll = -1 * (localProt.getYPos() - primStage.getHeight() / 4);
+        xScroll = -1 * (defaultXScroll + localProt.getXPos() - primStage.getWidth() / 2);
+        yScroll = -1 * (defaultYScroll + localProt.getYPos() - primStage.getHeight() / 4);
     }
 
     public void updateOnlineObject(String objectId, String objectTypeAsIntAsString, String xPosString, String yPosString, String animationStateAsIntAsString) {
@@ -396,6 +399,10 @@ public class JumpNRun extends Application {
                     break;
             }
 
+        } else {
+            if(objectType.equals(GameObjectType.PROTAGONIST)) {
+                ((ProtagonistOnlineClient) onlineGameObjects.get(objectId)).updatePos(xPos, yPos, animationStateAsInt);
+            }
         }
     }
 

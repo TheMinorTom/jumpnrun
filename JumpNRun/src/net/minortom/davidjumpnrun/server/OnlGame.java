@@ -61,6 +61,7 @@ public class OnlGame implements Runnable {
 
     // loop
     private double timeElapsedSeconds;
+    
 
     public OnlGame(Server server, String gameName, int playersMax, String gamemode, double timeLimit, int respawnLimit, String mapName, String playerOneId, String playerOneSkin) {
         this.server = server;

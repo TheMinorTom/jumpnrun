@@ -29,7 +29,6 @@ public class CreditsScreen extends VBox {
     WebEngine webEngine;
     Button backBt, closeBt;
     HBox btnBox;
-    
     boolean loadedother;
     
     public CreditsScreen (JumpNRun game) {

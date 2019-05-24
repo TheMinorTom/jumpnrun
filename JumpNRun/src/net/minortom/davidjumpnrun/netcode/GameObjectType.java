@@ -14,5 +14,7 @@ public enum GameObjectType {
     PITCHFORK,
     GUN,
     SHOOT,
-    POWERUP;
+    POWERUP,
+    RESPAWNTIMER,
+    GAMETIMER;
 }

@@ -25,7 +25,7 @@ import worldeditor.IO;
  * @author DavidPrivat
  */
 public class ProtagonistOnlineClient extends ImageView implements OnlineUpdatableObject {
-
+    
     private static final double width = Protagonist.getWidth();
     private Label nameLbl;
     public final String pubId;
@@ -36,7 +36,7 @@ public class ProtagonistOnlineClient extends ImageView implements OnlineUpdatabl
     private int indexId;
     private KeyCode[] protControlls;
     private Rectangle2D currViewport;
-
+    
     public ProtagonistOnlineClient(int indexId, double x, double y, String skinFileName, String name, String pubId, KeyCode left, KeyCode right, KeyCode jump, KeyCode hit, KeyCode shoot, KeyCode use) {
         protControlls = new KeyCode[]{left, right, jump, hit, shoot, use};
         spawnY = y;
@@ -48,37 +48,42 @@ public class ProtagonistOnlineClient extends ImageView implements OnlineUpdatabl
         nameLbl.setFont(new Font(JumpNRun.game.language.getFontName(), 20));
         nameLbl.setVisible(true);
         updatePos(x, y, CostumeViewport.MID.ordinal());
-
+        
         spritePath = "sprites/protagonist/" + skinFileName;
         this.indexId = indexId;
         Image image = new Image(ConfigManager.getFileStream(spritePath));
-
+        
         setImage(image);
         setViewport(CostumeViewport.MID.getRect());
-
+        
         respawnTimerLabel = new Label("3");
         respawnTimerLabel.setLayoutX(x);
         respawnTimerLabel.setLayoutY(y);
         respawnTimerLabel.setFont(new Font("Arial Black", 80));
         respawnTimerLabel.setTextFill(Color.RED);
         respawnTimerLabel.setVisible(false);
-
+        
         setFitWidth(width);
         setFitHeight(height);
-
+        
         setX(x);
         setY(y);
         setVisible(true);
-
+        
     }
-
+    
     @Override
     public void updatePos(double x, double y, int viewPort) {
+        
         xPos = x;
         yPos = y;
-        currViewport = CostumeViewport.values()[viewPort].getRect();
+        if (viewPort >= 0) {
+            currViewport = CostumeViewport.values()[viewPort].getRect();
+        } else {
+            setVisible(false);
+        }
     }
-
+    
     @Override
     public void updateGraphic(double xScroll, double yScroll) {
         setX(xPos + xScroll);
@@ -87,11 +92,11 @@ public class ProtagonistOnlineClient extends ImageView implements OnlineUpdatabl
         nameLbl.setLayoutX((getX() + width / 2) - (nameLbl.getWidth() / 2));
         nameLbl.setLayoutY(getY() - 40);
     }
-
+    
     public Label getNameLabel() {
         return nameLbl;
     }
-
+    
     public KeyCode[] getControls() {
         return protControlls;
     }
