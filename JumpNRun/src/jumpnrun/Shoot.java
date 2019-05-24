@@ -21,11 +21,13 @@ import worldeditor.IO;
  */
 public class Shoot extends ImageView implements Updatable, OnlineUpdatableObject {
 
-    double xPos, yPos, xSpd, ySpd, breakAccX, gravAccY, lastXPos, lastYPos;
+    double xPos, yPos, xSpd, ySpd, breakAccX, gravAccY, lastXPos, lastYPos, scrollX, scrollY;
 
     private final static String imageSource = "sprites/ShootGes.png";
 
     public Shoot(double x, double y, double xSpeed, double ySpeed, boolean facingRight) {
+        scrollX = 0;
+        scrollY = 0;
         Image image = new Image(ConfigManager.getFileStream(imageSource));
         setImage(image);
         getTransforms().add(new Rotate());
@@ -46,6 +48,8 @@ public class Shoot extends ImageView implements Updatable, OnlineUpdatableObject
     }
 
     public Shoot() {
+        scrollX = 0;
+        scrollY = 0;
         Image image = new Image(ConfigManager.getFileStream(imageSource));
         setImage(image);
         getTransforms().add(new Rotate(0, AnimationState.RIGHT.getRect().getWidth()/2, AnimationState.RIGHT.getRect().getHeight()/2));
@@ -60,6 +64,12 @@ public class Shoot extends ImageView implements Updatable, OnlineUpdatableObject
 
         lastXPos = xPos;
         lastYPos = yPos;
+    }
+    
+    public void updateScrolling(double scrollX, double scrollY) {
+
+        this.scrollX = scrollX;
+        this.scrollY = scrollY;
     }
 
     @Override
@@ -97,8 +107,8 @@ public class Shoot extends ImageView implements Updatable, OnlineUpdatableObject
 
     @Override
     public void updateGraphic() {
-        setLayoutX(xPos);
-        setLayoutY(yPos);
+        setLayoutX(xPos + scrollX);
+        setLayoutY(yPos + scrollY);
         updateRotation();
     }
 

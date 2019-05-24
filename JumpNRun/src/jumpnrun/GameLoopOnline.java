@@ -36,6 +36,7 @@ public class GameLoopOnline extends AnimationTimer {
         updatableObjects = FXCollections.observableArrayList();
         addObjects = FXCollections.observableArrayList();
         removeObjects = FXCollections.observableArrayList();
+        game = JumpNRun.game;
     }
 
     @Override
@@ -51,6 +52,7 @@ public class GameLoopOnline extends AnimationTimer {
             updatableObjects.removeAll(removeObjects);
             removeObjects.clear();
         }
+        game.updateWorldScrolling();
     }
     
     public void addObject(OnlineUpdatableObject addObj) {

@@ -34,8 +34,8 @@ public class Server {
          System.err.println("Invalid argument: Port");
          System.exit(1);
          } */
-        if (false) {
-            storageLocation = "H:\\Eigene Dateien\\Informatik1819\\meine_programme\\JumpNRun\\jumpnrun-master2\\jumpnrun-master\\JumpNRun\\appdata\\";
+        if (true) {
+            storageLocation = "H:\\Eigene Dateien\\Informatik1819\\meine_programme\\JumpNRun\\jumpnrun-master\\jumpnrun-master\\JumpNRun\\appdata\\";
         }
         else {
             storageLocation = ConfigManager.getStorageLocation();

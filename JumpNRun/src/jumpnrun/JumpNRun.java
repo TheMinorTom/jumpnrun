@@ -323,9 +323,13 @@ public class JumpNRun extends Application {
         localProt = p;
     }
 
-    public void updateOnlineObject(String objectId, String objectTypeAsIntAsString, String xPosString, String yPosString, String animationStateAsIntAsString) {
+    public void updateWorldScrolling(){
         graphic.updateScrolling();
-        //xScroll = localProt.getRealX() - primStage.getWidth()/2;
+    }
+    
+    public void updateOnlineObject(String objectId, String objectTypeAsIntAsString, String xPosString, String yPosString, String animationStateAsIntAsString) {
+        xScroll = -1* (localProt.getRealX() - primStage.getWidth()/2);
+        yScroll = -1* (localProt.getRealY() - primStage.getHeight()/4);
         GameObjectType objectType = GameObjectType.values()[Integer.parseInt(objectTypeAsIntAsString)];
         double xPos = Double.parseDouble(xPosString);
         double yPos = Double.parseDouble(yPosString);
@@ -378,7 +382,8 @@ public class JumpNRun extends Application {
                 case SHOOT:
                     if (alreadyExists) {
                         Shoot shoot = (Shoot) onlineGameObjects.get(objectId);
-                        shoot.updatePos(xPos + xScroll, yPos + yScroll, animationStateAsInt);
+                        shoot.updatePos(xPos, yPos , animationStateAsInt);
+                        shoot.updateScrolling(xScroll, yScroll);
 
                     } else {
                         Shoot addShoot = new Shoot();
