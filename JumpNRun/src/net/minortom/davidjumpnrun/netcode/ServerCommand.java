@@ -15,6 +15,7 @@ public enum ServerCommand {
     AUTH_REQ,           //client          user name, password
     AUTH_OK,            //server          user id, user token
     AUTH_LOGOUT,        //client          -
+    AUTH_WRONGCREDS,     //server          -
     
     MAP_LISTREQ,        //client          -
     MAP_LISTOK,         //server          comma seperated map names

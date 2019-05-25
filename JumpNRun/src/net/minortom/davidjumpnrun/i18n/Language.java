@@ -60,8 +60,6 @@ public class Language implements Serializable {
     public transient String CreditsCloseBt;
     
     // Login Screen
-    public transient String LoginScreenLoginLabel;
-    public transient String LoginScreenPassLabel;
     public transient String LoginScreenServerLabel;
     public transient String LoginScreenDoLoginBt;
     public transient String LoginScreenConnecting;
@@ -70,12 +68,14 @@ public class Language implements Serializable {
     
     // Network Play Screen
     public transient String NetworManagerLoginBt;
+    public transient String NetworManagerLoginBtLoggedIn;
     public transient String NetworManagerJoinGameBt;
     public transient String NetworManagerCreateGameBt;
     public transient String NetworkManagerConnected;
     public transient String NetworkManagerInternalError;
     public transient String NetworkManagerInvalidHost;
     public transient String NetworkManagerInvalidAuth;
+    public transient String NetworkManagerNotAuthenthicatedBody;
     
     // Join Game Screen
     public transient String JoinGNameLabel;
@@ -103,7 +103,7 @@ public class Language implements Serializable {
     
     // Map Choose Menu
     
-    // Skin Schoose Menu
+    // Skin Choose Menu
     public transient String SkinColorBlue;
     public transient String SkinColorGreen;
     public transient String SkinColorOrange;

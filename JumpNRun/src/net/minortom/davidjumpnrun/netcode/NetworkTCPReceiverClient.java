@@ -36,9 +36,15 @@ public class NetworkTCPReceiverClient extends Thread {
 
                         case AUTH_OK:
                             sconn.pubId = packageContent[2];
-                            sconn.token = packageContent[3];
+                            sconn.userName = packageContent[3];
                             game.networkManager.serverConnection.currentConnState = ConnState.CONNECTED;
-                            System.out.println("CONNECTED " + sconn.pubId + " " + sconn.token);
+                            System.out.println("CONNECTED " + sconn.pubId + " " + sconn.userName);
+                            game.networkManager.setUserName(sconn.userName);
+                            break;
+                        case AUTH_WRONGCREDS:
+                            ConfigManager.error(game.language.NetworkManagerInternalError, game.language.NetworkManagerNotAuthenthicatedBody);
+                            game.config.networkLoggedIn = false;
+                            game.networkManager.serverConnection.currentConnState = ConnState.ERROR_INTERNAL;
                             break;
                         case MAP_LISTOK:
                             String[] maps = packageContent[2].split(",");

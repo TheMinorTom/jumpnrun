@@ -19,10 +19,7 @@ public class TCPServer {
     BufferedReader in;
     NetworkTCPReceiverServer tcpReceiver;
     
-    public String userName;
-    public String pass;
-    
-    public String token;
+    public String userName, userId, userToken;
     public String pubId;
     
     public TCPServer(Server getServ, String pubId){

@@ -50,22 +50,21 @@ public class LanguageEnglish extends Language{
         this.CreditsCloseBt = "Close";
         
         // Login Screen
-        this.LoginScreenLoginLabel = "Username";
-        this.LoginScreenPassLabel = "Password";
         this.LoginScreenServerLabel = "Server (Format: \"host.name:port\")";
-        this.LoginScreenDoLoginBt = "Log in!";
         this.LoginScreenConnecting = "Connecting...";
         this.LoginScreenErrorInvalidCharTitle = "Invalid character entered";
         this.LoginScreenErrorInvalidCharText = "Invalid character entered into one or more of the input fields. Try removing all exclamation marks.";
         
         // Network Play Screen
         this.NetworManagerLoginBt = "Log in";
+        this.NetworManagerLoginBtLoggedIn = "Change user";
         this.NetworManagerJoinGameBt = "Join Game";
         this.NetworManagerCreateGameBt = "Create Game";
         this.NetworkManagerConnected = "Connected!";
         this.NetworkManagerInternalError = "Internal Error";
         this.NetworkManagerInvalidHost = "Invalid Host";
         this.NetworkManagerInvalidAuth = "Invalid Username or password";
+        this.NetworkManagerNotAuthenthicatedBody = "The user could not be authenthicated. Please log in again.";
         
         // Join Game Screen
         this.JoinGNameLabel = "Game Name";

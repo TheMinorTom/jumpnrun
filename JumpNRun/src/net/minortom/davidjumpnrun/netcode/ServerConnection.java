@@ -13,8 +13,9 @@ import java.net.UnknownHostException;
 import jumpnrun.JumpNRun;
 
 public class ServerConnection {
-    private String username;
-    private String pass;
+    public String userName;
+    public String userId;
+    public String userToken;
     private String hostName;
     private int hostPort;
     
@@ -29,11 +30,11 @@ public class ServerConnection {
     public BufferedReader in;
     JumpNRun game;
     
-    public ServerConnection(String setUser, String setPass, String setHost, JumpNRun setGame){
+    public ServerConnection(String setUser, String setToken, String setHost, JumpNRun setGame){
         currentConnState = ConnState.WAITING;
         
-        username = setUser;
-        pass = setPass;
+        userName = setUser;
+        userToken = setToken;
         hostName = setHost.split(":")[0];
         
         game = setGame;
@@ -65,8 +66,8 @@ public class ServerConnection {
         tcpreceiver = new NetworkTCPReceiverClient(game, this);
         tcpreceiver.start();
         
-        commandHandler.sendCommand(ServerCommand.AUTH_REQ, new String[]{username, pass});
-        //out.println(NetworkManager.keyword + NetworkManager.infoSeperator + "AUTH-REQ" + NetworkManager.infoSeperator + username + NetworkManager.infoSeperator + pass);
+        commandHandler.sendCommand(ServerCommand.AUTH_REQ, new String[]{userId, userToken});
+        //out.println(NetworkManager.keyword + NetworkManager.infoSeperator + "AUTH-REQ" + NetworkManager.infoSeperator + userName + NetworkManager.infoSeperator + pass);
         
         
         while (currentConnState == ConnState.CONNECTING){
@@ -103,7 +104,7 @@ public class ServerConnection {
     
     @Override
     public String toString(){
-        return "State: " + currentConnState + "\nUser: " + username + "\nPass: " + pass + "\nHost: " + hostName + ":" + hostPort;
+        return "State: " + currentConnState + "\nUser: " + userId + "\nToken: " + userToken + "\nHost: " + hostName + ":" + hostPort;
     }
     
     public OnlineCommandHandler getCommandHandler() {

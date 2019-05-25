@@ -10,7 +10,11 @@ import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import jumpnrun.JumpNRun;
@@ -39,7 +43,11 @@ public class NetworkManager extends VBox {
     public ChooseMapScreen mapSelectionScreen;
     public ServerConnection serverConnection;
     
+    HBox userBox;
     Button backBt, loginBt, joinGameBt, createGameBt;
+    Image avatarImg;
+    ImageView avatar;
+    Label userName;
     Font defaultFont;
     
     public NetworkManager(JumpNRun gamearg){
@@ -73,12 +81,26 @@ public class NetworkManager extends VBox {
         });
         createGameBt.setDisable(true);
         
-        updateStrings();
+        userBox = new HBox();
+        userBox.setAlignment(Pos.CENTER);
+        userBox.setSpacing(50);
+        userBox.setPadding(new Insets(0, 0, 0, 0));
+        
+        avatar = new ImageView();
+        avatar.setImage(avatarImg);
+        avatar.setFitWidth(game.language.getFontSize()*4);
+        avatar.setPreserveRatio(true);
+        avatar.setSmooth(true);
+        
+        userName = new Label("Please wait");
+        
+        userBox.getChildren().addAll(avatar, userName);
+        
+        //updateStrings();
         
         setAlignment(Pos.CENTER);
         setSpacing(50);
         setPadding(new Insets(0, 0, 0, 0));
-        getChildren().addAll(loginBt, createGameBt, joinGameBt, backBt);
     }
     
     public void updateStrings(){
@@ -91,11 +113,19 @@ public class NetworkManager extends VBox {
         joinGameBt.setFont(defaultFont);
         createGameBt.setText(game.language.NetworManagerCreateGameBt);
         createGameBt.setFont(defaultFont);
-        
+        userName.setFont(defaultFont);
+        userBox.setSpacing(game.language.getFontSize());
         setSpacing(game.language.getFontSize());
+        
+        if(game.config.networkLoggedIn) {
+            updateBtnsLoggedIn();
+        } else {
+            updateBtnsLoggedOut();
+        }
     }
     
     public void openLoginScreen(){
+        shutdown();
         JumpNRun.scene.setRoot(loginScreen);
         loginScreen.updateStrings();
     }
@@ -141,6 +171,30 @@ public class NetworkManager extends VBox {
     public void updateBtnsLoggedIn(){
         joinGameBt.setDisable(false);
         createGameBt.setDisable(false);
+        loginBt.setText(game.language.NetworManagerLoginBtLoggedIn);
+        avatarImg = new Image("https://v1.api.minortom.net/do/avatar.php?user=" + game.config.networkUserId);
+        avatar.setImage(avatarImg);
+        getChildren().clear();
+        getChildren().addAll(userBox, loginBt, createGameBt, joinGameBt, backBt);
+        if(game.networkManager.serverConnection==null){
+            game.networkManager.serverConnection = new ServerConnection(game.config.networkUserId, game.config.networkUserToken, game.config.networkHost, game);
+            game.networkManager.serverConnection.connect();
+            if(null != game.networkManager.serverConnection.currentConnState) switch (game.networkManager.serverConnection.currentConnState) {
+                case CONNECTED:
+                    break;
+                default:
+                    updateBtnsLoggedOut();
+                    break;
+            }
+        }
+    }
+    
+    public void updateBtnsLoggedOut(){
+        joinGameBt.setDisable(true);
+        createGameBt.setDisable(true);
+        loginBt.setText(game.language.NetworManagerLoginBt);
+        getChildren().clear();
+        getChildren().addAll(loginBt, backBt);
     }
     
     public void shutdown() {
@@ -151,6 +205,10 @@ public class NetworkManager extends VBox {
 
     public void createGameScreenSetMap(String name) {
         createGameScreen.setMapName(name);
+    }
+    
+    public void setUserName(String name) {
+        userName.setText(name);
     }
     
     public void sendKeyPress(String id, String gameName, String action) {

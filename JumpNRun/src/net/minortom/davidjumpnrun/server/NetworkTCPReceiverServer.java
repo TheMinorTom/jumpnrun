@@ -30,12 +30,18 @@ public class NetworkTCPReceiverServer extends Thread {
 
                     switch (command) {
                         case AUTH_REQ:
-                            tcpServ.userName = packageContent[2];
-                            tcpServ.pass = packageContent[3];
-                            tcpServ.token = "T" + Integer.toString((int) (Math.random() * 10000000));
+                            tcpServ.userId = packageContent[2];
+                            tcpServ.userToken = packageContent[3];
                             // tcpServ.out.println(server.keyword + server.infoSeperator + "AUTH-OK" + server.infoSeperator + tcpServ.pubId + server.infoSeperator + tcpServ.token);
-                            tcpServ.getCommandHandler().sendCommand(ServerCommand.AUTH_OK, new String[]{tcpServ.pubId, tcpServ.token});
-                            System.out.println("AUTHENTHICATED " + tcpServ.userName);
+                            tcpServ.userName="user";
+                            if(tcpServ.userName==null) {
+                                tcpServ.getCommandHandler().sendCommand(ServerCommand.AUTH_WRONGCREDS, new String[]{});
+                                System.out.println("DID NOT AUTHENTHICATE " + tcpServ.userId);
+                                end();
+                            } else {
+                                tcpServ.getCommandHandler().sendCommand(ServerCommand.AUTH_OK, new String[]{tcpServ.pubId, tcpServ.userName});
+                                System.out.println("AUTHENTHICATED " + tcpServ.userName);
+                            }
                             break;
                         case AUTH_LOGOUT:
                             end();

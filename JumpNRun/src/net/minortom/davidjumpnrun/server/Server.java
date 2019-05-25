@@ -4,6 +4,7 @@
  */
 package net.minortom.davidjumpnrun.server;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +35,7 @@ public class Server {
          System.err.println("Invalid argument: Port");
          System.exit(1);
          } */
+        // TODO: Remove before release
         if (false) {
             storageLocation = "H:\\Eigene Dateien\\Informatik1819\\meine_programme\\JumpNRun\\jumpnrun-master\\jumpnrun-master\\JumpNRun\\appdata\\";
         }
@@ -56,11 +58,11 @@ public class Server {
     }
 
     public static String getMapFolder() {
-        return storageLocation + "worlds\\";
+        return storageLocation + "worlds" + File.pathSeparator;
     }
 
     public static String getBlocksFolder() {
-        return storageLocation + "sprites\\blocks\\";
+        return storageLocation + "sprites" + File.pathSeparator + "blocks" + File.pathSeparator;
     }
 
     public static String getStorageLocation() {

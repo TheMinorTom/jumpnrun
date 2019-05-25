@@ -49,22 +49,21 @@ public class LanguageGerman extends Language{
         this.CreditsCloseBt = "Zurück";
         
         // Login Screen
-        this.LoginScreenLoginLabel = "Benutzername";
-        this.LoginScreenPassLabel = "Passwort";
         this.LoginScreenServerLabel = "Server (Format: \"host.name:port\")";
-        this.LoginScreenDoLoginBt = "Log in!";
         this.LoginScreenConnecting = "Verbinden...";
         this.LoginScreenErrorInvalidCharTitle = "Falsche Ziffer eingegeben";
         this.LoginScreenErrorInvalidCharText = "Falsche Ziffer in eine oder mehr der Felder eingegeben. Versuche, alle Ausrufezeichen zu löschen.";
         
         // Network Play Screen
         this.NetworManagerLoginBt = "Log in";
+        this.NetworManagerLoginBtLoggedIn = "Nutzer wechseln";
         this.NetworManagerJoinGameBt = "Einem Spiel beitreten";
         this.NetworManagerCreateGameBt = "Spiel ertellen";
         this.NetworkManagerConnected = "Verbunden!";
         this.NetworkManagerInternalError = "Interner Fehler";
         this.NetworkManagerInvalidHost = "Ungültiger Host";
         this.NetworkManagerInvalidAuth = "Ungültiger Benutzername oder Passwort";
+        this.NetworkManagerNotAuthenthicatedBody = "Bei der Anmeldung ist ein Fehler aufgetreten, der Nutzer konnte nicht eingeloggt werden. Bitte erneut versuchen.";
         
         // Join Game Screen
         this.JoinGNameLabel = "Name des Spiels";

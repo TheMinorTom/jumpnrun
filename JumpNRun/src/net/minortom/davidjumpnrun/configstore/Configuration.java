@@ -12,8 +12,9 @@ public class Configuration implements Serializable {
     // Game Language
     public Language gameLanguage;
     // Online play
-    public String networkUser = "";
-    public String networkPass = "";
+    public boolean networkLoggedIn = false;
+    public String networkUserId = "";
+    public String networkUserToken = "";
     public String networkHost = "";
     // Custom path
     public String customPath = "";

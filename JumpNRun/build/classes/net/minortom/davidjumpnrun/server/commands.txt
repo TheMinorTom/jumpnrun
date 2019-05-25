@@ -1,7 +1,8 @@
 COMMAND             ISSUED BY       ARGS
-AUTH-REQ            client          user name, password
-AUTH-OK             server          user id, user token
+AUTH-REQ            client          user id, user token
+AUTH-OK             server          server user public id, user name
 AUTH-LOGOUT         client          -
+AUTH-WRONGCREDS     server          -
 
 MAP-LISTREQ         client          -
 MAP-LISTOK          server          comma seperated map names
