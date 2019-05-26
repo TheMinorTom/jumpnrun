@@ -5,6 +5,7 @@
  */
 package jumpnrun;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -299,7 +300,7 @@ public class JumpNRun extends Application {
     }
 
     public void initMap(String mapAsString) {
-        worldVector = IO.openWorld(mapAsString, "sprites\\blocks\\");
+        worldVector = IO.openWorld(mapAsString, "sprites" + File.separator + "blocks" + File.separator);
         graphic = new Graphic(worldVector);
         gameScene = new Group(graphic);
         scene.setRoot(gameScene);

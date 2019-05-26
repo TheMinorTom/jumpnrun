@@ -152,6 +152,7 @@ public class ConfigManager {
                 InputStream in = new FileInputStream(appdataUri + spezUri);
                 return in;
             } catch (FileNotFoundException e) {
+                System.err.println("File at " + appdataUri + spezUri + " not found.");
                 error("World not Found!", "File at " + appdataUri + spezUri + " not found.");
                 DirectoryChooser dirChooser = new DirectoryChooser();
                 dirChooser.setTitle("Select a file source path, the default one didn't work");

@@ -58,11 +58,11 @@ public class Server {
     }
 
     public static String getMapFolder() {
-        return storageLocation + "worlds" + File.pathSeparator;
+        return storageLocation + "worlds" + File.separator;
     }
 
     public static String getBlocksFolder() {
-        return storageLocation + "sprites" + File.pathSeparator + "blocks" + File.pathSeparator;
+        return storageLocation + "sprites" + File.separator + "blocks" + File.separator;
     }
 
     public static String getStorageLocation() {

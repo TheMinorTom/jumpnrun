@@ -152,7 +152,7 @@ public class Graphic extends Group {
             }
         }
                 */
-
+        System.out.println("World: " + worldVec);
         worldGroup = GUI.drawWorld(worldVec, worldVec.get(0).get(0).getFitWidth());
         getChildren().add(worldGroup);
     }

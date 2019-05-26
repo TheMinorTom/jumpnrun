@@ -38,6 +38,7 @@ public class MapHelper {
         
         String everything = "";
         String mapConfigLocation = Server.getMapFolder() + "maps.jnrmapcfg";
+        System.out.println("Map config stored at: " + mapConfigLocation);
         try(BufferedReader br = new BufferedReader(new FileReader(mapConfigLocation))) {
             StringBuilder sb = new StringBuilder();
             String line = br.readLine();

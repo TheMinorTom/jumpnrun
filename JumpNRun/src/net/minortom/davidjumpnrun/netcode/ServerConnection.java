@@ -33,7 +33,7 @@ public class ServerConnection {
     public ServerConnection(String setUser, String setToken, String setHost, JumpNRun setGame){
         currentConnState = ConnState.WAITING;
         
-        userName = setUser;
+        userId = setUser;
         userToken = setToken;
         hostName = setHost.split(":")[0];
         
