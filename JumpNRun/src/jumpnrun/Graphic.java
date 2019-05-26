@@ -5,9 +5,13 @@
  */
 package jumpnrun;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Vector;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -20,7 +24,9 @@ import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import worldeditor.*;
@@ -43,6 +49,10 @@ public class Graphic extends Group {
     private static Protagonist protagonist1, protagonist2;
     private static JumpNRun.Gamemode gamemode;
     private static CountDownLabel onlinetimeLabel;
+    
+    private static HBox onlinePlayersBox;
+    private static HashMap<String,Label> onlinePlayersVarLabels;
+    private static ArrayList<HBox> playerBoxes;
 
     public Graphic(Vector<Vector<Block>> worldVec, Protagonist prot1, Protagonist prot2, JumpNRun.Gamemode gamemode) {
         super();
@@ -165,6 +175,33 @@ public class Graphic extends Group {
         Platform.runLater(() -> {
             worldGroup.getChildren().addAll(addProt, addProt.getNameLabel());
         });
+        HBox tmpBox = new HBox();
+        tmpBox.setAlignment(Pos.CENTER);
+        tmpBox.setSpacing(10);
+        tmpBox.setPadding(new Insets(0, 5, 0, 5));
+        VBox lblBox = new VBox();
+        lblBox.setAlignment(Pos.CENTER);
+        lblBox.setSpacing(10);
+        lblBox.setPadding(new Insets(0, 0, 0, 0));
+        Label playerName = new Label(addProt.nameLbl.getText());
+        Label varLbl = new Label("");
+        ImageView avatar = new ImageView();
+        avatar.setImage(new Image("https://v1.api.minortom.net/do/avatar.php?user=" + addProt.userId));
+        avatar.setFitWidth(JumpNRun.game.language.getFontSize()*3);
+        avatar.setPreserveRatio(true);
+        avatar.setSmooth(true);
+        playerName.setFont(JumpNRun.game.language.getFont());
+        varLbl.setFont(JumpNRun.game.language.getFont());
+        onlinePlayersVarLabels.put(addProt.pubId, varLbl);
+        lblBox.getChildren().addAll(playerName, varLbl);
+        tmpBox.getChildren().addAll(avatar, lblBox);
+        playerBoxes.add(tmpBox);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                onlinePlayersBox.getChildren().addAll(tmpBox);
+            }
+        });
         return addProt;
     }
 
@@ -176,6 +213,33 @@ public class Graphic extends Group {
         addProt.getNameLabel().setFont(new Font("Arial Black", 30));
         Platform.runLater(() -> {
             worldGroup.getChildren().addAll(addProt, addProt.getNameLabel());
+        });
+        HBox tmpBox = new HBox();
+        tmpBox.setAlignment(Pos.CENTER);
+        tmpBox.setSpacing(10);
+        tmpBox.setPadding(new Insets(0, 5, 0, 5));
+        VBox lblBox = new VBox();
+        lblBox.setAlignment(Pos.CENTER);
+        lblBox.setSpacing(10);
+        lblBox.setPadding(new Insets(0, 0, 0, 0));
+        Label playerName = new Label(addProt.nameLbl.getText());
+        Label varLbl = new Label("");
+        ImageView avatar = new ImageView();
+        avatar.setImage(new Image("https://v1.api.minortom.net/do/avatar.php?user=" + addProt.userId));
+        avatar.setFitWidth(JumpNRun.game.language.getFontSize()*3);
+        avatar.setPreserveRatio(true);
+        avatar.setSmooth(true);
+        playerName.setFont(JumpNRun.game.language.getFont());
+        varLbl.setFont(JumpNRun.game.language.getFont());
+        onlinePlayersVarLabels.put(addProt.pubId, varLbl);
+        lblBox.getChildren().addAll(playerName, varLbl);
+        tmpBox.getChildren().addAll(avatar, lblBox);
+        playerBoxes.add(tmpBox);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                onlinePlayersBox.getChildren().addAll(tmpBox);
+            }
         });
         return addProt;
     }
@@ -226,6 +290,28 @@ public class Graphic extends Group {
                 }
             }
         }
+    }
+    public static void initOnlineOverlay() {
+        onlinePlayersVarLabels = new HashMap<>();
+        onlinePlayersBox = new HBox();
+        onlinePlayersBox.setLayoutX(JumpNRun.getWidth()/2);
+        onlinePlayersBox.setLayoutY(JumpNRun.getHeight() - lblYDist - JumpNRun.game.language.getFontSize()*3);
+        onlinePlayersBox.setAlignment(Pos.CENTER);
+        onlinePlayersBox.setSpacing(50);
+        onlinePlayersBox.setPadding(new Insets(0, 20, 0, 20));
+        playerBoxes = new ArrayList<>();
+    }
+    
+    public static void drawOnlineOverlay() {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("executed onlineplayersbox");
+                if(!worldGroup.getChildren().contains(onlinePlayersBox)) {
+                    worldGroup.getChildren().addAll(onlinePlayersBox);
+                }
+            }
+        });
     }
 
     class CountDownLabel extends Label implements Updatable, OnlineUpdatableObject {

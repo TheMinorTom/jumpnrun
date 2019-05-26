@@ -7,6 +7,7 @@ package net.minortom.davidjumpnrun.netcode;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import jumpnrun.Graphic;
 import jumpnrun.JumpNRun;
 import net.minortom.davidjumpnrun.configstore.ConfigManager;
 import net.minortom.davidjumpnrun.netcode.ServerConnection.ConnState;
@@ -95,6 +96,7 @@ public class NetworkTCPReceiverClient extends Thread {
                             break;
                         case OGAME_INITMAP:
                             game.initMap(packageContent[2]);
+                            Graphic.initOnlineOverlay();
                             break;
                         case OGAME_INITPROT:
                             if (packageContent[7].equals("1")) {
@@ -111,7 +113,9 @@ public class NetworkTCPReceiverClient extends Thread {
                             break;
                         case OGAME_UPDATEOBJECTS:
                             game.updateOnlineObjects(packageContent[2]);
+                            break;
                         case OGAME_START:
+                            Graphic.drawOnlineOverlay();
                             game.startOnlineGame();
                             break;
                         case OGAME_REMOVEOBJECT:

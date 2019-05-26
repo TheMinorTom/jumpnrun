@@ -295,7 +295,6 @@ public class JumpNRun extends Application {
     }
 
     public void startOnlineGame() {
-
         loopOnline.start();
     }
 

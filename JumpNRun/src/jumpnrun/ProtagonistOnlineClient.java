@@ -28,7 +28,7 @@ import worldeditor.IO;
 public class ProtagonistOnlineClient extends ImageView implements OnlineUpdatableObject {
     
     private static final double width = Protagonist.getWidth();
-    private Label nameLbl;
+    public Label nameLbl;
     public final String pubId;
     public final String userId;
     private double spawnX, spawnY;
