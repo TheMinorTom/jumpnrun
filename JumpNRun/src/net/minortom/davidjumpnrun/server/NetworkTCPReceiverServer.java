@@ -125,14 +125,7 @@ public class NetworkTCPReceiverServer extends Thread {
                     e.printStackTrace();
                     System.err.println("Invalid package recieved by server:" + line);
                 }
-                /**
-                 * if(line.startsWith("JUMPNRUN ")){ System.out.println(line);
-                 * }else{ System.err.println(line); }
-                 *
-                 *
-                 * if(line.equals("JUMPNRUN test")){
-                 * tcpServ.out.println("JUMPNRUN test"); } *
-                 */
+                //System.err.println(line);
             }
         } catch (IOException ex) {
             System.err.println("IOException: " + ex);

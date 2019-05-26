@@ -111,7 +111,8 @@ public class OnlGame implements Runnable {
         playerSkins.put(pubId, skin);
         String name = server.tcpServer.get(pubId).userName;
         String addObjectId = nextObjectId();
-        RemotePlayer addPlayer = new RemotePlayer(server, this, pubId, addObjectId, skin, name, players.size(), playersMax);
+        String userId = server.tcpServer.get(pubId).userId;
+        RemotePlayer addPlayer = new RemotePlayer(server, this, pubId, addObjectId, skin, name, players.size(), playersMax, userId);
         onlineGameObjects.put(addObjectId, addPlayer);
         players.put(pubId, addPlayer);
 

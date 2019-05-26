@@ -5,6 +5,7 @@
  */
 package jumpnrun;
 
+import java.io.File;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -29,6 +30,7 @@ public class ProtagonistOnlineClient extends ImageView implements OnlineUpdatabl
     private static final double width = Protagonist.getWidth();
     private Label nameLbl;
     public final String pubId;
+    public final String userId;
     private double spawnX, spawnY;
     private Label respawnTimerLabel;
     private String spritePath;
@@ -37,19 +39,20 @@ public class ProtagonistOnlineClient extends ImageView implements OnlineUpdatabl
     private KeyCode[] protControlls;
     private Rectangle2D currViewport;
     
-    public ProtagonistOnlineClient(int indexId, double x, double y, String skinFileName, String name, String pubId, KeyCode left, KeyCode right, KeyCode jump, KeyCode hit, KeyCode shoot, KeyCode use) {
+    public ProtagonistOnlineClient(int indexId, double x, double y, String skinFileName, String name, String pubId, KeyCode left, KeyCode right, KeyCode jump, KeyCode hit, KeyCode shoot, KeyCode use, String userId) {
         protControlls = new KeyCode[]{left, right, jump, hit, shoot, use};
         spawnY = y;
         spawnX = x;
         yPos = y;
         xPos = x;
         this.pubId = pubId;
+        this.userId = userId;
         nameLbl = new Label(name);
         nameLbl.setFont(new Font(JumpNRun.game.language.getFontName(), 20));
         nameLbl.setVisible(true);
         updatePos(x, y, CostumeViewport.MID.ordinal());
         
-        spritePath = "sprites/protagonist/" + skinFileName;
+        spritePath = "sprites" + File.separator + "protagonist" + File.separator + skinFileName;
         this.indexId = indexId;
         Image image = new Image(ConfigManager.getFileStream(spritePath));
         

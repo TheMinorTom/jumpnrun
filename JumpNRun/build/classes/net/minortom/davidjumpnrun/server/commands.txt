@@ -16,7 +16,7 @@ OGAME-WILLSTART     server          TODO
 OGAME-ERR           client          fatal, code
 OGAME-INITMAP       server          map
 OGAME-INITPENDANT   server          -
-OGAME-INITPROT      server          name, skin, index, id, is local player (0 = false, 1 = true)  
+OGAME-INITPROT      server          name, skin, index, id, is local player (0 = false, 1 = true), userId
 OGAME-INITGAME      server          playerAmount, spawnY, gamemode, limit, gameName
 OGAME-UPDATEPROT    server          id, x, y, animationState (int)
 OGAME-KEYPRESS      client          playerId, gameName, action (RIGHT, LEFT, JUMP, HIT, SHOOT, USE)

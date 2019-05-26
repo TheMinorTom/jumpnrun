@@ -33,6 +33,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
     private boolean isInited = false;
 
     public String pubId;
+    public String userId;
     public String skin;     //Skin fileName
     public String name;
     public int index; //Number >= 0
@@ -51,11 +52,12 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
 
     private boolean shootGenerated = false;
 
-    public RemotePlayer(Server server, OnlGame game, String pubId, String objectId, String skin, String name, int index, int maxPlayer) {
+    public RemotePlayer(Server server, OnlGame game, String pubId, String objectId, String skin, String name, int index, int maxPlayer, String userId) {
         super(index, (game.worldWidth / (maxPlayer + 1)) * (index + 1), OnlGame.spawnY);
         this.server = server;
         this.game = game;
         this.pubId = pubId;
+        this.userId = userId;
         this.skin = skin;
         this.name = name;
         this.index = index;
@@ -277,12 +279,12 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
     }
 
     void initClientOtherPlayer(RemotePlayer p2) {
-        server.tcpServer.get(pubId).getCommandHandler().sendCommand(ServerCommand.OGAME_INITPROT, new String[]{p2.name, p2.skin, String.valueOf(p2.index), p2.pubId, p2.getObjectId(), "0"});
+        server.tcpServer.get(pubId).getCommandHandler().sendCommand(ServerCommand.OGAME_INITPROT, new String[]{p2.name, p2.skin, String.valueOf(p2.index), p2.pubId, p2.getObjectId(), "0", p2.userId});
         // server.tcpServer.get(pubId).out.println(server.keyword + server.infoSeperator + "OGAME-INITPROT" + server.infoSeperator + p2.name + server.infoSeperator + p2.skin + server.infoSeperator + String.valueOf(p2.index) + server.infoSeperator + p2.pubId + server.infoSeperator + "0");
     }
 
     void initClientPendant(RemotePlayer p2) {
-        server.tcpServer.get(pubId).getCommandHandler().sendCommand(ServerCommand.OGAME_INITPROT, new String[]{p2.name, p2.skin, String.valueOf(p2.index), p2.pubId, p2.getObjectId(), "1"});
+        server.tcpServer.get(pubId).getCommandHandler().sendCommand(ServerCommand.OGAME_INITPROT, new String[]{p2.name, p2.skin, String.valueOf(p2.index), p2.pubId, p2.getObjectId(), "1", p2.userId});
         //server.tcpServer.get(pubId).out.println(server.keyword + server.infoSeperator + "OGAME-INITPROT" + server.infoSeperator + p2.name + server.infoSeperator + p2.skin + server.infoSeperator + String.valueOf(p2.index) + server.infoSeperator + p2.pubId + server.infoSeperator + "1");
     }
 

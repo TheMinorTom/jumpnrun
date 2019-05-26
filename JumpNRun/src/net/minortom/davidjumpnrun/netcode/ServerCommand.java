@@ -32,7 +32,7 @@ public enum ServerCommand {
     OGAME_INITMAP,      //server          map
     @Deprecated
     OGAME_INITPENDANT,  //server          -
-    OGAME_INITPROT,     //server          name, skin, index, pubId, objectId, is local player (0 = false, 1 = true)  
+    OGAME_INITPROT,     //server          name, skin, index, pubId, objectId, is local player (0 = false, 1 = true), userId 
     OGAME_INITGAME,     //server          playerAmount, spawnY, gamemode, limit, gameName
     @Deprecated //use updateobject
     OGAME_UPDATEPROT,   //server          id, x, y, animationState (int)

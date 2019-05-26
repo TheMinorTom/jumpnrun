@@ -98,9 +98,9 @@ public class NetworkTCPReceiverClient extends Thread {
                             break;
                         case OGAME_INITPROT:
                             if (packageContent[7].equals("1")) {
-                                game.initLocalProt(packageContent[2], packageContent[3], Integer.valueOf(packageContent[4]), packageContent[5], packageContent[6]);
+                                game.initLocalProt(packageContent[2], packageContent[3], Integer.valueOf(packageContent[4]), packageContent[5], packageContent[6], packageContent[8]);
                             } else {
-                                game.initOtherProt(packageContent[2], packageContent[3], Integer.valueOf(packageContent[4]), packageContent[5], packageContent[6]);
+                                game.initOtherProt(packageContent[2], packageContent[3], Integer.valueOf(packageContent[4]), packageContent[5], packageContent[6], packageContent[8]);
                             }
                             break;
                         case OGAME_INITGAME:
@@ -127,18 +127,7 @@ public class NetworkTCPReceiverClient extends Thread {
                     e.printStackTrace();
                     System.err.println(line);
                 }
-                /**
-                 * if(line.contains("JUMPNRUN")){ System.out.println(line);
-                 * game.networkManager.serverConnection.currentConnState =
-                 * ServerConnection.ConnState.CONNECTED; }else{
-                 * System.err.println(line); }
-                 *
-                 *
-                 * if(line.equals("JUMPNRUN test")){
-                 * game.networkManager.serverConnection.currentConnState =
-                 * ServerConnection.ConnState.CONNECTED; }
-                 *
-                 */
+                //System.err.println(line);
             }
         } catch (IOException ex) {
             game.networkManager.serverConnection.currentConnState = ServerConnection.ConnState.ERROR_INTERNAL;
