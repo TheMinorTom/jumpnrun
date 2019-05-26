@@ -3,8 +3,22 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/home/tom/docs/projects/Maggdas%20snans%20lolles%20spiel%20liil%20soos/jumpnrun/JumpNRun/src/net/minortom/davidjumpnrun/server/RemotePlayer.java</file>
+            <file>file:/home/tom/docs/projects/Maggdas%20snans%20lolles%20spiel%20liil%20soos/jumpnrun/JumpNRun/src/jumpnrun/ProtagonistOnlineClient.java</file>
             <file>file:/home/tom/docs/projects/Maggdas%20snans%20lolles%20spiel%20liil%20soos/jumpnrun/JumpNRun/src/net/minortom/davidjumpnrun/netcode/NetworkManager.java</file>
-            <file>file:/home/tom/docs/projects/Maggdas%20snans%20lolles%20spiel%20liil%20soos/jumpnrun/JumpNRun/src/net/minortom/davidjumpnrun/netcode/screens/LoginScreen.java</file>
+            <file>file:/home/tom/docs/projects/Maggdas%20snans%20lolles%20spiel%20liil%20soos/jumpnrun/JumpNRun/src/net/minortom/davidjumpnrun/configstore/ConfigManager.java</file>
+            <file>file:/home/tom/docs/projects/Maggdas%20snans%20lolles%20spiel%20liil%20soos/jumpnrun/JumpNRun/src/net/minortom/davidjumpnrun/netcode/ServerCommand.java</file>
+            <file>file:/home/tom/docs/projects/Maggdas%20snans%20lolles%20spiel%20liil%20soos/jumpnrun/JumpNRun/src/net/minortom/davidjumpnrun/i18n/Language.java</file>
+            <file>file:/home/tom/docs/projects/Maggdas%20snans%20lolles%20spiel%20liil%20soos/jumpnrun/JumpNRun/src/net/minortom/davidjumpnrun/server/OnlGame.java</file>
+            <file>file:/home/tom/docs/projects/Maggdas%20snans%20lolles%20spiel%20liil%20soos/jumpnrun/JumpNRun/src/net/minortom/davidjumpnrun/server/MapHelper.java</file>
+            <file>file:/home/tom/docs/projects/Maggdas%20snans%20lolles%20spiel%20liil%20soos/jumpnrun/JumpNRun/src/net/minortom/davidjumpnrun/netcode/ServerConnection.java</file>
+            <file>file:/home/tom/docs/projects/Maggdas%20snans%20lolles%20spiel%20liil%20soos/jumpnrun/JumpNRun/src/net/minortom/davidjumpnrun/server/NetworkTCPReceiverServer.java</file>
+            <file>file:/home/tom/docs/projects/Maggdas%20snans%20lolles%20spiel%20liil%20soos/jumpnrun/JumpNRun/src/net/minortom/davidjumpnrun/server/Server.java</file>
+            <file>file:/home/tom/docs/projects/Maggdas%20snans%20lolles%20spiel%20liil%20soos/jumpnrun/JumpNRun/src/jumpnrun/Graphic.java</file>
+            <file>file:/home/tom/docs/projects/Maggdas%20snans%20lolles%20spiel%20liil%20soos/jumpnrun/JumpNRun/src/worldeditor/IO.java</file>
+            <file>file:/home/tom/docs/projects/Maggdas%20snans%20lolles%20spiel%20liil%20soos/jumpnrun/JumpNRun/src/jumpnrun/JumpNRun.java</file>
+            <file>file:/home/tom/docs/projects/Maggdas%20snans%20lolles%20spiel%20liil%20soos/jumpnrun/JumpNRun/src/worldeditor/Block.java</file>
+            <file>file:/home/tom/docs/projects/Maggdas%20snans%20lolles%20spiel%20liil%20soos/jumpnrun/JumpNRun/src/net/minortom/davidjumpnrun/netcode/NetworkTCPReceiverClient.java</file>
         </group>
     </open-files>
 </project-private>
