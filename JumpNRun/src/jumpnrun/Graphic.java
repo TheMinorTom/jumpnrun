@@ -139,7 +139,7 @@ public class Graphic extends Group {
     }
 
     public Graphic(Vector<Vector<Block>> worldVec) {
-/*
+
         onlinetimeLabel = new CountDownLabel();
 
         JumpNRun.game.getOnlineLoop().addObject(onlinetimeLabel);
@@ -148,23 +148,11 @@ public class Graphic extends Group {
         onlinetimeLabel.setFont(JumpNRun.game.language.getHeadingFont());
         onlinetimeLabel.setBorder(
                 new Border(new BorderStroke(Color.DARKGRAY, BorderStrokeStyle.SOLID, new CornerRadii(100), new BorderWidths(10))));
-        */
+        
         worldVector = worldVec;
-        /*
-        for (int i = 0; i < worldVector.size(); i++) {
-            for (int j = 0; j < worldVector.get(i).size(); j++) {
-                Block block = worldVector.get(i).get(j);
-                if (block != null) {
-                    blockSize = block.getFitWidth();
-                    block.setX(block.getLayoutX());
-                    block.setY(block.getLayoutY());
-                }
-            }
-        }
-                */
         System.out.println("World: " + worldVec);
         worldGroup = GUI.drawWorld(worldVec, worldVec.get(0).get(0).getFitWidth());
-        getChildren().add(worldGroup);
+        getChildren().addAll(worldGroup, onlinetimeLabel);
     }
 
     public ProtagonistOnlineClient generateOtherOnlineProt(String name, String skinFileName, int indexId, String pubId, int playerAmount, double spawnY, String userId) {

@@ -71,25 +71,28 @@ public class OnlGame implements Runnable {
         this.gameName = gameName;
         this.playersMax = playersMax;
         onlineGameObjects = new HashMap<>();
+                movingObjects = FXCollections.observableArrayList();
+        shoots = FXCollections.observableArrayList();
 
         ended = false;
         gamemodeAsUpperString = gamemode.toUpperCase();
         switch (gamemodeAsUpperString) {
             case "DEATHS":
                 this.gamemode = JumpNRun.Gamemode.DEATHS;
-                gameTimer = new OnlineGameTimer(0, 0, 0, 0, GameObjectType.GAMETIMER, nextObjectId(), false, 0);
+                gameTimer = new OnlineGameTimer(nextObjectId(), false, 0, this);
                 break;
             case "TIME":
                 this.gamemode = JumpNRun.Gamemode.TIME;
-                gameTimer = new OnlineGameTimer(0, 0, 0, 0, GameObjectType.GAMETIMER, nextObjectId(), true, timeLimit);
+                gameTimer = new OnlineGameTimer(nextObjectId(), true, timeLimit, this);
                 break;
             case "ENDLESS":
             default:
                 this.gamemode = JumpNRun.Gamemode.ENDLESS;
-                gameTimer = new OnlineGameTimer(0, 0, 0, 0, GameObjectType.GAMETIMER, nextObjectId(), false, 0);
+                gameTimer = new OnlineGameTimer(nextObjectId(), false, 0, this);
                 break;
         }
-        //onlineGameObjects.put(gameTimer.getObjectId(), gameTimer);
+        onlineGameObjects.put(gameTimer.getObjectId(), gameTimer);
+        movingObjects.add(gameTimer);
 
         this.timeLimit = timeLimit;
         this.respawnLimit = respawnLimit;
@@ -103,8 +106,7 @@ public class OnlGame implements Runnable {
         playerSkins = new HashMap<>();
 
         addPlayer(playerOneId, playerOneSkin);
-        movingObjects = FXCollections.observableArrayList();
-        shoots = FXCollections.observableArrayList();
+
     }
 
     public void addPlayer(String pubId, String skin) {
@@ -114,6 +116,7 @@ public class OnlGame implements Runnable {
         String userId = server.tcpServer.get(pubId).userId;
         RemotePlayer addPlayer = new RemotePlayer(server, this, pubId, addObjectId, skin, name, players.size(), playersMax, userId);
         onlineGameObjects.put(addObjectId, addPlayer);
+        
         players.put(pubId, addPlayer);
 
         sendAllTCP(ServerCommand.OGAME_PJOINED, new String[]{name, pubId, String.valueOf(playersMax)});
@@ -281,8 +284,6 @@ public class OnlGame implements Runnable {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-            gameTimer.update(timeElapsedSeconds);
         }
     }
 
