@@ -11,6 +11,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -82,6 +83,8 @@ public class LoginScreen extends VBox {
         setAlignment(Pos.CENTER_LEFT);
         setSpacing(50);
         setPadding(new Insets(0, 50, 0, 50));
+        setFillWidth(false);
+                
         getChildren().addAll(loginView, backBt, connectingLabel);
     }
     
@@ -93,7 +96,7 @@ public class LoginScreen extends VBox {
         backBt.setText(game.language.backBt);
         backBt.setFont(defaultFont);
         
-        setSpacing(game.language.getFontSize());
+        // setSpacing(game.language.getFontSize());
         
         if(game.config.networkLoggedIn){
             loginView.getEngine().load("https://v1.api.minortom.net/sso/logout.php?noredir=1");
