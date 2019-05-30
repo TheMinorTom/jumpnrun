@@ -784,6 +784,7 @@ public class JumpNRun extends Application {
     public static void removeNode(Node n) {
         graphic.getChildren().remove(n);
     }
+    
 
     static void doCollect(PowerupCollect collect, Powerup powerupNew, Powerup powerupOld, int id) {
         powerupCollects.remove(collect);

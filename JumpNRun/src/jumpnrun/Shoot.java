@@ -25,7 +25,9 @@ public class Shoot extends ImageView implements Updatable, OnlineUpdatableObject
 
     private final static String imageSource = "sprites/ShootGes.png";
 
-    public Shoot(double x, double y, double xSpeed, double ySpeed, boolean facingRight) {
+    private Protagonist owner;
+
+    public Shoot(double x, double y, double xSpeed, double ySpeed, boolean facingRight, Protagonist owner) {
         Image image = new Image(ConfigManager.getFileStream(imageSource));
         setImage(image);
         getTransforms().add(new Rotate());
@@ -42,13 +44,14 @@ public class Shoot extends ImageView implements Updatable, OnlineUpdatableObject
         yPos = y;
         breakAccX = 200;
         gravAccY = 200;
+        this.owner = owner;
 
     }
 
     public Shoot() {
         Image image = new Image(ConfigManager.getFileStream(imageSource));
         setImage(image);
-        getTransforms().add(new Rotate(0, AnimationState.RIGHT.getRect().getWidth()/2, AnimationState.RIGHT.getRect().getHeight()/2));
+        getTransforms().add(new Rotate(0, AnimationState.RIGHT.getRect().getWidth() / 2, AnimationState.RIGHT.getRect().getHeight() / 2));
         breakAccX = 200;
         gravAccY = 200;
         setViewport(AnimationState.RIGHT.getRect());
@@ -61,7 +64,7 @@ public class Shoot extends ImageView implements Updatable, OnlineUpdatableObject
         lastXPos = xPos;
         lastYPos = yPos;
     }
-    
+
     @Override
     public void update(double timeElapsedSeconds, Vector<Vector<Block>> worldVec, Protagonist protOne, Protagonist protTwo, Vector<PowerupCollect> powerupCollects) {
         double xSpdAdd = breakAccX * timeElapsedSeconds;
@@ -81,11 +84,18 @@ public class Shoot extends ImageView implements Updatable, OnlineUpdatableObject
         yPos += ySpd * timeElapsedSeconds;
         setLayoutX(xPos);
         setLayoutY(yPos);
-
-        if (collisionCheck(worldVec, protOne, protTwo)) {
-            JumpNRun.removeNode(this);
-            JumpNRun.removeUpdatable(this);
+        if (owner.equals(protOne)) {
+            if (collisionCheck(worldVec, protTwo)) {
+                JumpNRun.removeNode(this);
+                JumpNRun.removeUpdatable(this);
+            }
+        } else {
+            if (collisionCheck(worldVec, protOne)) {
+                JumpNRun.removeNode(this);
+                JumpNRun.removeUpdatable(this);
+            }
         }
+
     }
 
     @Override
@@ -116,7 +126,7 @@ public class Shoot extends ImageView implements Updatable, OnlineUpdatableObject
         return ang;
     }
 
-    public boolean collisionCheck(Vector<Vector<Block>> worldVec, Protagonist protOne, Protagonist protTwo) {
+    public boolean collisionCheck(Vector<Vector<Block>> worldVec, Protagonist prot) {
         for (int i = 0; i < worldVec.size(); i++) {
             for (int j = 0; j < worldVec.get(i).size(); j++) {
                 if (worldVec.get(i).get(j) != null) {
@@ -127,14 +137,11 @@ public class Shoot extends ImageView implements Updatable, OnlineUpdatableObject
                 }
             }
         }
-        if (getBoundsInParent().intersects(protOne.getBoundsInParent())) {
-            protOne.hitten();
+        if (getBoundsInParent().intersects(prot.getBoundsInParent())) {
+            prot.hitten();
             return true;
         }
-        if (getBoundsInParent().intersects(protTwo.getBoundsInParent())) {
-            protTwo.hitten();
-            return true;
-        }
+
         return false;
     }
 

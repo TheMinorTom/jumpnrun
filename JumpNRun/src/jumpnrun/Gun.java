@@ -21,7 +21,20 @@ public class Gun extends ImageView implements OnlineUpdatableObject{
     private boolean facingLeft, shootGenerated;
     private double xPos, yPos;
     private Rectangle2D currViewport;
+    Protagonist owner;
 
+    Gun(Protagonist owner) {
+        shootGenerated = false;
+        setImage(new Image(ConfigManager.getFileStream(imageSource)));
+        setVisible(false);
+        setX(200);
+        setY(200);
+        facingLeft = true;
+        setViewport(AnimationState.LEFT.getRect());
+        this.owner = owner;
+
+    }
+    
     Gun() {
         shootGenerated = false;
         setImage(new Image(ConfigManager.getFileStream(imageSource)));
@@ -30,7 +43,6 @@ public class Gun extends ImageView implements OnlineUpdatableObject{
         setY(200);
         facingLeft = true;
         setViewport(AnimationState.LEFT.getRect());
-
     }
 
     public void updateShoot(double shootTimer) {
@@ -40,7 +52,7 @@ public class Gun extends ImageView implements OnlineUpdatableObject{
                 setViewport(AnimationState.LEFT_SHOOT.getRect());
                 if (!shootGenerated) {
                     shootGenerated = true;
-                    Shoot shoot = new Shoot(getX(), getY(), 1000,0,false);
+                    Shoot shoot = new Shoot(getX(), getY(), 1000,0,false, owner);
                     JumpNRun.addUpdatable(shoot);
                     JumpNRun.addNode(shoot);
                 }
@@ -49,7 +61,7 @@ public class Gun extends ImageView implements OnlineUpdatableObject{
                 setViewport(AnimationState.RIGHT_SHOOT.getRect());
                 if (!shootGenerated) {
                     shootGenerated = true;
-                    Shoot shoot = new Shoot(getX() + 40, getY(), 1000, 0, true);
+                    Shoot shoot = new Shoot(getX() + 40, getY(), 1000, 0, true, owner);
                     JumpNRun.addUpdatable(shoot);
                     JumpNRun.addNode(shoot);
                 }
@@ -64,7 +76,7 @@ public class Gun extends ImageView implements OnlineUpdatableObject{
             if (facingLeft) {
                 setViewport(AnimationState.LEFT_SHOOT.getRect());
                 if (((int) (shootTimer * 100)) % 10 == 0) {
-                    Shoot shoot = new Shoot(getX()-10, getY(), 700 ,0 ,false);
+                    Shoot shoot = new Shoot(getX()-10, getY(), 700 ,0 ,false, owner);
                     JumpNRun.addUpdatable(shoot);
                     JumpNRun.addNode(shoot);
                 }
@@ -72,7 +84,7 @@ public class Gun extends ImageView implements OnlineUpdatableObject{
             } else {
                 setViewport(AnimationState.RIGHT_SHOOT.getRect());
                 if (((int) (shootTimer * 100)) % 10 == 0) {
-                    Shoot shoot = new Shoot(getX() + 50, getY(), 700,0,true);
+                    Shoot shoot = new Shoot(getX() + 50, getY(), 700,0,true, owner);
                     JumpNRun.addUpdatable(shoot);
                     JumpNRun.addNode(shoot);
                 }
@@ -123,6 +135,10 @@ public class Gun extends ImageView implements OnlineUpdatableObject{
         public Rectangle2D getRect() {
             return r;
         }
+    }
+    
+    public Protagonist getOwner() {
+        return owner;
     }
 
 }
