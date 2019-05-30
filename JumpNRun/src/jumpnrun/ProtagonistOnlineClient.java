@@ -6,6 +6,7 @@
 package jumpnrun;
 
 import java.io.File;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -72,7 +73,7 @@ public class ProtagonistOnlineClient extends ImageView implements OnlineUpdatabl
         setX(x);
         setY(y);
         setVisible(true);
-        
+                
     }
     
     @Override

@@ -156,6 +156,12 @@ public class Language implements Serializable {
     public transient String WorldEditMainMenuOpen;
     public transient String WorldEditErrOnlyNumbers;
     
+    // Online End Game Screen
+    public transient String EndGamePlacement;
+    public transient String EndGameName;
+    public transient String EndGameKills;
+    public transient String EndGameDeaths;
+    
     
     public transient int changeB;
     

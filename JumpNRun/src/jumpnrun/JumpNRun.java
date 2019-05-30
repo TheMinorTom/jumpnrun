@@ -46,6 +46,7 @@ import net.minortom.davidjumpnrun.i18n.LanguageEnglish;
 import net.minortom.davidjumpnrun.i18n.LanguageGerman;
 import net.minortom.davidjumpnrun.netcode.GameObjectType;
 import net.minortom.davidjumpnrun.netcode.NetworkManager;
+import net.minortom.davidjumpnrun.netcode.screens.OnlineEndScreen;
 import net.minortom.davidjumpnrun.server.OnlineGameObject;
 import net.minortom.davidjumpnrun.server.Server;
 import worldeditor.GUI;
@@ -85,7 +86,7 @@ public class JumpNRun extends Application {
     public static GUI worldEditGUI;
     private static double summonTimer, summonTime;
     private static Vector<Updatable> updatables;
-    private static Parent mainMenu, gameScene, chooseGamemodeScreen, winScreen, offlineSkinChooseScreen1, offlineSkinChooseScreen2, onlineSkinChooseCreateGame, onlineSkinChooseJoinGame, worldEditorScreen;
+    private static Parent mainMenu, gameScene, chooseGamemodeScreen, winScreen, offlineSkinChooseScreen1, offlineSkinChooseScreen2, onlineSkinChooseCreateGame, onlineSkinChooseJoinGame, worldEditorScreen, onlineEndScreen;
     private static CreditsScreen creditsScreen;
     private Gamemode currGamemode;
     private static int deathLimit;
@@ -164,8 +165,8 @@ public class JumpNRun extends Application {
 
             primStage = primaryStage;
             mainMenu = new MainMenu(this);
-            scene = new Scene(mainMenu);
-            primaryStage.setScene(scene);
+            // scene = new Scene(mainMenu); !!!!!!!!!!!!
+
             chooseGamemodeScreen = new ChooseGamemodeMenu(this);
             winScreen = new WinScreen(this);
             offlineSkinChooseScreen1 = new SkinChooseMenu(this, SkinChooseMenu.SkinChooseMode.OFFLINE_PLAYER_1);
@@ -173,12 +174,16 @@ public class JumpNRun extends Application {
             onlineSkinChooseCreateGame = new SkinChooseMenu(this, SkinChooseMenu.SkinChooseMode.ONLINE_CREATE_GAME);
             onlineSkinChooseJoinGame = new SkinChooseMenu(this, SkinChooseMenu.SkinChooseMode.ONLINE_JOIN_GAME);
             creditsScreen = new CreditsScreen(this);
+            onlineEndScreen = new OnlineEndScreen(this);
+
+            scene = new Scene(mainMenu);
+            primaryStage.setScene(scene);
             worldEditorScreen = new GUI(this);
             worldEditorScene = new Scene(worldEditorScreen);
+
             //chooseSkinScreen = new SkinChooseMenu(this);
             //((SkinChooseMenu)chooseSkinScreen).updateStrings();
             //scene = new Scene(chooseSkinScreen);
-
             WorldEditor.initBlocksArr();
 
             primaryStage.setTitle(game.language.GWindowName);
@@ -468,13 +473,13 @@ public class JumpNRun extends Application {
                 case DEATHCOUNT:
                     if (alreadyExists) {
                         OnlineUpdatableCounterLabel label = (OnlineUpdatableCounterLabel) onlineGameObjects.get(objectId);
-                        label.updatePos((0.75*primStage.getWidth()), Graphic.lblYDist, animationStateAsInt);
+                        label.updatePos((0.75 * primStage.getWidth()), Graphic.lblYDist, animationStateAsInt);
                         //((OnlineUpdatableCounterLabel) onlineGameObjects.get(objectId)).updateText(String.valueOf((int) (animationStateAsInt / 60)) + "min, " + String.valueOf(animationStateAsInt % 60) + "s");
 
                     } else {
                         OnlineUpdatableCounterLabel onlineDeathCount;
                         if (onlineGamemode.equals(Gamemode.DEATHS)) {
-                            onlineDeathCount = new OnlineUpdatableCounterLabel(language.respawnLabelText, (primStage.getWidth()*0.75) - Graphic.lblXDist, Graphic.lblYDist, false);
+                            onlineDeathCount = new OnlineUpdatableCounterLabel(language.respawnLabelText, (primStage.getWidth() * 0.75) - Graphic.lblXDist, Graphic.lblYDist, false);
                         } else {
                             onlineDeathCount = new OnlineUpdatableCounterLabel(language.deathLabelText, primStage.getWidth() - Graphic.lblXDist, Graphic.lblYDist, false);
                         }
@@ -527,6 +532,18 @@ public class JumpNRun extends Application {
             currArgs = currObject.split("\\" + NetworkManager.subArgsSeperator);
             updateOnlineObject(currArgs[0], currArgs[1], currArgs[2], currArgs[3], currArgs[4]);
         }
+    }
+
+    public void endOnlineGame(String message) {
+        ((OnlineEndScreen)onlineEndScreen).startInserting();
+        String[] playersArgs = message.split("\\" + NetworkManager.differentObjectsSeperator);
+        String[] currArgs = null;
+        for (String currPlayer : playersArgs) {
+            currArgs = currPlayer.split("\\" + NetworkManager.subArgsSeperator);
+            ((OnlineEndScreen) onlineEndScreen).addPlayerEntry(currArgs);
+        }
+        ((OnlineEndScreen)onlineEndScreen).updateStrings();
+        scene.setRoot(onlineEndScreen);
     }
 
     public HashMap<String, ProtagonistOnlineClient> getOnlineProts() {
@@ -617,7 +634,7 @@ public class JumpNRun extends Application {
 
                     networkManager.sendKeyPress(localProt.pubId, gameName, "USE");
                 }
-            }else if (e.getCode() == localProt.getControls()[6]) {
+            } else if (e.getCode() == localProt.getControls()[6]) {
                 if (!keysDown[6]) {
                     keysDown[6] = true;
 

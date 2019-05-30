@@ -43,6 +43,7 @@ public enum ServerCommand {
     OGAME_UPDATEOBJECT, //server          objectId, objectType(int), xPos, yPos, animationState(int)
     OGAME_UPDATEOBJECTS,//server          List of OGAME_UPDATEOBJECT's args; different objects seperated by NetworkManager.updateObjectsSeperator; different args per objet seperated by NetworkManager.subArgsSeperator
     OGAME_REMOVEOBJECT, //server          objectId
-    OGAME_UPDATE_RESPAWNTIMER; //server   time
+    OGAME_UPDATE_RESPAWNTIMER, //server   time
+    OGAME_ENDGAME;      //server          List of players+args seperated by updateObjectsSeperator; args: placement, name, deaths, kills
 
 }

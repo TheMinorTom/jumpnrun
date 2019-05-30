@@ -36,7 +36,7 @@ public class OnlGame implements Runnable {
     public String gameName;
     public int playersMax;
     public JumpNRun.Gamemode gamemode;
-    public double timeLimit;
+    public double timeLimitSeconds;
     public int respawnLimit;
 
     public String mapName;
@@ -68,7 +68,7 @@ public class OnlGame implements Runnable {
     private boolean isStarted = false;
 
     private ObservableList<OnlineCounterLabel> counterLabels, counterLabelsToRemove;
-
+    private int playersAlive;
     public OnlGame(Server server, String gameName, int playersMax, String gamemode, double timeLimit, int respawnLimit, String mapName, String playerOneId, String playerOneSkin) {
         this.server = server;
 
@@ -82,6 +82,10 @@ public class OnlGame implements Runnable {
 
         ended = false;
         gamemodeAsUpperString = gamemode.toUpperCase();
+        this.timeLimitSeconds = timeLimit * 60;
+        this.respawnLimit = respawnLimit;
+        this.mapName = mapName;
+
         switch (gamemodeAsUpperString) {
             case "DEATHS":
                 this.gamemode = JumpNRun.Gamemode.DEATHS;
@@ -89,7 +93,8 @@ public class OnlGame implements Runnable {
                 break;
             case "TIME":
                 this.gamemode = JumpNRun.Gamemode.TIME;
-                gameTimer = new OnlineCounterLabel(nextObjectId(), GameObjectType.GAMETIMER, timeLimit, this);
+
+                gameTimer = new OnlineCounterLabel(nextObjectId(), GameObjectType.GAMETIMER, timeLimitSeconds, this);
                 break;
             case "ENDLESS":
             default:
@@ -99,10 +104,6 @@ public class OnlGame implements Runnable {
         }
         counterLabels.add(gameTimer);
 
-        this.timeLimit = timeLimit;
-        this.respawnLimit = respawnLimit;
-        this.mapName = mapName;
-
         mapText = MapHelper.getMap(MapHelper.getMapCfgFile().get(mapName).fileName);
         worldVector = IO.openWorld(mapText, Server.getBlocksFolder());
         worldWidth = worldVector.size() * worldVector.get(0).get(0).getFitWidth();
@@ -111,6 +112,7 @@ public class OnlGame implements Runnable {
         playerSkins = new HashMap<>();
 
         addPlayer(playerOneId, playerOneSkin);
+        playersAlive = 0;
 
     }
 
@@ -139,23 +141,20 @@ public class OnlGame implements Runnable {
     public synchronized void sendAllTCP(ServerCommand command, String[] args) {
         players.forEach((String k, RemotePlayer v) -> {
 
-                server.tcpServer.get(k).getCommandHandler().sendCommand(command, args);
-
+            server.tcpServer.get(k).getCommandHandler().sendCommand(command, args);
 
         }
         );
     }
-    
-    public void sendAllTCPDelayed (ServerCommand command, String[] args) {
+
+    public void sendAllTCPDelayed(ServerCommand command, String[] args) {
         players.forEach((String k, RemotePlayer v) -> {
 
-                v.sendCommand(command, args);
+            v.sendCommand(command, args);
 
         }
         );
     }
-    
-    
 
     public void sendAllUDP(ServerCommand command, String[] args) {
         if (!willStart) {
@@ -184,7 +183,7 @@ public class OnlGame implements Runnable {
         if (gamemode == JumpNRun.Gamemode.DEATHS) {
             limit = String.valueOf(respawnLimit);
         } else if (gamemode == JumpNRun.Gamemode.TIME) {
-            limit = String.valueOf(timeLimit);
+            limit = String.valueOf(timeLimitSeconds);
         } else {
             limit = "0";
         }
@@ -256,6 +255,7 @@ public class OnlGame implements Runnable {
         double startTime = now;
         double oldTime = now;
         double timeElapsed = 0;
+        double runtimeSeconds = 0;
         timeElapsedSeconds = timeElapsed;
 
         isStarted = true;
@@ -264,6 +264,7 @@ public class OnlGame implements Runnable {
             timeElapsed = now - oldTime;
             oldTime = now;
             timeElapsedSeconds = timeElapsed / (1000.0d * 1000.0d * 1000.0d);
+            runtimeSeconds += timeElapsedSeconds;
             /*
              players.forEach((id, p) -> {
              sendAllTCP(ServerCommand.OGAME_UPDATEPROT, new String[]{p.pubId, String.valueOf(p.getXPos()), String.valueOf(p.getYPos()), String.valueOf(p.getAnimationStateAsInt())});
@@ -316,6 +317,12 @@ public class OnlGame implements Runnable {
                 counterLabels.removeAll(counterLabelsToRemove);
                 counterLabelsToRemove.clear();
             }
+
+            if (gamemode.equals(gamemode.TIME)) {
+                if (runtimeSeconds > timeLimitSeconds) {
+                    endGame();
+                }
+            }
         }
     }
 
@@ -363,5 +370,24 @@ public class OnlGame implements Runnable {
 
     public void removeCounterLabel(OnlineCounterLabel l) {
         counterLabelsToRemove.add(l);
+    }
+    
+    public void checkEndGame() {
+        playersAlive = 0;
+        players.forEach((String key, RemotePlayer p)->{
+           if(!p.isDead()) {
+               playersAlive++;
+           } 
+        });
+        if(playersAlive <= 1) {
+            endGame();
+        }
+    }
+
+    private void endGame() {
+        ended = true;
+        players.forEach((String key, RemotePlayer p)->{
+            p.endGame();
+        });
     }
 }
