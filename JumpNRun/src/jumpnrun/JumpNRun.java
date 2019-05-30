@@ -187,7 +187,7 @@ public class JumpNRun extends Application {
             primaryStage.show();
             ((WinScreen) winScreen).setWinner(1); //!!!
 
-            keysDown = new boolean[]{false, false, false, false, false, false};
+            keysDown = new boolean[]{false, false, false, false, false, false, false};
 
             //!!
         } catch (Exception e) {
@@ -617,6 +617,12 @@ public class JumpNRun extends Application {
 
                     networkManager.sendKeyPress(localProt.pubId, gameName, "USE");
                 }
+            }else if (e.getCode() == localProt.getControls()[6]) {
+                if (!keysDown[6]) {
+                    keysDown[6] = true;
+
+                    networkManager.sendKeyPress(localProt.pubId, gameName, "DOWN");
+                }
             }
 
         });
@@ -639,6 +645,9 @@ public class JumpNRun extends Application {
             } else if (e.getCode() == localProt.getControls()[5]) {
                 keysDown[5] = false;
                 networkManager.sendKeyRelease(localProt.pubId, gameName, "USE");
+            } else if (e.getCode() == localProt.getControls()[6]) {
+                keysDown[6] = false;
+                networkManager.sendKeyRelease(localProt.pubId, gameName, "DOWN");
             }
         });
         Platform.runLater(() -> {

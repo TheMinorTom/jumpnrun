@@ -27,6 +27,9 @@ import worldeditor.Block;
 
 public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObject {
 
+    public static final double ySpectatorSpeed = 500;
+    public static final double xSpectatorSpeed = 500;
+
     public boolean udpConnected;
 
     Server server;
@@ -62,10 +65,12 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
     private int kills, deaths;
 
     private OnlineCounterLabel killCounter, deathCounter;
-    
+
     private ObservableList<OnlineCounterLabel> thisCounterLabels;
-    
-    private boolean spectatorModeDoing;
+
+    private boolean isDead;
+
+    private boolean isUp, isDown;
 
     public RemotePlayer(Server server, OnlGame game, String pubId, String objectId, String skin, String name, int index, int maxPlayer, String userId) {
         super(index, (game.worldWidth / (maxPlayer + 1)) * (index + 1), OnlGame.spawnY);
@@ -87,7 +92,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         game.onlineGameObjects.put(remotePitchfork.getObjectId(), remotePitchfork);
         game.onlineGameObjects.put(remoteGun.getObjectId(), remoteGun);
         //game.onlineGameObjects.put(remoteRespawnTimer.getObjectId(), remoteRespawnTimer);
-        respawnLabel = new OnlineCounterLabel(game.nextObjectId(), GameObjectType.RESPAWNTIMER, -1, xSpawn + width/2, ySpawn, game);
+        respawnLabel = new OnlineCounterLabel(game.nextObjectId(), GameObjectType.RESPAWNTIMER, -1, xSpawn + width / 2, ySpawn, game);
 
         serverCommandsToSend = FXCollections.observableArrayList();
         argsToSend = FXCollections.observableArrayList();
@@ -102,7 +107,9 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
             deathCounter = new OnlineCounterLabel(game.nextObjectId(), GameObjectType.DEATHCOUNT, 0, game);
         }
         thisCounterLabels.addAll(killCounter, deathCounter);
-        spectatorModeDoing = false;
+        isDead = false;
+        isUp = false;
+        isDown = false;
 
     }
 
@@ -176,7 +183,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
             hitten();
         }
 
-        if ((!respawnDoing) && (!spectatorModeDoing)) {
+        if ((!respawnDoing) && (!isDead)) {
 
             if (hitDoing) {
                 updateHit(timeElapsedSeconds);
@@ -238,13 +245,27 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
             setX(xPos);
             setY(yPos);
             animationStateAsInt = currCostume.ordinal();
-        } else if (respawnDoing){
+        } else if (respawnDoing) {
             updateRespawn(timeElapsedSeconds);
-            setX(xPos);
-            setY(yPos);
+
         } else {
-            
+            if (isUp) {
+                ySpeed = -1 * ySpectatorSpeed;
+            } else if (isDown) {
+                ySpeed = ySpectatorSpeed;
+            } else if (goesLeft) {
+                xSpeed = -1 * xSpectatorSpeed;
+            } else if (goesRight) {
+                xSpeed = xSpectatorSpeed;
+            } else {
+                xSpeed = 0;
+                ySpeed = 0;
+            }
+            xPos += xSpeed * timeElapsedSeconds;
+            yPos += ySpeed * timeElapsedSeconds;
         }
+        setX(xPos);
+        setY(yPos);
 
     }
 
@@ -365,6 +386,9 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
             case "USE":
                 doUse();
                 break;
+            case "DOWN":
+                doDown();
+                break;
         }
     }
 
@@ -376,6 +400,11 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
             case "RIGHT":
                 releaseRight();
                 break;
+            case "JUMP":
+                isUp = false;
+                break;
+            case "DOWN":
+                isDown = false;
         }
     }
 
@@ -395,6 +424,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
 
     @Override
     public void doJump() {
+        isUp = true;
         if (ySpeed == 0) {
             jumpDone = true;
         }
@@ -403,6 +433,10 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
     @Override
     public void doShoot() {
         shootDoing = true;
+    }
+
+    public void doDown() {
+        isDown = true;
     }
 
     @Override
@@ -565,8 +599,12 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
 
     public void incrementDeaths() {
         deaths++;
-        if(game.gamemode.equals(Gamemode.DEATHS)) {
+        if (game.gamemode.equals(Gamemode.DEATHS)) {
             deathCounter.addVal(-1);
+            if (deathCounter.getValInt() < 0) {
+                isDead = true;
+                animationStateAsInt = -1;
+            }
         } else {
             deathCounter.addVal(1);
         }

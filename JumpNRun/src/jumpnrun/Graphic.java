@@ -150,7 +150,7 @@ public class Graphic extends Group {
     public ProtagonistOnlineClient generateOtherOnlineProt(String name, String skinFileName, int indexId, String pubId, int playerAmount, double spawnY, String userId) {
         double worldWidth = worldVector.size() * blockSize;
         double spawnX = (worldWidth / (playerAmount + 1)) * (indexId + 1);
-        ProtagonistOnlineClient addProt = new ProtagonistOnlineClient(indexId, spawnX, spawnY, skinFileName, name, pubId, LEFT, RIGHT, UP, P, O, I, userId);
+        ProtagonistOnlineClient addProt = new ProtagonistOnlineClient(indexId, spawnX, spawnY, skinFileName, name, pubId, LEFT, RIGHT, UP, P, O, I, DOWN, userId);
 
         Platform.runLater(() -> {
             worldGroup.getChildren().addAll(addProt, addProt.getNameLabel());
@@ -188,7 +188,7 @@ public class Graphic extends Group {
     public ProtagonistOnlineClient generateLocalOnlineProt(String name, String skinFileName, int indexId, String pubId, int playerAmount, double spawnY, String userId) {
         double worldWidth = worldVector.size() * blockSize;
         double spawnX = (worldWidth / (playerAmount + 1)) * (indexId + 1);
-        ProtagonistOnlineClient addProt = new ProtagonistOnlineClient(indexId, spawnX, spawnY, skinFileName, JumpNRun.game.language.playerNameLocalPlayer, pubId, LEFT, RIGHT, UP, P, O, I, userId);
+        ProtagonistOnlineClient addProt = new ProtagonistOnlineClient(indexId, spawnX, spawnY, skinFileName, JumpNRun.game.language.playerNameLocalPlayer, pubId, LEFT, RIGHT, UP, P, O, I, DOWN, userId);
         JumpNRun.game.setLocalProt(addProt);
         addProt.getNameLabel().setFont(new Font("Arial Black", 30));
         Platform.runLater(() -> {
