@@ -16,5 +16,7 @@ public enum GameObjectType {
     SHOOT,
     POWERUP,
     RESPAWNTIMER,
-    GAMETIMER;
+    GAMETIMER,
+    KILLCOUNT,
+    DEATHCOUNT;
 }

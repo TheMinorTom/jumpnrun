@@ -136,6 +136,9 @@ public class Language implements Serializable {
     
     // Gameplay
     public transient String playerNameLocalPlayer;
+    public transient String deathLabelText;
+    public transient String killsLabelText;
+    public transient String respawnLabelText;
     
     // IO
     public transient String IOReadErrorTitle;

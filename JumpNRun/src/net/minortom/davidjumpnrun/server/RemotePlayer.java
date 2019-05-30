@@ -17,6 +17,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.shape.Rectangle;
 import jumpnrun.Gun;
 import jumpnrun.JumpNRun;
+import jumpnrun.JumpNRun.Gamemode;
 import jumpnrun.Pitchfork;
 import jumpnrun.Protagonist;
 import jumpnrun.Shoot;
@@ -58,6 +59,12 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
     private ObservableList<ServerCommand> serverCommandsToSend;
     private ObservableList<String[]> argsToSend;
 
+    private int kills, deaths;
+
+    private OnlineCounterLabel killCounter, deathCounter;
+    
+    private ObservableList<OnlineCounterLabel> thisCounterLabels;
+
     public RemotePlayer(Server server, OnlGame game, String pubId, String objectId, String skin, String name, int index, int maxPlayer, String userId) {
         super(index, (game.worldWidth / (maxPlayer + 1)) * (index + 1), OnlGame.spawnY);
         this.server = server;
@@ -78,10 +85,21 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         game.onlineGameObjects.put(remotePitchfork.getObjectId(), remotePitchfork);
         game.onlineGameObjects.put(remoteGun.getObjectId(), remoteGun);
         //game.onlineGameObjects.put(remoteRespawnTimer.getObjectId(), remoteRespawnTimer);
-        respawnLabel = new OnlineCounterLabel(game.nextObjectId(), GameObjectType.RESPAWNTIMER, -1, xSpawn, ySpawn, game);
-        
+        respawnLabel = new OnlineCounterLabel(game.nextObjectId(), GameObjectType.RESPAWNTIMER, -1, xSpawn + width/2, ySpawn, game);
+
         serverCommandsToSend = FXCollections.observableArrayList();
         argsToSend = FXCollections.observableArrayList();
+        thisCounterLabels = FXCollections.observableArrayList();
+        kills = 0;
+        deaths = 0;
+
+        killCounter = new OnlineCounterLabel(game.nextObjectId(), GameObjectType.KILLCOUNT, 0, game);
+        if (game.gamemode.equals(Gamemode.DEATHS)) {
+            deathCounter = new OnlineCounterLabel(game.nextObjectId(), GameObjectType.DEATHCOUNT, game.respawnLimit, game);
+        } else {
+            deathCounter = new OnlineCounterLabel(game.nextObjectId(), GameObjectType.DEATHCOUNT, 0, game);
+        }
+        thisCounterLabels.addAll(killCounter, deathCounter);
 
     }
 
@@ -105,14 +123,20 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
                 }
 
             });
+            thisCounterLabels.forEach((OnlineCounterLabel currCounter) -> {
+                if (currCounter.needsUpdate()) {
+                    objectsUpdateArgs.add(new String[]{currCounter.getObjectId(), currCounter.getTypeString(), String.valueOf(currCounter.getXPos()), String.valueOf(currCounter.getYPos()), currCounter.getValIntString()});
+                }
+
+            });
             server.tcpServer.get(pubId).getCommandHandler().sendUpdateCommand(objectsUpdateArgs);
             try {
                 Thread.sleep(5);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            if(serverCommandsToSend.size() > 0) {
-                for(int i = 0; i < serverCommandsToSend.size(); i++) {
+            if (serverCommandsToSend.size() > 0) {
+                for (int i = 0; i < serverCommandsToSend.size(); i++) {
                     server.tcpServer.get(pubId).getCommandHandler().sendCommand(serverCommandsToSend.get(i), argsToSend.get(i));
                 }
                 serverCommandsToSend.clear();
@@ -387,6 +411,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         respawnLabel.setVal(3.999999999);
         game.getCounterLabels().add(respawnLabel);
         ySpeed = 0;
+        incrementDeaths();
     }
 
     @Override
@@ -439,6 +464,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
             if (!id.equals(pubId)) {
                 if (intersects(remotePitchfork.getX(), remotePitchfork.getY(), remotePitchfork.getWidth(), remotePitchfork.getHeight(), p.getX(), p.getY(), width, height)) {
                     p.hitten();
+                    incrementKills();
                 }
             }
         });
@@ -528,10 +554,23 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         return String.valueOf((int) respawnTimer);
     }
 
-    
     public synchronized void sendCommand(ServerCommand command, String[] args) {
         serverCommandsToSend.add(command);
         argsToSend.add(args);
+    }
+
+    public void incrementDeaths() {
+        deaths++;
+        if(game.gamemode.equals(Gamemode.DEATHS)) {
+            deathCounter.addVal(-1);
+        } else {
+            deathCounter.addVal(1);
+        }
+    }
+
+    public void incrementKills() {
+        kills++;
+        killCounter.addVal(1);
     }
 
 }

@@ -424,13 +424,13 @@ public class JumpNRun extends Application {
                     break;
                 case GAMETIMER:
                     if (alreadyExists) {
-
-                        ((OnlineUpdatableCounterLabel) onlineGameObjects.get(objectId)).updatePos(primStage.getWidth() / 2, Graphic.lblYDist, animationStateAsInt);
-                        ((OnlineUpdatableCounterLabel) onlineGameObjects.get(objectId)).updateText(String.valueOf((int) (animationStateAsInt / 60)) + "min, " + String.valueOf(animationStateAsInt % 60) + "s");
+                        OnlineUpdatableCounterLabel counterLabel = (OnlineUpdatableCounterLabel) onlineGameObjects.get(objectId);
+                        counterLabel.updatePos(primStage.getWidth() * 0.5, Graphic.lblYDist, animationStateAsInt);
+                        counterLabel.updateText(String.valueOf((int) (animationStateAsInt / 60)) + "min, " + String.valueOf(animationStateAsInt % 60) + "s");
 
                     } else {
 
-                        OnlineUpdatableCounterLabel onlinetimeLabel = new OnlineUpdatableCounterLabel("", primStage.getWidth() / 2, Graphic.lblYDist,  false);
+                        OnlineUpdatableCounterLabel onlinetimeLabel = new OnlineUpdatableCounterLabel("", primStage.getWidth() / 2, Graphic.lblYDist, false);
 
                         loopOnline.addObject(onlinetimeLabel);
                         onlinetimeLabel.setFont(JumpNRun.game.language.getHeadingFont());
@@ -439,6 +439,53 @@ public class JumpNRun extends Application {
                         onlineGameObjects.put(objectId, onlinetimeLabel);
                         Platform.runLater(() -> {
                             graphic.getChildren().add(onlinetimeLabel);
+                        });
+                    }
+
+                    break;
+                case KILLCOUNT:
+                    if (alreadyExists) {
+
+                        ((OnlineUpdatableCounterLabel) onlineGameObjects.get(objectId)).updatePos(primStage.getWidth() * 0.25, Graphic.lblYDist, animationStateAsInt);
+                        //((OnlineUpdatableCounterLabel) onlineGameObjects.get(objectId)).updateText(String.valueOf((int) (animationStateAsInt / 60)) + "min, " + String.valueOf(animationStateAsInt % 60) + "s");
+
+                    } else {
+
+                        OnlineUpdatableCounterLabel onlineKillCount = new OnlineUpdatableCounterLabel(language.killsLabelText, Graphic.lblXDist, Graphic.lblYDist, false);
+
+                        loopOnline.addObject(onlineKillCount);
+                        onlineKillCount.setFont(JumpNRun.game.language.getHeadingFont());
+                        onlineKillCount.setBorder(
+                                new Border(new BorderStroke(Color.DARKGRAY, BorderStrokeStyle.DASHED, new CornerRadii(10), new BorderWidths(2))));
+                        onlineGameObjects.put(objectId, onlineKillCount);
+                        Platform.runLater(() -> {
+                            graphic.getChildren().add(onlineKillCount);
+                        });
+                    }
+
+                    break;
+
+                case DEATHCOUNT:
+                    if (alreadyExists) {
+                        OnlineUpdatableCounterLabel label = (OnlineUpdatableCounterLabel) onlineGameObjects.get(objectId);
+                        label.updatePos((0.75*primStage.getWidth()), Graphic.lblYDist, animationStateAsInt);
+                        //((OnlineUpdatableCounterLabel) onlineGameObjects.get(objectId)).updateText(String.valueOf((int) (animationStateAsInt / 60)) + "min, " + String.valueOf(animationStateAsInt % 60) + "s");
+
+                    } else {
+                        OnlineUpdatableCounterLabel onlineDeathCount;
+                        if (onlineGamemode.equals(Gamemode.DEATHS)) {
+                            onlineDeathCount = new OnlineUpdatableCounterLabel(language.respawnLabelText, (primStage.getWidth()*0.75) - Graphic.lblXDist, Graphic.lblYDist, false);
+                        } else {
+                            onlineDeathCount = new OnlineUpdatableCounterLabel(language.deathLabelText, primStage.getWidth() - Graphic.lblXDist, Graphic.lblYDist, false);
+                        }
+
+                        loopOnline.addObject(onlineDeathCount);
+                        onlineDeathCount.setFont(JumpNRun.game.language.getHeadingFont());
+                        onlineDeathCount.setBorder(
+                                new Border(new BorderStroke(Color.DARKGRAY, BorderStrokeStyle.DASHED, new CornerRadii(10), new BorderWidths(2))));
+                        onlineGameObjects.put(objectId, onlineDeathCount);
+                        Platform.runLater(() -> {
+                            graphic.getChildren().add(onlineDeathCount);
                         });
                     }
 

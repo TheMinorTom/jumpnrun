@@ -127,6 +127,9 @@ public class LanguageEnglish extends Language{
         
         // Gameplay
         this.playerNameLocalPlayer = "You";
+        this.killsLabelText = "kills: ";
+        this.deathLabelText = "deaths:";
+        this.respawnLabelText = "respawns remaining: ";
         
         // IO
         this.IOReadErrorTitle = "Read Error";

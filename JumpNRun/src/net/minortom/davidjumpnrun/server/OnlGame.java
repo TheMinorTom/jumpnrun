@@ -289,6 +289,7 @@ public class OnlGame implements Runnable {
                             if (shoot.intersects(player.getBoundsInLocal())) {
                                 deleteShoot(shoot);
                                 player.hitten();
+                                shoot.getOwner().incrementKills();
                             }
                         }
 

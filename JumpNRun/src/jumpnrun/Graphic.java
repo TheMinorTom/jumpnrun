@@ -40,6 +40,7 @@ public class Graphic extends Group {
     public final static double lblYDist = 50;
 
     public static Font lblFont = new Font("Cooper Black", 30);
+    public final static double lblXDist = 50;
 
     private static Vector<Vector<Block>> worldVector;
     private static Group worldGroup;

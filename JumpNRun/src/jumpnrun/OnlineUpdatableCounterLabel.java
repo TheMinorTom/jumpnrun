@@ -30,7 +30,7 @@ public class OnlineUpdatableCounterLabel extends Label implements OnlineUpdatabl
 
     @Override
     public void updatePos(double x, double y, int animationState) {
-        xPos = x;
+        xPos = x - getWidth()/2;
         yPos = y;
         number = String.valueOf(animationState);
     }
