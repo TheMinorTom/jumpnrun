@@ -37,11 +37,11 @@ public class OnlineCommandHandler {
 
     }
 
-    public void sendUpdateObjectsCommand(ObservableList<String[]> args) {
+    public void sendUpdateCommand(ObservableList<String[]> objArgs) {
         message = "";
         message += NetworkManager.keyword + NetworkManager.infoSeperator + String.valueOf(OGAME_UPDATEOBJECTS.ordinal()) + NetworkManager.infoSeperator;
 
-        args.forEach((String[] currArgs) -> {
+        objArgs.forEach((String[] currArgs) -> {
 
             for (String currArg : currArgs) {
                 message += currArg + NetworkManager.subArgsSeperator;
@@ -49,6 +49,7 @@ public class OnlineCommandHandler {
 
             message += NetworkManager.differentObjectsSeperator;
         });
+        
         out.println(message);
     }
 }

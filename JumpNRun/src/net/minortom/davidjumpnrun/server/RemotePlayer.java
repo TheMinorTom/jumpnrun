@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Rectangle2D;
@@ -52,6 +53,11 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
 
     private boolean shootGenerated = false;
 
+    private OnlineCounterLabel respawnLabel;
+
+    private ObservableList<ServerCommand> serverCommandsToSend;
+    private ObservableList<String[]> argsToSend;
+
     public RemotePlayer(Server server, OnlGame game, String pubId, String objectId, String skin, String name, int index, int maxPlayer, String userId) {
         super(index, (game.worldWidth / (maxPlayer + 1)) * (index + 1), OnlGame.spawnY);
         this.server = server;
@@ -72,6 +78,10 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         game.onlineGameObjects.put(remotePitchfork.getObjectId(), remotePitchfork);
         game.onlineGameObjects.put(remoteGun.getObjectId(), remoteGun);
         //game.onlineGameObjects.put(remoteRespawnTimer.getObjectId(), remoteRespawnTimer);
+        respawnLabel = new OnlineCounterLabel(game.nextObjectId(), GameObjectType.RESPAWNTIMER, -1, xSpawn, ySpawn, game);
+        
+        serverCommandsToSend = FXCollections.observableArrayList();
+        argsToSend = FXCollections.observableArrayList();
 
     }
 
@@ -89,7 +99,25 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
                 //server.tcpServer.get(pubId).getCommandHandler().sendCommand(ServerCommand.OGAME_UPDATEOBJECT, new String[]{o.getObjectId(), String.valueOf(o.getObjectTypeAsInt()), String.valueOf((float)o.getXPos()), String.valueOf((float)o.getYPos()), String.valueOf(o.getAnimationStateAsInt())});
                 objectsUpdateArgs.add(new String[]{o.getObjectId(), String.valueOf(o.getObjectTypeAsInt()), String.valueOf((float) o.getXPos()), String.valueOf((float) o.getYPos()), String.valueOf(o.getAnimationStateAsInt())});
             });
-            server.tcpServer.get(pubId).getCommandHandler().sendUpdateObjectsCommand(objectsUpdateArgs);
+            game.getCounterLabels().forEach((OnlineCounterLabel currCounter) -> {
+                if (currCounter.needsUpdate()) {
+                    objectsUpdateArgs.add(new String[]{currCounter.getObjectId(), currCounter.getTypeString(), String.valueOf(currCounter.getXPos()), String.valueOf(currCounter.getYPos()), currCounter.getValIntString()});
+                }
+
+            });
+            server.tcpServer.get(pubId).getCommandHandler().sendUpdateCommand(objectsUpdateArgs);
+            try {
+                Thread.sleep(5);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if(serverCommandsToSend.size() > 0) {
+                for(int i = 0; i < serverCommandsToSend.size(); i++) {
+                    server.tcpServer.get(pubId).getCommandHandler().sendCommand(serverCommandsToSend.get(i), argsToSend.get(i));
+                }
+                serverCommandsToSend.clear();
+                argsToSend.clear();
+            }
             /*
              update();
              // game.sendAllTCP(server.keyword + server.infoSeperator + "OGAME-UPDATEPROT" + server.infoSeperator + pubId + server.infoSeperator + String.valueOf(xPos) + server.infoSeperator + String.valueOf(yPos) + server.infoSeperator + String.valueOf(animationStateAsInt));
@@ -356,6 +384,9 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         setX(xPos);
         setY(yPos);
         respawnDoing = true;
+        respawnLabel.setVal(3.999999999);
+        game.getCounterLabels().add(respawnLabel);
+        ySpeed = 0;
     }
 
     @Override
@@ -463,8 +494,11 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         animationStateAsInt = -1;
         respawnTimer -= timeElapsedSeconds;
         setVisible(false);
+        respawnLabel.addVal(-1 * timeElapsedSeconds);
 
         if (respawnTimer < 0) {
+            game.removeCounterLabel(respawnLabel);
+
             respawnDoing = false;
             respawnTimer = 3;
 
@@ -472,6 +506,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
             animationStateAsInt = CostumeViewport.MID.ordinal();
             setAnimationState(CostumeViewport.MID);
             currCostume = CostumeViewport.MID;
+            game.sendAllTCPDelayed(ServerCommand.OGAME_REMOVEOBJECT, new String[]{respawnLabel.getObjectId()});
 
         }
 
@@ -491,6 +526,12 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
 
     private String getRespawnLabelVal() {
         return String.valueOf((int) respawnTimer);
+    }
+
+    
+    public synchronized void sendCommand(ServerCommand command, String[] args) {
+        serverCommandsToSend.add(command);
+        argsToSend.add(args);
     }
 
 }

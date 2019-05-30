@@ -49,9 +49,9 @@ public class Graphic extends Group {
     private static Protagonist protagonist1, protagonist2;
     private static JumpNRun.Gamemode gamemode;
     private static CountDownLabel onlinetimeLabel;
-    
+
     private static HBox onlinePlayersBox;
-    private static HashMap<String,Label> onlinePlayersVarLabels;
+    private static HashMap<String, Label> onlinePlayersVarLabels;
     private static ArrayList<HBox> playerBoxes;
 
     public Graphic(Vector<Vector<Block>> worldVec, Protagonist prot1, Protagonist prot2, JumpNRun.Gamemode gamemode) {
@@ -140,19 +140,10 @@ public class Graphic extends Group {
 
     public Graphic(Vector<Vector<Block>> worldVec) {
 
-        onlinetimeLabel = new CountDownLabel();
-
-        JumpNRun.game.getOnlineLoop().addObject(onlinetimeLabel);
-        onlinetimeLabel.setLayoutY(lblYDist);
-        onlinetimeLabel.setLayoutX(JumpNRun.getWidth() / 2);
-        onlinetimeLabel.setFont(JumpNRun.game.language.getHeadingFont());
-        onlinetimeLabel.setBorder(
-                new Border(new BorderStroke(Color.DARKGRAY, BorderStrokeStyle.SOLID, new CornerRadii(100), new BorderWidths(10))));
-        
         worldVector = worldVec;
         System.out.println("World: " + worldVec);
         worldGroup = GUI.drawWorld(worldVec, worldVec.get(0).get(0).getFitWidth());
-        getChildren().addAll(worldGroup, onlinetimeLabel);
+        getChildren().addAll(worldGroup);
     }
 
     public ProtagonistOnlineClient generateOtherOnlineProt(String name, String skinFileName, int indexId, String pubId, int playerAmount, double spawnY, String userId) {
@@ -175,7 +166,7 @@ public class Graphic extends Group {
         Label varLbl = new Label("");
         ImageView avatar = new ImageView();
         avatar.setImage(new Image("https://v1.api.minortom.net/do/avatar.php?user=" + addProt.userId));
-        avatar.setFitWidth(JumpNRun.game.language.getFontSize()*3);
+        avatar.setFitWidth(JumpNRun.game.language.getFontSize() * 3);
         avatar.setPreserveRatio(true);
         avatar.setSmooth(true);
         playerName.setFont(JumpNRun.game.language.getFont());
@@ -214,7 +205,7 @@ public class Graphic extends Group {
         Label varLbl = new Label("");
         ImageView avatar = new ImageView();
         avatar.setImage(new Image("https://v1.api.minortom.net/do/avatar.php?user=" + addProt.userId));
-        avatar.setFitWidth(JumpNRun.game.language.getFontSize()*3);
+        avatar.setFitWidth(JumpNRun.game.language.getFontSize() * 3);
         avatar.setPreserveRatio(true);
         avatar.setSmooth(true);
         playerName.setFont(JumpNRun.game.language.getFont());
@@ -279,28 +270,31 @@ public class Graphic extends Group {
             }
         }
     }
+
     public static void initOnlineOverlay() {
         onlinePlayersVarLabels = new HashMap<>();
         onlinePlayersBox = new HBox();
-        onlinePlayersBox.setLayoutX(JumpNRun.getWidth()/2);
-        onlinePlayersBox.setLayoutY(JumpNRun.getHeight() - lblYDist - JumpNRun.game.language.getFontSize()*3);
+        onlinePlayersBox.setLayoutX(JumpNRun.getWidth() / 2);
+        onlinePlayersBox.setLayoutY(JumpNRun.getHeight() - lblYDist - JumpNRun.game.language.getFontSize() * 3);
         onlinePlayersBox.setAlignment(Pos.CENTER);
         onlinePlayersBox.setSpacing(50);
         onlinePlayersBox.setPadding(new Insets(0, 20, 0, 20));
         playerBoxes = new ArrayList<>();
     }
-    
+
     public static void drawOnlineOverlay() {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
                 System.out.println("executed onlineplayersbox");
-                if(!worldGroup.getChildren().contains(onlinePlayersBox)) {
+                if (!worldGroup.getChildren().contains(onlinePlayersBox)) {
                     worldGroup.getChildren().addAll(onlinePlayersBox);
                 }
             }
         });
     }
+
+
 
     class CountDownLabel extends Label implements Updatable, OnlineUpdatableObject {
 
@@ -341,8 +335,6 @@ public class Graphic extends Group {
             setLayoutX(JumpNRun.getWidth() / 2 - getWidth() / 2);
         }
 
-
-
     };
 
     class CountUpLabel extends Label implements Updatable {
@@ -375,7 +367,7 @@ public class Graphic extends Group {
     public void addNode(Node n) {
         worldGroup.getChildren().add(n);
     }
-    
+
     public CountDownLabel getOnlineTimeLabel() {
         return onlinetimeLabel;
     }

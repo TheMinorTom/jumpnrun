@@ -63,7 +63,11 @@ public class OnlGame implements Runnable {
     private double timeElapsedSeconds;
 
     private double gameTime;
-    private OnlineGameTimer gameTimer;
+    private OnlineCounterLabel gameTimer;
+
+    private boolean isStarted = false;
+
+    private ObservableList<OnlineCounterLabel> counterLabels, counterLabelsToRemove;
 
     public OnlGame(Server server, String gameName, int playersMax, String gamemode, double timeLimit, int respawnLimit, String mapName, String playerOneId, String playerOneSkin) {
         this.server = server;
@@ -71,28 +75,29 @@ public class OnlGame implements Runnable {
         this.gameName = gameName;
         this.playersMax = playersMax;
         onlineGameObjects = new HashMap<>();
-                movingObjects = FXCollections.observableArrayList();
+        movingObjects = FXCollections.observableArrayList();
         shoots = FXCollections.observableArrayList();
+        counterLabels = FXCollections.observableArrayList();
+        counterLabelsToRemove = FXCollections.observableArrayList();
 
         ended = false;
         gamemodeAsUpperString = gamemode.toUpperCase();
         switch (gamemodeAsUpperString) {
             case "DEATHS":
                 this.gamemode = JumpNRun.Gamemode.DEATHS;
-                gameTimer = new OnlineGameTimer(nextObjectId(), false, 0, this);
+                gameTimer = new OnlineCounterLabel(nextObjectId(), GameObjectType.GAMETIMER, 0, this);
                 break;
             case "TIME":
                 this.gamemode = JumpNRun.Gamemode.TIME;
-                gameTimer = new OnlineGameTimer(nextObjectId(), true, timeLimit, this);
+                gameTimer = new OnlineCounterLabel(nextObjectId(), GameObjectType.GAMETIMER, timeLimit, this);
                 break;
             case "ENDLESS":
             default:
                 this.gamemode = JumpNRun.Gamemode.ENDLESS;
-                gameTimer = new OnlineGameTimer(nextObjectId(), false, 0, this);
+                gameTimer = new OnlineCounterLabel(nextObjectId(), GameObjectType.GAMETIMER, 0, this);
                 break;
         }
-        onlineGameObjects.put(gameTimer.getObjectId(), gameTimer);
-        movingObjects.add(gameTimer);
+        counterLabels.add(gameTimer);
 
         this.timeLimit = timeLimit;
         this.respawnLimit = respawnLimit;
@@ -116,7 +121,7 @@ public class OnlGame implements Runnable {
         String userId = server.tcpServer.get(pubId).userId;
         RemotePlayer addPlayer = new RemotePlayer(server, this, pubId, addObjectId, skin, name, players.size(), playersMax, userId);
         onlineGameObjects.put(addObjectId, addPlayer);
-        
+
         players.put(pubId, addPlayer);
 
         sendAllTCP(ServerCommand.OGAME_PJOINED, new String[]{name, pubId, String.valueOf(playersMax)});
@@ -131,12 +136,26 @@ public class OnlGame implements Runnable {
         return returnId;
     }
 
-    public void sendAllTCP(ServerCommand command, String[] args) {
-        players.forEach((k, v) -> {
-            server.tcpServer.get(k).getCommandHandler().sendCommand(command, args);
+    public synchronized void sendAllTCP(ServerCommand command, String[] args) {
+        players.forEach((String k, RemotePlayer v) -> {
 
-        });
+                server.tcpServer.get(k).getCommandHandler().sendCommand(command, args);
+
+
+        }
+        );
     }
+    
+    public void sendAllTCPDelayed (ServerCommand command, String[] args) {
+        players.forEach((String k, RemotePlayer v) -> {
+
+                v.sendCommand(command, args);
+
+        }
+        );
+    }
+    
+    
 
     public void sendAllUDP(ServerCommand command, String[] args) {
         if (!willStart) {
@@ -238,6 +257,8 @@ public class OnlGame implements Runnable {
         double oldTime = now;
         double timeElapsed = 0;
         timeElapsedSeconds = timeElapsed;
+
+        isStarted = true;
         while (!ended) {
             now = System.nanoTime();
             timeElapsed = now - oldTime;
@@ -284,6 +305,16 @@ public class OnlGame implements Runnable {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            if (gamemode == JumpNRun.Gamemode.TIME) {
+                gameTimer.addVal(-1 * timeElapsedSeconds);
+            } else {
+                gameTimer.addVal(timeElapsedSeconds);
+            }
+
+            if (counterLabelsToRemove.size() != 0) {
+                counterLabels.removeAll(counterLabelsToRemove);
+                counterLabelsToRemove.clear();
+            }
         }
     }
 
@@ -321,8 +352,15 @@ public class OnlGame implements Runnable {
         addShoot(shoot);
     }
 
-    public OnlineGameTimer getGameTimer() {
+    public OnlineCounterLabel getGameTimer() {
         return gameTimer;
     }
 
+    public ObservableList<OnlineCounterLabel> getCounterLabels() {
+        return counterLabels;
+    }
+
+    public void removeCounterLabel(OnlineCounterLabel l) {
+        counterLabelsToRemove.add(l);
+    }
 }
