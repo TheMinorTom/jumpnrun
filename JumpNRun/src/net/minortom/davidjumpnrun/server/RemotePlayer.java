@@ -64,6 +64,8 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
     private OnlineCounterLabel killCounter, deathCounter;
     
     private ObservableList<OnlineCounterLabel> thisCounterLabels;
+    
+    private boolean spectatorModeDoing;
 
     public RemotePlayer(Server server, OnlGame game, String pubId, String objectId, String skin, String name, int index, int maxPlayer, String userId) {
         super(index, (game.worldWidth / (maxPlayer + 1)) * (index + 1), OnlGame.spawnY);
@@ -100,6 +102,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
             deathCounter = new OnlineCounterLabel(game.nextObjectId(), GameObjectType.DEATHCOUNT, 0, game);
         }
         thisCounterLabels.addAll(killCounter, deathCounter);
+        spectatorModeDoing = false;
 
     }
 
@@ -173,7 +176,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
             hitten();
         }
 
-        if (!respawnDoing) {
+        if ((!respawnDoing) && (!spectatorModeDoing)) {
 
             if (hitDoing) {
                 updateHit(timeElapsedSeconds);
@@ -235,11 +238,12 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
             setX(xPos);
             setY(yPos);
             animationStateAsInt = currCostume.ordinal();
-        } else {
+        } else if (respawnDoing){
             updateRespawn(timeElapsedSeconds);
             setX(xPos);
             setY(yPos);
-
+        } else {
+            
         }
 
     }
