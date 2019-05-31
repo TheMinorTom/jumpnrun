@@ -65,6 +65,7 @@ public class Language implements Serializable {
     public transient String LoginScreenConnecting;
     public transient String LoginScreenErrorInvalidCharTitle;
     public transient String LoginScreenErrorInvalidCharText;
+    public transient String LoginScreenOpenInWebBt;
     
     // Network Play Screen
     public transient String NetworManagerLoginBt;
