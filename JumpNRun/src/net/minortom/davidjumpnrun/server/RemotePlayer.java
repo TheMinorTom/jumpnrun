@@ -272,6 +272,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
             xPos += xSpeed * timeElapsedSeconds;
             yPos += ySpeed * timeElapsedSeconds;
             animationStateAsInt = -1;
+            
         }
         setX(xPos);
         setY(yPos);

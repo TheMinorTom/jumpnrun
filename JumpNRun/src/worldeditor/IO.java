@@ -121,9 +121,6 @@ public class IO {
                     addBlock.setX(xIndex * blockSize);
                     addBlock.setY(yIndex * blockSize);
                     
-                    addBlock.setLayoutX(xIndex * blockSize);
-                    addBlock.setLayoutY(yIndex * blockSize);
-                    
                     
                     if(!blocks.contains(addBlock)) {
                         blocks.add(addBlock);
