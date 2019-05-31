@@ -17,12 +17,13 @@ public class NetworkTCPReceiverServer extends Thread {
 
     Server server;
     TCPServer tcpServ;
+    private boolean isRunning = true;
 
     @Override
     public void run() {
         String line;
         try {
-            while ((line = tcpServ.in.readLine()) != null) {
+            while (((line = tcpServ.in.readLine()) != null) && isRunning) {
                 try {
                     String[] packageContent = line.split(server.infoSeperator);
                     if (!packageContent[0].equals(server.keyword)) {
@@ -39,13 +40,13 @@ public class NetworkTCPReceiverServer extends Thread {
                             tcpServ.userId = packageContent[2];
                             tcpServ.userToken = packageContent[3];
                             // Get user name
-                            URL postUrl = new URL("https://v1.api.minortom.net/jnr/getusername.php?user="+tcpServ.userId);
+                            URL postUrl = new URL("https://v1.api.minortom.net/jnr/getusername.php?user=" + tcpServ.userId);
                             HttpURLConnection con = (HttpURLConnection) postUrl.openConnection();
                             con.setRequestMethod("POST");
                             con.setRequestProperty("User-Agent", "JumpNRun Game v1.0 by MinorTom");
                             con.setDoOutput(true);
                             OutputStream os = con.getOutputStream();
-                            os.write(("userId="+tcpServ.userId+"&userToken="+tcpServ.userToken).getBytes());
+                            os.write(("userId=" + tcpServ.userId + "&userToken=" + tcpServ.userToken).getBytes());
                             os.flush();
                             os.close();
                             int responseCode = con.getResponseCode();
@@ -55,27 +56,32 @@ public class NetworkTCPReceiverServer extends Thread {
                                 StringBuffer response = new StringBuffer();
 
                                 while ((inputLine = in.readLine()) != null) {
-                                	response.append(inputLine);
+                                    response.append(inputLine);
                                 }
                                 in.close();
 
                                 // print result
-                                tcpServ.userName=response.toString();
+                                tcpServ.userName = response.toString();
                             } else {
-                        	System.out.println("POST request not worked");
-                                tcpServ.userName=null;
+                                System.out.println("POST request not worked");
+                                tcpServ.userName = null;
                             }
-                            if(tcpServ.userName==null||tcpServ.userName.equals("")||tcpServ.userName.length()<=1) {
+                            if (tcpServ.userName == null || tcpServ.userName.equals("") || tcpServ.userName.length() <= 1) {
                                 tcpServ.getCommandHandler().sendCommand(ServerCommand.AUTH_WRONGCREDS, new String[]{});
                                 System.out.println("DID NOT AUTHENTHICATE " + tcpServ.userId + " " + tcpServ.userName);
-                                end();
+                                end(null, null);
                             } else {
                                 tcpServ.getCommandHandler().sendCommand(ServerCommand.AUTH_OK, new String[]{tcpServ.pubId, tcpServ.userName});
                                 System.out.println("AUTHENTHICATED " + tcpServ.userName);
                             }
                             break;
                         case AUTH_LOGOUT:
-                            end();
+                            String playerPubId = packageContent[2];
+                            String gameName = null;
+                            if (packageContent.length >= 4) {
+                                gameName = packageContent[3];
+                            }
+                            end(playerPubId, gameName);
                             break;
 
                         case MAP_LISTREQ:
@@ -130,13 +136,28 @@ public class NetworkTCPReceiverServer extends Thread {
         } catch (IOException ex) {
             System.err.println("IOException: " + ex);
         } catch (NullPointerException ex) {
-            end();
+            end(null, null);
         }
     }
 
-    private void end() {
+    private void end(String pubId, String gameName) {
         server.tcpServer.remove(tcpServ);
-        tcpServ.tcpReceiver.stop();
+        tcpServ.tcpReceiver.stopRunning();
+        if ((pubId != null) && (gameName != null)) {
+            RemotePlayer playerToRemove = server.games.get(gameName).players.get(pubId);
+            OnlGame game = server.games.get(gameName);
+            game.onlineGameObjects.remove(playerToRemove.getObjectId());
+            game.players.remove(pubId);
+            game.sendAllTCPDelayed(ServerCommand.OGAME_REMOVEOBJECT, new String[]{playerToRemove.getObjectId()});
+            int temp = 0;
+            game.checkEndGame();
+        }
+        
+
+    }
+
+    public void stopRunning() {
+        isRunning = false;
     }
 
     NetworkTCPReceiverServer(Server serv, TCPServer totcp) {

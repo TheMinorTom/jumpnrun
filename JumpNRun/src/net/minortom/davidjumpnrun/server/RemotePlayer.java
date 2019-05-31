@@ -119,14 +119,16 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
     @Override
     public void run() {
         ObservableList<String[]> objectsUpdateArgs = FXCollections.observableArrayList();
+        HashMap<String, OnlineGameObject> gameObjects;
         while (!endGame) {
             objectsUpdateArgs.clear();
+            gameObjects = new HashMap<>(game.onlineGameObjects);
             /*
              game.players.forEach((id, player)->{
              server.tcpServer.get(pubId).getCommandHandler().sendCommand(ServerCommand.OGAME_UPDATEPROT, new String[]{player.pubId, String.valueOf(player.getXPos()), String.valueOf(player.getYPos()), String.valueOf(player.getAnimationStateAsInt())});
              });
              */
-            game.onlineGameObjects.forEach((String id, OnlineGameObject o) -> {
+            gameObjects.forEach((String id, OnlineGameObject o) -> {
                 //server.tcpServer.get(pubId).getCommandHandler().sendCommand(ServerCommand.OGAME_UPDATEOBJECT, new String[]{o.getObjectId(), String.valueOf(o.getObjectTypeAsInt()), String.valueOf((float)o.getXPos()), String.valueOf((float)o.getYPos()), String.valueOf(o.getAnimationStateAsInt())});
                 objectsUpdateArgs.add(new String[]{o.getObjectId(), String.valueOf(o.getObjectTypeAsInt()), String.valueOf((float) o.getXPos()), String.valueOf((float) o.getYPos()), String.valueOf(o.getAnimationStateAsInt())});
             });
@@ -165,7 +167,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         }
         
         // #ENDGAME
-        server.tcpServer.get(pubId).getCommandHandler().sendEndGame(game.players);
+        server.tcpServer.get(pubId).getCommandHandler().sendEndGame(game.playersAtBeginn);
     }
 
     public void update(double timeElapsedSeconds) {

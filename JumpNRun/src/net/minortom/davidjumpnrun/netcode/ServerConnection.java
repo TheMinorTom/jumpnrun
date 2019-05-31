@@ -95,7 +95,7 @@ public class ServerConnection {
     
     public void end(){
         try {
-            commandHandler.sendCommand(ServerCommand.AUTH_LOGOUT, new String[]{});
+            commandHandler.sendCommand(ServerCommand.AUTH_LOGOUT, new String[]{pubId, game.gameName});
             // out.println(NetworkManager.keyword + NetworkManager.infoSeperator + "AUTH-LOGOUT");
         } catch (Exception e) {}
         tcpreceiver.stop();

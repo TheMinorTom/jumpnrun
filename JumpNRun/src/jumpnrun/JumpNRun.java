@@ -34,6 +34,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import javafx.stage.WindowEvent;
 import static jumpnrun.Graphic.lblYDist;
 import jumpnrun.SkinChooseMenu.Skin;
 import net.minortom.davidjumpnrun.CreditsScreen;
@@ -107,7 +108,7 @@ public class JumpNRun extends Application {
     private Gamemode onlineGamemode;
     private HashMap<String, ProtagonistOnlineClient> onlineProts;
     private HashMap<String, Object> onlineGameObjects;
-    private String gameName;
+    public String gameName = "";
 
     private boolean[] keysDown;
 
@@ -304,6 +305,8 @@ public class JumpNRun extends Application {
                 break;
         }
         this.worldVector = null;
+        
+        
 
     }
 

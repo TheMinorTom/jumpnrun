@@ -45,6 +45,7 @@ public class OnlGame implements Runnable {
 
     public HashMap<String, String> playerSkins; // Id, skin
     public HashMap<String, RemotePlayer> players; // Id, RemotePlayer
+    public HashMap<String, RemotePlayer> playersAtBeginn;
 
     public Vector<Vector<Block>> worldVector;
     public double worldWidth;
@@ -79,6 +80,7 @@ public class OnlGame implements Runnable {
         shoots = FXCollections.observableArrayList();
         counterLabels = FXCollections.observableArrayList();
         counterLabelsToRemove = FXCollections.observableArrayList();
+        playersAtBeginn = new HashMap<>();
 
         ended = false;
         gamemodeAsUpperString = gamemode.toUpperCase();
@@ -122,6 +124,7 @@ public class OnlGame implements Runnable {
         String addObjectId = nextObjectId();
         String userId = server.tcpServer.get(pubId).userId;
         RemotePlayer addPlayer = new RemotePlayer(server, this, pubId, addObjectId, skin, name, players.size(), playersMax, userId);
+        playersAtBeginn.put(pubId, addPlayer);
         onlineGameObjects.put(addObjectId, addPlayer);
 
         players.put(pubId, addPlayer);
@@ -389,5 +392,6 @@ public class OnlGame implements Runnable {
         players.forEach((String key, RemotePlayer p)->{
             p.endGame();
         });
+        server.games.remove(this);
     }
 }
