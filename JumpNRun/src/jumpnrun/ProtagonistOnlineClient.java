@@ -6,6 +6,7 @@
 package jumpnrun;
 
 import java.io.File;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -39,8 +40,8 @@ public class ProtagonistOnlineClient extends ImageView implements OnlineUpdatabl
     private KeyCode[] protControlls;
     private Rectangle2D currViewport;
     
-    public ProtagonistOnlineClient(int indexId, double x, double y, String skinFileName, String name, String pubId, KeyCode left, KeyCode right, KeyCode jump, KeyCode hit, KeyCode shoot, KeyCode use, String userId) {
-        protControlls = new KeyCode[]{left, right, jump, hit, shoot, use};
+    public ProtagonistOnlineClient(int indexId, double x, double y, String skinFileName, String name, String pubId, KeyCode left, KeyCode right, KeyCode jump, KeyCode hit, KeyCode shoot, KeyCode use, KeyCode down, String userId) {
+        protControlls = new KeyCode[]{left, right, jump, hit, shoot, use, down};
         spawnY = y;
         spawnX = x;
         yPos = y;
@@ -72,7 +73,7 @@ public class ProtagonistOnlineClient extends ImageView implements OnlineUpdatabl
         setX(x);
         setY(y);
         setVisible(true);
-        
+                
     }
     
     @Override

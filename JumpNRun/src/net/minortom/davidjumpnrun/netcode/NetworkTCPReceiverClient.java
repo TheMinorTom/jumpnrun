@@ -120,6 +120,10 @@ public class NetworkTCPReceiverClient extends Thread {
                             break;
                         case OGAME_REMOVEOBJECT:
                             game.removeOnlineObject(packageContent[2]);
+                            break;
+                        case OGAME_ENDGAME:
+                            game.endOnlineGame(packageContent[2]);
+                            break;
                         default:
                             break;
                     }

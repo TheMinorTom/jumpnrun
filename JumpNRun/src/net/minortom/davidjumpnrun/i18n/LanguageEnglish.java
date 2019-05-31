@@ -127,6 +127,9 @@ public class LanguageEnglish extends Language{
         
         // Gameplay
         this.playerNameLocalPlayer = "You";
+        this.killsLabelText = "kills: ";
+        this.deathLabelText = "deaths:";
+        this.respawnLabelText = "respawns remaining: ";
         
         // IO
         this.IOReadErrorTitle = "Read Error";
@@ -143,6 +146,12 @@ public class LanguageEnglish extends Language{
         this.WorldEditAddBlock = "Add a block";
         this.WorldEditMainMenuOpen = "Open";
         this.WorldEditErrOnlyNumbers = "Only Numbers";
+        
+        // Online EndGame
+        this.EndGameDeaths = "Deaths";
+        this.EndGameKills = "Kills";
+        this.EndGameName = "Name";
+        this.EndGamePlacement = "Placement";
     }
     
     @Override

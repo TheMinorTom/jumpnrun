@@ -21,11 +21,20 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import static javafx.scene.input.KeyCode.*;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import static jumpnrun.Graphic.lblYDist;
 import jumpnrun.SkinChooseMenu.Skin;
 import net.minortom.davidjumpnrun.CreditsScreen;
 import net.minortom.davidjumpnrun.configstore.ConfigManager;
@@ -37,6 +46,7 @@ import net.minortom.davidjumpnrun.i18n.LanguageEnglish;
 import net.minortom.davidjumpnrun.i18n.LanguageGerman;
 import net.minortom.davidjumpnrun.netcode.GameObjectType;
 import net.minortom.davidjumpnrun.netcode.NetworkManager;
+import net.minortom.davidjumpnrun.netcode.screens.OnlineEndScreen;
 import net.minortom.davidjumpnrun.server.OnlineGameObject;
 import net.minortom.davidjumpnrun.server.Server;
 import worldeditor.GUI;
@@ -76,7 +86,7 @@ public class JumpNRun extends Application {
     public static GUI worldEditGUI;
     private static double summonTimer, summonTime;
     private static Vector<Updatable> updatables;
-    private static Parent mainMenu, gameScene, chooseGamemodeScreen, winScreen, offlineSkinChooseScreen1, offlineSkinChooseScreen2, onlineSkinChooseCreateGame, onlineSkinChooseJoinGame, worldEditorScreen;
+    private static Parent mainMenu, gameScene, chooseGamemodeScreen, winScreen, offlineSkinChooseScreen1, offlineSkinChooseScreen2, onlineSkinChooseCreateGame, onlineSkinChooseJoinGame, worldEditorScreen, onlineEndScreen;
     private static CreditsScreen creditsScreen;
     private Gamemode currGamemode;
     private static int deathLimit;
@@ -102,7 +112,6 @@ public class JumpNRun extends Application {
     private boolean[] keysDown;
 
     private double xScroll, yScroll;
-    
 
     @Override
     public void start(Stage primaryStage) throws IOException {
@@ -156,8 +165,8 @@ public class JumpNRun extends Application {
 
             primStage = primaryStage;
             mainMenu = new MainMenu(this);
-            scene = new Scene(mainMenu);
-            primaryStage.setScene(scene);
+            // scene = new Scene(mainMenu); !!!!!!!!!!!!
+
             chooseGamemodeScreen = new ChooseGamemodeMenu(this);
             winScreen = new WinScreen(this);
             offlineSkinChooseScreen1 = new SkinChooseMenu(this, SkinChooseMenu.SkinChooseMode.OFFLINE_PLAYER_1);
@@ -165,12 +174,16 @@ public class JumpNRun extends Application {
             onlineSkinChooseCreateGame = new SkinChooseMenu(this, SkinChooseMenu.SkinChooseMode.ONLINE_CREATE_GAME);
             onlineSkinChooseJoinGame = new SkinChooseMenu(this, SkinChooseMenu.SkinChooseMode.ONLINE_JOIN_GAME);
             creditsScreen = new CreditsScreen(this);
+            onlineEndScreen = new OnlineEndScreen(this);
+
+            scene = new Scene(mainMenu);
+            primaryStage.setScene(scene);
             worldEditorScreen = new GUI(this);
             worldEditorScene = new Scene(worldEditorScreen);
+
             //chooseSkinScreen = new SkinChooseMenu(this);
             //((SkinChooseMenu)chooseSkinScreen).updateStrings();
             //scene = new Scene(chooseSkinScreen);
-
             WorldEditor.initBlocksArr();
 
             primaryStage.setTitle(game.language.GWindowName);
@@ -179,7 +192,7 @@ public class JumpNRun extends Application {
             primaryStage.show();
             ((WinScreen) winScreen).setWinner(1); //!!!
 
-            keysDown = new boolean[]{false, false, false, false, false, false};
+            keysDown = new boolean[]{false, false, false, false, false, false, false};
 
             //!!
         } catch (Exception e) {
@@ -395,12 +408,98 @@ public class JumpNRun extends Application {
                         updateOnlineObject(objectId, objectTypeAsIntAsString, xPosString, yPosString, animationStateAsIntAsString);
                     }
                     break;
+
+                case RESPAWNTIMER:
+                    if (alreadyExists) {
+
+                        ((OnlineUpdatableCounterLabel) onlineGameObjects.get(objectId)).updatePos(xPos, yPos, animationStateAsInt);
+
+                    } else {
+
+                        OnlineUpdatableCounterLabel respawnTimerLabel = new OnlineUpdatableCounterLabel("", xPos, yPos, true);
+                        respawnTimerLabel.setFont(new Font("Arial Black", 80));
+                        respawnTimerLabel.setTextFill(Color.RED);
+                        respawnTimerLabel.setVisible(true);
+                        onlineGameObjects.put(objectId, respawnTimerLabel);
+                        loopOnline.addObject(respawnTimerLabel);
+                        Platform.runLater(() -> {
+                            graphic.getChildren().add(respawnTimerLabel);
+                        });
+                    }
+                    break;
                 case GAMETIMER:
-                    graphic.getOnlineTimeLabel().updatePos(0, 0, animationStateAsInt);
+                    if (alreadyExists) {
+                        OnlineUpdatableCounterLabel counterLabel = (OnlineUpdatableCounterLabel) onlineGameObjects.get(objectId);
+                        counterLabel.updatePos(primStage.getWidth() * 0.5, Graphic.lblYDist, animationStateAsInt);
+                        counterLabel.updateText(String.valueOf((int) (animationStateAsInt / 60)) + "min, " + String.valueOf(animationStateAsInt % 60) + "s");
+
+                    } else {
+
+                        OnlineUpdatableCounterLabel onlinetimeLabel = new OnlineUpdatableCounterLabel("", primStage.getWidth() / 2, Graphic.lblYDist, false);
+
+                        loopOnline.addObject(onlinetimeLabel);
+                        onlinetimeLabel.setFont(JumpNRun.game.language.getHeadingFont());
+                        onlinetimeLabel.setBorder(
+                                new Border(new BorderStroke(Color.DARKGRAY, BorderStrokeStyle.SOLID, new CornerRadii(100), new BorderWidths(10))));
+                        onlineGameObjects.put(objectId, onlinetimeLabel);
+                        Platform.runLater(() -> {
+                            graphic.getChildren().add(onlinetimeLabel);
+                        });
+                    }
+
+                    break;
+                case KILLCOUNT:
+                    if (alreadyExists) {
+
+                        ((OnlineUpdatableCounterLabel) onlineGameObjects.get(objectId)).updatePos(primStage.getWidth() * 0.25, Graphic.lblYDist, animationStateAsInt);
+                        //((OnlineUpdatableCounterLabel) onlineGameObjects.get(objectId)).updateText(String.valueOf((int) (animationStateAsInt / 60)) + "min, " + String.valueOf(animationStateAsInt % 60) + "s");
+
+                    } else {
+
+                        OnlineUpdatableCounterLabel onlineKillCount = new OnlineUpdatableCounterLabel(language.killsLabelText, Graphic.lblXDist, Graphic.lblYDist, false);
+
+                        loopOnline.addObject(onlineKillCount);
+                        onlineKillCount.setFont(JumpNRun.game.language.getHeadingFont());
+                        onlineKillCount.setBorder(
+                                new Border(new BorderStroke(Color.DARKGRAY, BorderStrokeStyle.DASHED, new CornerRadii(10), new BorderWidths(2))));
+                        onlineGameObjects.put(objectId, onlineKillCount);
+                        Platform.runLater(() -> {
+                            graphic.getChildren().add(onlineKillCount);
+                        });
+                    }
+
+                    break;
+
+                case DEATHCOUNT:
+                    if (alreadyExists) {
+                        OnlineUpdatableCounterLabel label = (OnlineUpdatableCounterLabel) onlineGameObjects.get(objectId);
+                        label.updatePos((0.75 * primStage.getWidth()), Graphic.lblYDist, animationStateAsInt);
+                        //((OnlineUpdatableCounterLabel) onlineGameObjects.get(objectId)).updateText(String.valueOf((int) (animationStateAsInt / 60)) + "min, " + String.valueOf(animationStateAsInt % 60) + "s");
+
+                    } else {
+                        OnlineUpdatableCounterLabel onlineDeathCount;
+                        if (onlineGamemode.equals(Gamemode.DEATHS)) {
+                            onlineDeathCount = new OnlineUpdatableCounterLabel(language.respawnLabelText, (primStage.getWidth() * 0.75) - Graphic.lblXDist, Graphic.lblYDist, false);
+                        } else {
+                            onlineDeathCount = new OnlineUpdatableCounterLabel(language.deathLabelText, primStage.getWidth() - Graphic.lblXDist, Graphic.lblYDist, false);
+                        }
+
+                        loopOnline.addObject(onlineDeathCount);
+                        onlineDeathCount.setFont(JumpNRun.game.language.getHeadingFont());
+                        onlineDeathCount.setBorder(
+                                new Border(new BorderStroke(Color.DARKGRAY, BorderStrokeStyle.DASHED, new CornerRadii(10), new BorderWidths(2))));
+                        onlineGameObjects.put(objectId, onlineDeathCount);
+                        Platform.runLater(() -> {
+                            graphic.getChildren().add(onlineDeathCount);
+                        });
+                    }
+
+                    break;
+
             }
 
         } else {
-            if(objectType.equals(GameObjectType.PROTAGONIST)) {
+            if (objectType.equals(GameObjectType.PROTAGONIST)) {
                 ((ProtagonistOnlineClient) onlineGameObjects.get(objectId)).updatePos(xPos, yPos, animationStateAsInt);
             }
         }
@@ -419,8 +518,10 @@ public class JumpNRun extends Application {
         Platform.runLater(() -> {
             graphic.getChildren().remove(removeObject);
         });
+        if (removeObject instanceof OnlineUpdatableObject) {
+            loopOnline.removeObject((OnlineUpdatableObject) removeObject);
+        }
 
-        loopOnline.removeObject((OnlineUpdatableObject) removeObject);
         onlineGameObjects.remove(objectId);
     }
 
@@ -431,6 +532,18 @@ public class JumpNRun extends Application {
             currArgs = currObject.split("\\" + NetworkManager.subArgsSeperator);
             updateOnlineObject(currArgs[0], currArgs[1], currArgs[2], currArgs[3], currArgs[4]);
         }
+    }
+
+    public void endOnlineGame(String message) {
+        ((OnlineEndScreen)onlineEndScreen).startInserting();
+        String[] playersArgs = message.split("\\" + NetworkManager.differentObjectsSeperator);
+        String[] currArgs = null;
+        for (String currPlayer : playersArgs) {
+            currArgs = currPlayer.split("\\" + NetworkManager.subArgsSeperator);
+            ((OnlineEndScreen) onlineEndScreen).addPlayerEntry(currArgs);
+        }
+        ((OnlineEndScreen)onlineEndScreen).updateStrings();
+        scene.setRoot(onlineEndScreen);
     }
 
     public HashMap<String, ProtagonistOnlineClient> getOnlineProts() {
@@ -521,6 +634,12 @@ public class JumpNRun extends Application {
 
                     networkManager.sendKeyPress(localProt.pubId, gameName, "USE");
                 }
+            } else if (e.getCode() == localProt.getControls()[6]) {
+                if (!keysDown[6]) {
+                    keysDown[6] = true;
+
+                    networkManager.sendKeyPress(localProt.pubId, gameName, "DOWN");
+                }
             }
 
         });
@@ -543,6 +662,9 @@ public class JumpNRun extends Application {
             } else if (e.getCode() == localProt.getControls()[5]) {
                 keysDown[5] = false;
                 networkManager.sendKeyRelease(localProt.pubId, gameName, "USE");
+            } else if (e.getCode() == localProt.getControls()[6]) {
+                keysDown[6] = false;
+                networkManager.sendKeyRelease(localProt.pubId, gameName, "DOWN");
             }
         });
         Platform.runLater(() -> {
@@ -553,6 +675,7 @@ public class JumpNRun extends Application {
     void setWorldPath(String customPath) {
         if (!customPath.isEmpty()) {
             worldAbsPath = customPath;
+
         }
     }
 
@@ -661,6 +784,7 @@ public class JumpNRun extends Application {
     public static void removeNode(Node n) {
         graphic.getChildren().remove(n);
     }
+    
 
     static void doCollect(PowerupCollect collect, Powerup powerupNew, Powerup powerupOld, int id) {
         powerupCollects.remove(collect);
@@ -757,9 +881,13 @@ public class JumpNRun extends Application {
     public Stage getPrimStage() {
         return primStage;
     }
-    
+
     public GameLoopOnline getOnlineLoop() {
         return loopOnline;
+    }
+
+    public HashMap getGameObjects() {
+        return onlineGameObjects;
     }
 
 }

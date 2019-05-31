@@ -126,6 +126,9 @@ public class LanguageGerman extends Language{
         
         // Gameplay
         this.playerNameLocalPlayer = "Du";
+        this.killsLabelText = "Kills: ";
+        this.deathLabelText = "Tode:";
+        this.respawnLabelText = "Respawns übrig: ";
         
         // IO
         this.IOReadErrorTitle = "Lesefehler";

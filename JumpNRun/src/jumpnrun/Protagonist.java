@@ -108,7 +108,7 @@ public class Protagonist extends ImageView implements Updatable {
         stepsPerSecond = 5;
         spdFactor = defaultSpdFactor;
         pitchfork = new Pitchfork();
-        gun = new Gun();
+        gun = new Gun(this);
 
         deaths = 0;
 

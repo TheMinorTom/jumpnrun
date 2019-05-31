@@ -136,6 +136,9 @@ public class Language implements Serializable {
     
     // Gameplay
     public transient String playerNameLocalPlayer;
+    public transient String deathLabelText;
+    public transient String killsLabelText;
+    public transient String respawnLabelText;
     
     // IO
     public transient String IOReadErrorTitle;
@@ -152,6 +155,12 @@ public class Language implements Serializable {
     public transient String WorldEditAddBlock;
     public transient String WorldEditMainMenuOpen;
     public transient String WorldEditErrOnlyNumbers;
+    
+    // Online End Game Screen
+    public transient String EndGamePlacement;
+    public transient String EndGameName;
+    public transient String EndGameKills;
+    public transient String EndGameDeaths;
     
     
     public transient int changeB;
