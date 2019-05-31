@@ -54,6 +54,7 @@ public class LanguageEnglish extends Language{
         this.LoginScreenConnecting = "Connecting...";
         this.LoginScreenErrorInvalidCharTitle = "Invalid character entered";
         this.LoginScreenErrorInvalidCharText = "Invalid character entered into one or more of the input fields. Try removing all exclamation marks.";
+        this.LoginScreenOpenInWebBt = "Open in Webbrowser";
         
         // Network Play Screen
         this.NetworManagerLoginBt = "Log in";
