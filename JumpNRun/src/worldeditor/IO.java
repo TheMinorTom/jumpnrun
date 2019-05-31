@@ -118,6 +118,8 @@ public class IO {
                         System.err.println(currBlock);
                     }
                     addBlock = new Block(addName, blockDir, addFileName, addIsSolid);
+                    addBlock.setLayoutX(xIndex * blockSize);
+                    addBlock.setLayoutY(yIndex * blockSize);
                     addBlock.setX(xIndex * blockSize);
                     addBlock.setY(yIndex * blockSize);
                     

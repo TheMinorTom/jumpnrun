@@ -125,6 +125,7 @@ public class GUI extends Group {
 
         open.setOnAction(((event) -> {
             File openFile = fileChooser.showOpenDialog(game.getPrimStage());
+            saveFile = openFile;
             if (openFile != null) {
                 worldVector = IO.openWorld(openFile);
                 drawWorld();
@@ -299,6 +300,8 @@ public class GUI extends Group {
 
         b.setX(xPos);
         b.setY(yPos);
+        b.setFitWidth(blockSize);
+        b.setFitHeight(blockSize);
 
         for (; xIndex >= worldVector.size();) {
             worldVector.add(new Vector<Block>());
@@ -331,11 +334,11 @@ public class GUI extends Group {
         for (int i = 0; i < worldVector.size(); i++) {
             for (int j = 0; j < worldVector.get(i).size(); j++) {
                 currBlock = worldVector.get(i).get(j);
-                /*
+                
                 currBlock.setX((i * blockSize) + xScroll);
                 currBlock.setY((j * blockSize) + yScroll);
-                */
-                currBlock.relocate((i * blockSize) + xScroll, (j * blockSize) + yScroll);
+                
+                
                 
             }
         }
@@ -355,8 +358,7 @@ public class GUI extends Group {
         for (int i = 0; i < worldVector.size(); i++) {
             for (int j = 0; j < worldVector.get(i).size(); j++) {
                 if (worldVector.get(i).get(j) != null) {
-                    addBlock(worldVector.get(i).get(j), i * blockSize, j * blockSize);
-
+                    addBlock(Block.createBlock(worldVector.get(i).get(j)), i * blockSize, j * blockSize);
                 }
             }
         }
