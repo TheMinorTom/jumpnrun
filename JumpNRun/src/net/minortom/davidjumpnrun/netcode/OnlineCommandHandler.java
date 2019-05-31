@@ -78,23 +78,57 @@ public class OnlineCommandHandler {
     }
 
     public HashMap<String, RemotePlayer> sortPlayers(HashMap<String, RemotePlayer> unsortedMap) {
-        killsHM = new HashMap<>();
-        unsortedMap.forEach((String key, RemotePlayer p) -> {
-            killsHM.put(key, new Integer(p.getKills()));
-        });
-        List<Map.Entry<String, Integer>> list
-                = new LinkedList<Map.Entry<String, Integer>>(killsHM.entrySet());
-        Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
-            public int compare(Map.Entry<String, Integer> o1,
-                    Map.Entry<String, Integer> o2) {
-                return (o1.getValue()).compareTo(o2.getValue());
+        /*
+         killsHM = new HashMap<>();
+         unsortedMap.forEach((String key, RemotePlayer p) -> {
+         killsHM.put(key, new Integer(p.getKills()));
+         });
+         List<Map.Entry<String, Integer>> list
+         = new LinkedList<Map.Entry<String, Integer>>(killsHM.entrySet());
+         Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
+         public int compare(Map.Entry<String, Integer> o1,
+         Map.Entry<String, Integer> o2) {
+         return (o1.getValue()).compareTo(o2.getValue());
+         }
+         });
+
+         // put data from sorted list to hashmap  
+         int counter = unsortedMap.size();
+         HashMap<String, RemotePlayer> sortedMap = new HashMap<>();
+         for (Map.Entry<String, Integer> aa : list) {
+         sortedMap.put(aa.getKey(), unsortedMap.get(aa.getKey()));
+         sortedMap.get(aa.getKey()).setPlacement(String.valueOf(counter));
+         counter--;
+         }
+         return sortedMap;
+         */
+
+        List<Map.Entry<String, RemotePlayer>> playerList
+                = new LinkedList<Map.Entry<String, RemotePlayer>>(unsortedMap.entrySet());
+        Collections.sort(playerList, new Comparator<Map.Entry<String, RemotePlayer>>() {
+            public int compare(Map.Entry<String, RemotePlayer> o1,
+                    Map.Entry<String, RemotePlayer> o2) {
+
+                if (o1.getValue().getKills() > o2.getValue().getKills()) {
+                    return 1;
+                } else if (o1.getValue().getKills() < o2.getValue().getKills()) {
+                    return -1;
+                } else {
+                    if (o1.getValue().getDeaths() > o2.getValue().getDeaths()) {
+                        return -1;
+                    } else if (o1.getValue().getDeaths() < o2.getValue().getDeaths()) {
+                        return 1;
+                    } else {
+                        return 0;
+                    }
+                }
             }
         });
 
         // put data from sorted list to hashmap  
         int counter = unsortedMap.size();
         HashMap<String, RemotePlayer> sortedMap = new HashMap<>();
-        for (Map.Entry<String, Integer> aa : list) {
+        for (Map.Entry<String, RemotePlayer> aa : playerList) {
             sortedMap.put(aa.getKey(), unsortedMap.get(aa.getKey()));
             sortedMap.get(aa.getKey()).setPlacement(String.valueOf(counter));
             counter--;

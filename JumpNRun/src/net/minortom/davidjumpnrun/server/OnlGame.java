@@ -392,6 +392,6 @@ public class OnlGame implements Runnable {
         players.forEach((String key, RemotePlayer p)->{
             p.endGame();
         });
-        server.games.remove(this);
+        server.games.remove(gameName);
     }
 }

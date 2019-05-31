@@ -60,7 +60,8 @@ public class LoginScreen extends VBox {
             }
 
             Dialog inputDia = new Dialog();
-            TextField inputTF = new TextField("Enter alertcontent from browser");
+            TextField inputTF = new TextField();
+            inputTF.setPromptText("Enter alertcontent from browser");
             inputDia.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
             inputDia.getDialogPane().setContent(inputTF);
 

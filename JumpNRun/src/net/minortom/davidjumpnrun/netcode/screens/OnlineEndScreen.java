@@ -6,6 +6,7 @@
 package net.minortom.davidjumpnrun.netcode.screens;
 
 import javafx.beans.property.SimpleStringProperty;
+import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -19,7 +20,7 @@ import jumpnrun.JumpNRun;
  *
  * @author DavidPrivat
  */
-public class OnlineEndScreen extends StackPane {
+public class OnlineEndScreen extends VBox {
 
     private Label heading;
     private Button toMainMenuBt, toSpectatorModeBt;
@@ -27,6 +28,7 @@ public class OnlineEndScreen extends StackPane {
     private TableColumn userPlacement, userName, userKills, userDeaths;
     private JumpNRun game;
     private int currPlacement;
+    private Button backToMainMenu;
 
     public OnlineEndScreen(JumpNRun game) {
         table = new TableView();
@@ -38,6 +40,7 @@ public class OnlineEndScreen extends StackPane {
         userPlacement.setCellValueFactory(
                 new PropertyValueFactory<PlayerStatsElement, String>("placement")
         );
+        userPlacement.setSortType(TableColumn.SortType.ASCENDING);
         userDeaths.setCellValueFactory(
                 new PropertyValueFactory<PlayerStatsElement, String>("deaths")
         );
@@ -51,7 +54,14 @@ public class OnlineEndScreen extends StackPane {
         table.getColumns().addAll(userPlacement, userName, userKills, userDeaths);
         this.game = game;
         currPlacement = 0;
-        getChildren().add(table);
+        
+        backToMainMenu = new Button();
+        backToMainMenu.setOnAction((ActionEvent e)->{
+            game.openMainMenu();
+        });
+        
+        getChildren().addAll(table, backToMainMenu);
+        
     }
 
     public void updateStrings() {
@@ -59,6 +69,8 @@ public class OnlineEndScreen extends StackPane {
         userDeaths.setText(game.language.EndGameDeaths);
         userKills.setText(game.language.EndGameKills);
         userName.setText(game.language.EndGameName);
+        backToMainMenu.setText(game.language.backBt);
+        backToMainMenu.setFont(game.language.getFont());
     }
 
     public void startInserting() {
