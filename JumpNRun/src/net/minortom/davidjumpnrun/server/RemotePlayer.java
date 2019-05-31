@@ -271,6 +271,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
             }
             xPos += xSpeed * timeElapsedSeconds;
             yPos += ySpeed * timeElapsedSeconds;
+            animationStateAsInt = -1;
         }
         setX(xPos);
         setY(yPos);
@@ -568,8 +569,12 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         respawnTimer -= timeElapsedSeconds;
         setVisible(false);
         respawnLabel.addVal(-1 * timeElapsedSeconds);
+        remoteGun.setAnimationState(-1);
+        remotePitchfork.setAnimationState(-1);
 
         if (respawnTimer < 0) {
+            remoteGun.setAnimationState(0);
+        remotePitchfork.setAnimationState(0);
             game.removeCounterLabel(respawnLabel);
 
             respawnDoing = false;
