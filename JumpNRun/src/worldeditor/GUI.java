@@ -331,10 +331,15 @@ public class GUI extends Group {
         for (int i = 0; i < worldVector.size(); i++) {
             for (int j = 0; j < worldVector.get(i).size(); j++) {
                 currBlock = worldVector.get(i).get(j);
+                /*
                 currBlock.setX((i * blockSize) + xScroll);
                 currBlock.setY((j * blockSize) + yScroll);
+                */
+                currBlock.relocate((i * blockSize) + xScroll, (j * blockSize) + yScroll);
+                
             }
         }
+        
     }
 
     public void refreshPositions() {
@@ -350,11 +355,7 @@ public class GUI extends Group {
         for (int i = 0; i < worldVector.size(); i++) {
             for (int j = 0; j < worldVector.get(i).size(); j++) {
                 if (worldVector.get(i).get(j) != null) {
-                    Block b = Block.createBlock(worldVector.get(i).get(j));
-                    b.setX(i * blockSize);
-                    b.setY(j * blockSize);
-
-                    getChildren().add(b);
+                    addBlock(worldVector.get(i).get(j), i * blockSize, j * blockSize);
 
                 }
             }
