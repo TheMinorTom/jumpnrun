@@ -71,10 +71,11 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
     private boolean isDead;
 
     private boolean isUp, isDown;
-    
+
     private boolean endGame = false;
-    
+
     private String placement = "";
+
     public RemotePlayer(Server server, OnlGame game, String pubId, String objectId, String skin, String name, int index, int maxPlayer, String userId) {
         super(index, (game.worldWidth / (maxPlayer + 1)) * (index + 1), OnlGame.spawnY);
         this.server = server;
@@ -165,7 +166,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
              //server.tcpServer.get(pubId).out.println(server.keyword + server.infoSeperator + "OGAME-UPDATEPROT" + server.infoSeperator + pubId + server.infoSeperator + String.valueOf(xPos) + server.infoSeperator + String.valueOf(yPos) + server.infoSeperator + String.valueOf(animationStateAsInt));
              */
         }
-        
+
         // #ENDGAME
         server.tcpServer.get(pubId).getCommandHandler().sendEndGame(game.playersAtBeginn);
     }
@@ -272,7 +273,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
             xPos += xSpeed * timeElapsedSeconds;
             yPos += ySpeed * timeElapsedSeconds;
             animationStateAsInt = -1;
-            
+
         }
         setX(xPos);
         setY(yPos);
@@ -451,16 +452,20 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
 
     @Override
     public void hitten() {
-        xPos = xSpawn;
-        yPos = ySpawn;
-        setX(xPos);
-        setY(yPos);
-        respawnDoing = true;
-        respawnLabel.setVal(3.999999999);
-        game.getCounterLabels().add(respawnLabel);
-        ySpeed = 0;
-        incrementDeaths();
-        game.checkEndGame();
+        if (!respawnDoing) {
+            xPos = xSpawn;
+            yPos = ySpawn;
+            setX(xPos);
+            setY(yPos);
+            respawnDoing = true;
+            respawnLabel.setVal(3.999999999);
+            game.getCounterLabels().add(respawnLabel);
+            ySpeed = 0;
+            incrementDeaths();
+            game.checkEndGame();
+            remoteGun.setAnimationState(-1);
+            remotePitchfork.setAnimationState(-1);
+        }
     }
 
     @Override
@@ -575,7 +580,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
 
         if (respawnTimer < 0) {
             remoteGun.setAnimationState(0);
-        remotePitchfork.setAnimationState(0);
+            remotePitchfork.setAnimationState(0);
             game.removeCounterLabel(respawnLabel);
 
             respawnDoing = false;
@@ -590,7 +595,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         }
 
     }
-    
+
     public void endGame() {
         endGame = true;
     }
@@ -633,23 +638,23 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         kills++;
         killCounter.addVal(1);
     }
-    
+
     public boolean isDead() {
         return isDead;
     }
-    
+
     public int getDeaths() {
         return deaths;
     }
-    
+
     public int getKills() {
         return kills;
     }
-    
+
     public void setPlacement(String p) {
         placement = p;
     }
-    
+
     public String getPlacement() {
         return placement;
     }
