@@ -47,6 +47,7 @@ public class Block extends ImageView {
         setVisible(true);
         updateSize();
     }
+    
 
     private Block(Block b) {
         super();

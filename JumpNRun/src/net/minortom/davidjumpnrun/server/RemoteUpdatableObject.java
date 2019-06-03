@@ -31,6 +31,8 @@ public class RemoteUpdatableObject extends RemoteObject{
         this.game = game;
         isDamaging = false;
         owner = null;
+        setWidth(rect.getWidth());
+        setHeight(rect.getHeight());
     }
     
     public RemoteUpdatableObject(String objectId, Rectangle2D rect, GameObjectType objectType, double xSpd, double ySpd, double xAcc, double yAcc, OnlGame game) {
@@ -43,6 +45,8 @@ public class RemoteUpdatableObject extends RemoteObject{
         isDamaging = false;
         setAnimationState(0);
         owner = null;
+        setWidth(rect.getWidth());
+        setHeight(rect.getHeight());
     }
     
     public RemoteUpdatableObject(String objectId, Rectangle2D rect, GameObjectType objectType, double xPos, double yPos, double xSpd, double ySpd, double xAcc, double yAcc, OnlGame game, RemotePlayer owner, int animationState) {
@@ -57,6 +61,8 @@ public class RemoteUpdatableObject extends RemoteObject{
         isDamaging = true;
         this.owner = owner;
         setAnimationState(animationState);
+        setWidth(rect.getWidth());
+        setHeight(rect.getHeight());
     }
     
     public void update(double timeElapsed) {

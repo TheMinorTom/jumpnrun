@@ -107,7 +107,7 @@ public class OnlGame implements Runnable {
         counterLabels.add(gameTimer);
 
         mapText = MapHelper.getMap(MapHelper.getMapCfgFile().get(mapName).fileName);
-        worldVector = IO.openWorld(mapText, Server.getBlocksFolder());
+        worldVector = IO.openWorldForServer(mapText, Server.getBlocksFolder());
         worldWidth = worldVector.size() * worldVector.get(0).get(0).getFitWidth();
         blockSize = worldVector.get(0).get(0).getFitWidth();
         players = new HashMap<>();

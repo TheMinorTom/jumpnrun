@@ -5,6 +5,7 @@
  */
 package jumpnrun;
 
+import databasecode.DatabaseManager;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -116,6 +117,13 @@ public class JumpNRun extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
+        // DATABASE STUFF
+        
+        
+        // new DatabaseManager();
+        
+        
+        // DB STUFF END
         primStage = primaryStage;
         try {
             game = this;
