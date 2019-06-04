@@ -61,6 +61,7 @@ public class LanguageEnglish extends Language{
         this.NetworManagerLoginBtLoggedIn = "Change user";
         this.NetworManagerJoinGameBt = "Join Game";
         this.NetworManagerCreateGameBt = "Create Game";
+        this.NetworManagerLeaderboardBt = "Leaderboard";
         this.NetworkManagerConnected = "Connected!";
         this.NetworkManagerInternalError = "Internal Error";
         this.NetworkManagerInvalidHost = "Invalid Host";
