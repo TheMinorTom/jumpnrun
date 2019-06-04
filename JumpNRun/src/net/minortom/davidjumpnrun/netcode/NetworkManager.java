@@ -86,6 +86,8 @@ public class NetworkManager extends VBox {
         userBox.setSpacing(50);
         userBox.setPadding(new Insets(0, 0, 0, 0));
         
+        //avatarImg = new Image("");
+        
         avatar = new ImageView();
         avatar.setImage(avatarImg);
         avatar.setFitWidth(game.language.getFontSize()*4);
@@ -172,8 +174,6 @@ public class NetworkManager extends VBox {
         joinGameBt.setDisable(false);
         createGameBt.setDisable(false);
         loginBt.setText(game.language.NetworManagerLoginBtLoggedIn);
-        avatarImg = new Image("https://v1.api.minortom.net/do/avatar.php?user=" + game.config.networkUserId);
-        avatar.setImage(avatarImg);
         getChildren().clear();
         getChildren().addAll(userBox, loginBt, createGameBt, joinGameBt, backBt);
         if(game.networkManager.serverConnection==null){
@@ -181,12 +181,23 @@ public class NetworkManager extends VBox {
             game.networkManager.serverConnection.connect();
             if(null != game.networkManager.serverConnection.currentConnState) switch (game.networkManager.serverConnection.currentConnState) {
                 case CONNECTED:
+                    loadAvatar();
                     break;
                 default:
                     updateBtnsLoggedOut();
                     break;
             }
         }
+    }
+    
+    public void loadAvatar() {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                avatarImg = new Image("https://v1.api.minortom.net/do/avatar.php?user=" + game.config.networkUserId);
+                avatar.setImage(avatarImg);
+            }
+        });
     }
     
     public void updateBtnsLoggedOut(){

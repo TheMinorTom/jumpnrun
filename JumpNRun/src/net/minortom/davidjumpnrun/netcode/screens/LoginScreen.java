@@ -106,6 +106,7 @@ public class LoginScreen extends VBox {
                     game.config.networkHost = serverTmp;
                     game.config.networkLoggedIn = true;
                     ConfigManager.saveConfiguration(game.config);
+                    game.networkManager.loadAvatar();
                     game.openNetworkScreen();
                     break;
                 case ERROR_INVALID_HOST:

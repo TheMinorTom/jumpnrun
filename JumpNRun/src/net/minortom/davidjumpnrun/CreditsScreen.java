@@ -4,11 +4,15 @@
  */
 package net.minortom.davidjumpnrun;
 
+import java.awt.Desktop;
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -16,6 +20,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebEvent;
 import javafx.scene.web.WebView;
 import jumpnrun.JumpNRun;
 import static jumpnrun.JumpNRun.sourcePath;
@@ -27,17 +32,12 @@ public class CreditsScreen extends VBox {
     Label headerLabel;
     WebView textView;
     WebEngine webEngine;
-    Button backBt, closeBt;
+    Button closeBt;
     HBox btnBox;
     boolean loadedother;
     
     public CreditsScreen (JumpNRun game) {
         this.game = game;
-        
-        backBt = new Button("ERR");
-        backBt.setOnAction((ActionEvent e) -> {
-            updateStrings();
-        });
         
         closeBt = new Button("ERR");
         closeBt.setOnAction((ActionEvent e) -> {
@@ -47,9 +47,20 @@ public class CreditsScreen extends VBox {
         textView = new WebView();
         webEngine = textView.getEngine();
         
+        textView.getEngine().setOnAlert(new EventHandler<WebEvent<String>>() {
+            @Override
+            public void handle(WebEvent<String> ev) {
+                try {
+                    Desktop.getDesktop().browse(URI.create(ev.getData()));
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+        
         headerLabel = new Label("Please Wait");
         
-        btnBox = new HBox(backBt, closeBt);
+        btnBox = new HBox(closeBt);
         btnBox.setAlignment(Pos.CENTER);
         btnBox.setPadding(new Insets(0, 0, 0, 0));
         
@@ -58,12 +69,10 @@ public class CreditsScreen extends VBox {
         setAlignment(Pos.CENTER);
         setSpacing(50);
         setPadding(new Insets(0, 0, 0, 0));
-        getChildren().addAll(headerLabel, textView, backBt, btnBox);
+        getChildren().addAll(headerLabel, textView, btnBox);
     }
     
     public void updateStrings(){
-        backBt.setFont(game.language.getFont());
-        backBt.setText(game.language.backBt);
         closeBt.setFont(game.language.getFont());
         closeBt.setText(game.language.CreditsCloseBt);
         headerLabel.setFont(game.language.getHeadingFont());
