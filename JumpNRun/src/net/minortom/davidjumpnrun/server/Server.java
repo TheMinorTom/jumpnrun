@@ -8,6 +8,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Scanner;
 import net.minortom.davidjumpnrun.configstore.ConfigManager;
 import net.minortom.davidjumpnrun.netcode.NetworkManager;
 
@@ -15,6 +16,8 @@ public class Server {
 
     public static String storageLocation;
     public static Server server;
+    
+    public ServerMysqlConnection dbConn;
 
     public final String infoSeperator = NetworkManager.infoSeperator;
     public final String keyword = NetworkManager.keyword;
@@ -43,8 +46,14 @@ public class Server {
             storageLocation = ConfigManager.getStorageLocation();
         }
         Server.server = this;
-
         System.out.println("Server Hello World");
+        
+        Scanner in = new Scanner(System.in);
+        System.out.println("Please enter the DB Connection String");
+        String dbString = in.nextLine();
+        String[] dbCreds = dbString.split("!");
+        dbConn = new ServerMysqlConnection(dbCreds[0], dbCreds[1], dbCreds[2], dbCreds[3]);
+        System.out.println("Now starting");
         tcpPort = 26656;
         tcpServer = new HashMap<>();
         TCPServer.init(tcpPort);

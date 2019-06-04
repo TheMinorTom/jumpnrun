@@ -72,6 +72,7 @@ public class Language implements Serializable {
     public transient String NetworManagerLoginBtLoggedIn;
     public transient String NetworManagerJoinGameBt;
     public transient String NetworManagerCreateGameBt;
+    public transient String NetworManagerLeaderboardBt;
     public transient String NetworkManagerConnected;
     public transient String NetworkManagerInternalError;
     public transient String NetworkManagerInvalidHost;

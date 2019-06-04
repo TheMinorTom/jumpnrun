@@ -4,6 +4,11 @@
  */
 package net.minortom.davidjumpnrun.netcode;
 
+import java.awt.Desktop;
+import java.io.IOException;
+import java.net.URI;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import net.minortom.davidjumpnrun.netcode.screens.LoginScreen;
 import javafx.event.ActionEvent;
@@ -44,7 +49,7 @@ public class NetworkManager extends VBox {
     public ServerConnection serverConnection;
     
     HBox userBox;
-    Button backBt, loginBt, joinGameBt, createGameBt;
+    Button backBt, loginBt, joinGameBt, createGameBt, leaderboardBt;
     Image avatarImg;
     ImageView avatar;
     Label userName;
@@ -81,10 +86,21 @@ public class NetworkManager extends VBox {
         });
         createGameBt.setDisable(true);
         
+        leaderboardBt = new Button("ERR");
+        leaderboardBt.setOnAction((ActionEvent e) -> {
+            try {
+                Desktop.getDesktop().browse(URI.create("https://v1.api.minortom.net/jnr/leaderboard.php"));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+        
         userBox = new HBox();
         userBox.setAlignment(Pos.CENTER);
         userBox.setSpacing(50);
         userBox.setPadding(new Insets(0, 0, 0, 0));
+        
+        //avatarImg = new Image("");
         
         avatar = new ImageView();
         avatar.setImage(avatarImg);
@@ -113,6 +129,8 @@ public class NetworkManager extends VBox {
         joinGameBt.setFont(defaultFont);
         createGameBt.setText(game.language.NetworManagerCreateGameBt);
         createGameBt.setFont(defaultFont);
+        leaderboardBt.setText(game.language.NetworManagerLeaderboardBt);
+        leaderboardBt.setFont(defaultFont);
         userName.setFont(defaultFont);
         userBox.setSpacing(game.language.getFontSize());
         setSpacing(game.language.getFontSize());
@@ -172,15 +190,14 @@ public class NetworkManager extends VBox {
         joinGameBt.setDisable(false);
         createGameBt.setDisable(false);
         loginBt.setText(game.language.NetworManagerLoginBtLoggedIn);
-        avatarImg = new Image("https://v1.api.minortom.net/do/avatar.php?user=" + game.config.networkUserId);
-        avatar.setImage(avatarImg);
         getChildren().clear();
-        getChildren().addAll(userBox, loginBt, createGameBt, joinGameBt, backBt);
+        getChildren().addAll(userBox, loginBt, createGameBt, joinGameBt, leaderboardBt, backBt);
         if(game.networkManager.serverConnection==null){
             game.networkManager.serverConnection = new ServerConnection(game.config.networkUserId, game.config.networkUserToken, game.config.networkHost, game);
             game.networkManager.serverConnection.connect();
             if(null != game.networkManager.serverConnection.currentConnState) switch (game.networkManager.serverConnection.currentConnState) {
                 case CONNECTED:
+                    loadAvatar();
                     break;
                 default:
                     updateBtnsLoggedOut();
@@ -189,12 +206,22 @@ public class NetworkManager extends VBox {
         }
     }
     
+    public void loadAvatar() {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                avatarImg = new Image("https://v1.api.minortom.net/do/avatar.php?user=" + game.config.networkUserId);
+                avatar.setImage(avatarImg);
+            }
+        });
+    }
+    
     public void updateBtnsLoggedOut(){
         joinGameBt.setDisable(true);
         createGameBt.setDisable(true);
         loginBt.setText(game.language.NetworManagerLoginBt);
         getChildren().clear();
-        getChildren().addAll(loginBt, backBt);
+        getChildren().addAll(loginBt, leaderboardBt, backBt);
     }
     
     public void shutdown() {
