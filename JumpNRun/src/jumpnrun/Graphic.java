@@ -55,6 +55,8 @@ public class Graphic extends Group {
     private static HashMap<String, Label> onlinePlayersVarLabels;
     private static ArrayList<HBox> playerBoxes;
 
+    private boolean onlineScrollingInited = false;
+
     public Graphic(Vector<Vector<Block>> worldVec, Protagonist prot1, Protagonist prot2, JumpNRun.Gamemode gamemode) {
         super();
         lblFont = JumpNRun.game.language.getFont();
@@ -64,16 +66,7 @@ public class Graphic extends Group {
         deaths2 = 0;
         respawnsLeft1 = JumpNRun.getDeathLimit();
         respawnsLeft2 = JumpNRun.getDeathLimit();
-        for (int i = 0; i < worldVector.size(); i++) {
-            for (int j = 0; j < worldVector.get(i).size(); j++) {
-                Block block = worldVector.get(i).get(j);
-                if (block != null) {
-                    blockSize = block.getFitWidth();
-                    block.setX(block.getLayoutX());
-                    block.setY(block.getLayoutY());
-                }
-            }
-        }
+        blockSize = worldVec.get(0).get(0).getFitWidth();
 
         leftLbl = new Label();
         rightLbl = new Label();
@@ -128,12 +121,35 @@ public class Graphic extends Group {
     }
 
     public void updateScrolling() {
-        for (int i = 0; i < worldVector.size(); i++) {
-            for (int j = 0; j < worldVector.get(i).size(); j++) {
-                Block block = worldVector.get(i).get(j);
-                if (block != null) {
-                    block.setX((blockSize * i) + JumpNRun.game.getXScroll());
-                    block.setY((blockSize * j) + JumpNRun.game.getYScroll());
+        double xScroll = JumpNRun.game.getXScroll() * (-1);
+        double yScroll = JumpNRun.game.getYScroll() * (-1);
+        Block block;
+        if ((!onlineScrollingInited) && (xScroll != 0)) {
+            onlineScrollingInited = true;
+
+            for (int i = 0; i < worldVector.size(); i++) {
+                for (int j = 0; j < worldVector.get(i).size(); j++) {
+                    block = worldVector.get(i).get(j);
+                    if (block != null) {
+                        block.setX((blockSize * i) - xScroll);
+                        block.setY((blockSize * j) - yScroll);
+
+                    }
+                }
+            }
+
+        }
+
+        for (int i = (int) (xScroll / blockSize) - 1; (i < worldVector.size()) && (i <= (int) ((xScroll + JumpNRun.getWidth()) / blockSize)); i++) {
+            if ((i >= 0)) {
+                for (int j = (int) (yScroll / blockSize) - 1; (j < worldVector.get(i).size()) && (j <= (int) ((yScroll + JumpNRun.getHeight()) / blockSize)); j++) {
+                    if (j >= 0) {
+                        block = worldVector.get(i).get(j);
+                        if (block != null) {
+                            block.setX((blockSize * i) - xScroll);
+                            block.setY((blockSize * j) - yScroll);
+                        }
+                    }
                 }
             }
         }
@@ -143,8 +159,10 @@ public class Graphic extends Group {
 
         worldVector = worldVec;
         System.out.println("World: " + worldVec);
-        worldGroup = GUI.drawWorld(worldVec, worldVec.get(0).get(0).getFitWidth());
+        worldGroup = GUI.drawWorldOnlineClient(worldVec, worldVec.get(0).get(0).getFitWidth());
         getChildren().addAll(worldGroup);
+        blockSize = worldVec.get(0).get(0).getFitHeight();
+
     }
 
     public ProtagonistOnlineClient generateOtherOnlineProt(String name, String skinFileName, int indexId, String pubId, int playerAmount, double spawnY, String userId) {
@@ -294,8 +312,6 @@ public class Graphic extends Group {
             }
         });
     }
-
-
 
     class CountDownLabel extends Label implements Updatable, OnlineUpdatableObject {
 

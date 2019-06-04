@@ -61,6 +61,7 @@ public class OnlineEndScreen extends VBox {
         });
         
         getChildren().addAll(table, backToMainMenu);
+        table.getSortOrder().add(userPlacement);
         
     }
 
@@ -71,6 +72,7 @@ public class OnlineEndScreen extends VBox {
         userName.setText(game.language.EndGameName);
         backToMainMenu.setText(game.language.backBt);
         backToMainMenu.setFont(game.language.getFont());
+        
     }
 
     public void startInserting() {

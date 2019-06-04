@@ -320,18 +320,8 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
 
     public boolean collisionCheck(Vector<Vector<Block>> worldVec, HashMap<String, RemotePlayer> players) {
         double blockSize = game.blockSize;
-        for (int i = 0; i < worldVec.size(); i++) {
-            for (int j = 0; j < worldVec.get(i).size(); j++) {
-                if (worldVec.get(i).get(j) != null) {
-                    Block b = worldVec.get(i).get(j);
-                    if (b.getIsSolid()) {
-                        if (intersects(xPos, yPos, width, height, b.getX(), b.getY(), blockSize, blockSize)) {
-
-                            return true;
-                        }
-                    }
-                }
-            }
+        if(OnlGame.worldCollisionCheck(worldVec, xPos, yPos, width, height, blockSize)) {
+            return true;
         }
         if (intersectsPlayer(players)) {
             return true;

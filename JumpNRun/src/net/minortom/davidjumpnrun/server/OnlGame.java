@@ -70,6 +70,7 @@ public class OnlGame implements Runnable {
 
     private ObservableList<OnlineCounterLabel> counterLabels, counterLabelsToRemove;
     private int playersAlive;
+
     public OnlGame(Server server, String gameName, int playersMax, String gamemode, double timeLimit, int respawnLimit, String mapName, String playerOneId, String playerOneSkin) {
         this.server = server;
 
@@ -296,16 +297,11 @@ public class OnlGame implements Runnable {
                                 shoot.getOwner().incrementKills();
                             }
                         }
-
                     });
 
-                    worldVector.forEach((blockRow) -> {
-                        blockRow.forEach((block) -> {
-                            if (block.getIsSolid() && shoot.intersects(block.getBoundsInLocal())) {
-                                deleteShoot(shoot);
-                            }
-                        });
-                    });
+                    if (worldCollisionCheck(worldVector, shoot.getXPos(), shoot.getYPos(), shoot.getWidth(), shoot.getHeight(), blockSize)) {
+                        deleteShoot(shoot);
+                    };
                 });
             } catch (Exception e) {
                 e.printStackTrace();
@@ -374,24 +370,37 @@ public class OnlGame implements Runnable {
     public void removeCounterLabel(OnlineCounterLabel l) {
         counterLabelsToRemove.add(l);
     }
-    
+
     public void checkEndGame() {
         playersAlive = 0;
-        players.forEach((String key, RemotePlayer p)->{
-           if(!p.isDead()) {
-               playersAlive++;
-           } 
+        players.forEach((String key, RemotePlayer p) -> {
+            if (!p.isDead()) {
+                playersAlive++;
+            }
         });
-        if(playersAlive <= 1) {
+        if ((playersAlive <= 1) && (!gamemode.equals(gamemode.ENDLESS))) {
             endGame();
         }
     }
 
     private void endGame() {
         ended = true;
-        players.forEach((String key, RemotePlayer p)->{
+        players.forEach((String key, RemotePlayer p) -> {
             p.endGame();
         });
         server.games.remove(gameName);
+    }
+
+    public static boolean worldCollisionCheck(Vector<Vector<Block>> worldVec, double x, double y, double w, double h, double blockSize) {
+        for (int xIndex = (int) (x / blockSize); (xIndex <= (int) ((x + w) / blockSize)) && (xIndex < worldVec.size()); xIndex++) {
+            if (xIndex >= 0) {
+                for (int yIndex = (int) (y / blockSize); (yIndex <= (int) ((y + h) / blockSize)) && (yIndex < worldVec.get(xIndex).size()); yIndex++) {
+                    if ((yIndex >= 0) && worldVec.get(xIndex).get(yIndex).getIsSolid()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }

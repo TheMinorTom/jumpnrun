@@ -379,6 +379,21 @@ public class GUI extends Group {
         }
         return returnWorld;
     }
+    public static Group drawWorldOnlineClient(Vector<Vector<Block>> worldVec, double blockSize) {
+        Group returnWorld = new Group();
+        for (int i = 0; i < worldVec.size(); i++) {
+            for (int j = 0; j < worldVec.get(i).size(); j++) {
+                if (worldVec.get(i).get(j) != null) {
+                    Block b = worldVec.get(i).get(j);
+                    b.setX(i * blockSize + JumpNRun.game.getXScroll());
+                    b.setY(j * blockSize + JumpNRun.game.getYScroll());
+                    returnWorld.getChildren().add(b);
+
+                }
+            }
+        }
+        return returnWorld;
+    }
 
     private void updateRect(double xPos, double yPos) {
         if ((yPos > (menuBar.getHeight() + blockSizeTextField.getHeight())) && !blockChose.isShowing()) {

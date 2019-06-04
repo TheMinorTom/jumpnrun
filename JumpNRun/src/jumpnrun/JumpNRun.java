@@ -33,6 +33,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.stage.WindowEvent;
@@ -118,11 +119,8 @@ public class JumpNRun extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         // DATABASE STUFF
-        
-        
+
         // new DatabaseManager();
-        
-        
         // DB STUFF END
         primStage = primaryStage;
         try {
@@ -172,7 +170,6 @@ public class JumpNRun extends Application {
             networkManager = new NetworkManager(this);
             // End licensed sections
 
-            primStage = primaryStage;
             mainMenu = new MainMenu(this);
             // scene = new Scene(mainMenu); !!!!!!!!!!!!
 
@@ -202,6 +199,7 @@ public class JumpNRun extends Application {
             ((WinScreen) winScreen).setWinner(1); //!!!
 
             keysDown = new boolean[]{false, false, false, false, false, false, false};
+            primStage.setMaximized(true);
 
             //!!
         } catch (Exception e) {
@@ -313,8 +311,6 @@ public class JumpNRun extends Application {
                 break;
         }
         this.worldVector = null;
-        
-        
 
     }
 
@@ -342,6 +338,7 @@ public class JumpNRun extends Application {
         onlineProts.put(pubId, addProt);
         onlineGameObjects.put(objectId, addProt);
         loopOnline.addObject(addProt);
+        updateScrolling();
     }
 
     public void setLocalProt(ProtagonistOnlineClient p) {
@@ -349,9 +346,10 @@ public class JumpNRun extends Application {
     }
 
     public void updateScrolling() {
-        graphic.updateScrolling();
         xScroll = -1 * (localProt.getXPos() - primStage.getWidth() / 2);
         yScroll = -1 * (localProt.getYPos() - primStage.getHeight() / 4);
+        graphic.updateScrolling();
+
     }
 
     public void updateOnlineObject(String objectId, String objectTypeAsIntAsString, String xPosString, String yPosString, String animationStateAsIntAsString) {
@@ -546,14 +544,14 @@ public class JumpNRun extends Application {
     }
 
     public void endOnlineGame(String message) {
-        ((OnlineEndScreen)onlineEndScreen).startInserting();
+        ((OnlineEndScreen) onlineEndScreen).startInserting();
         String[] playersArgs = message.split("\\" + NetworkManager.differentObjectsSeperator);
         String[] currArgs = null;
         for (String currPlayer : playersArgs) {
             currArgs = currPlayer.split("\\" + NetworkManager.subArgsSeperator);
             ((OnlineEndScreen) onlineEndScreen).addPlayerEntry(currArgs);
         }
-        ((OnlineEndScreen)onlineEndScreen).updateStrings();
+        ((OnlineEndScreen) onlineEndScreen).updateStrings();
         scene.setRoot(onlineEndScreen);
     }
 
@@ -795,7 +793,6 @@ public class JumpNRun extends Application {
     public static void removeNode(Node n) {
         graphic.getChildren().remove(n);
     }
-    
 
     static void doCollect(PowerupCollect collect, Powerup powerupNew, Powerup powerupOld, int id) {
         powerupCollects.remove(collect);
@@ -842,11 +839,11 @@ public class JumpNRun extends Application {
     }
 
     public static double getWidth() {
-        return primStage.getWidth();
+        return Screen.getPrimary().getVisualBounds().getWidth();
     }
 
     public static double getHeight() {
-        return primStage.getHeight();
+        return Screen.getPrimary().getVisualBounds().getHeight();
     }
 
     public void setCurrGamemode(Gamemode gamemode) {
