@@ -398,7 +398,7 @@ public class OnlGame implements Runnable {
                 if(Integer.parseInt(p.getPlacement()) == 1) {
                     winsAdd = 1;
                 }
-                server.dbConn.updateStats(p.userId, p.getKills(), p.getDeaths(), winsAdd, 1, 100, p.getCoinsCollected(), 20);
+                server.dbConn.updateStats(p.userId, p.getKills(), p.getDeaths(), winsAdd, 1, ScoreEngine.calculateXP(), p.getCoinsCollected(), ScoreEngine.calculateScore());
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }

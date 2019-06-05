@@ -11,4 +11,12 @@ package net.minortom.davidjumpnrun.server;
  */
 public class ScoreEngine {
     
+    
+    public static int calculateScore() {
+        return 0;
+    }
+    
+    public static int calculateXP() {
+        return 0;
+    }
 }
