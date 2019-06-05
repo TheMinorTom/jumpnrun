@@ -332,10 +332,9 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         return false;
     }
 
-    @Override
-    public boolean intersectsPlayer(Protagonist p) {
+    public boolean intersectsPlayer(RemotePlayer p) {
         if (intersects(xPos, yPos, width, height, p.getX(), p.getY(), width, height)) {
-            if (!p.isRespawning()) {
+            if ((!p.isRespawning()) && (!p.isDead)) {
 
                 return true;
             }
@@ -445,7 +444,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
 
     @Override
     public void hitten() {
-        if (!respawnDoing) {
+        if ((!respawnDoing) && (!isDead)) {
             xPos = xSpawn;
             yPos = ySpawn;
             setX(xPos);
@@ -572,8 +571,8 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         remotePitchfork.setAnimationState(-1);
 
         if (respawnTimer < 0) {
-            remoteGun.setAnimationState(0);
-            remotePitchfork.setAnimationState(0);
+            remoteGun.setAnimationState(-1);
+            remotePitchfork.setAnimationState(-1);
             game.removeCounterLabel(respawnLabel);
 
             respawnDoing = false;
