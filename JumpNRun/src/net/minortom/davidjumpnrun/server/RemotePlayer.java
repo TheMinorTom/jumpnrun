@@ -75,6 +75,8 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
     private boolean endGame = false;
 
     private String placement = "";
+    
+    private int coinsCollected;
 
     public RemotePlayer(Server server, OnlGame game, String pubId, String objectId, String skin, String name, int index, int maxPlayer, String userId) {
         super(index, (game.worldWidth / (maxPlayer + 1)) * (index + 1), OnlGame.spawnY);
@@ -114,6 +116,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         isDead = false;
         isUp = false;
         isDown = false;
+        coinsCollected = 0;
 
     }
 
@@ -647,6 +650,10 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
 
     public String getPlacement() {
         return placement;
+    }
+    
+    public int getCoinsCollected() {
+        return coinsCollected;
     }
 
 }

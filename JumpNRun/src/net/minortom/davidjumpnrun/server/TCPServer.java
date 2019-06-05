@@ -33,7 +33,7 @@ public class TCPServer {
             in = new BufferedReader(
                 new InputStreamReader(clientSocket.getInputStream()));
         }catch(Exception e){
-            System.err.print("E");
+            System.err.print("ENTON ");
             return;
         }
         
