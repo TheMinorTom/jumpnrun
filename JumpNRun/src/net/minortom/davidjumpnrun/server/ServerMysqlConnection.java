@@ -98,4 +98,16 @@ public class ServerMysqlConnection {
         statement.execute(sqlString);
     }
     
+    public int getScore (String userId) throws SQLException  {
+        Statement statement = mysqlConn.createStatement();
+        String query = "SELECT Score FROM jnr_playerstats WHERE id = " + userId;
+        ResultSet result = statement.executeQuery(query);
+        if(!result.next()) {
+            addPlayerStatsEntry(userId);
+            result = statement.executeQuery(query);
+            result.next();
+        }
+        return result.getInt("Score");
+    }
+    
 }

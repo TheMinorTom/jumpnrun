@@ -129,7 +129,12 @@ public class OnlGame implements Runnable {
         String name = server.tcpServer.get(pubId).userName;
         String addObjectId = nextObjectId();
         String userId = server.tcpServer.get(pubId).userId;
-        RemotePlayer addPlayer = new RemotePlayer(server, this, pubId, addObjectId, skin, name, players.size(), playersMax, userId);
+        RemotePlayer addPlayer;
+        try {
+            addPlayer = new RemotePlayer(server, this, pubId, addObjectId, skin, name, players.size(), playersMax, userId, server.dbConn.getScore(userId));
+        } catch (SQLException ex) {
+            addPlayer = new RemotePlayer(server, this, pubId, addObjectId, skin, name, players.size(), playersMax, userId, 0);
+        }
         playersAtBeginn.put(pubId, addPlayer);
         onlineGameObjects.put(addObjectId, addPlayer);
 

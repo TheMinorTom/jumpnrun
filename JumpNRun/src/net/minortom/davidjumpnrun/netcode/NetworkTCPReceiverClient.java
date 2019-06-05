@@ -100,9 +100,9 @@ public class NetworkTCPReceiverClient extends Thread {
                             break;
                         case OGAME_INITPROT:
                             if (packageContent[7].equals("1")) {
-                                game.initLocalProt(packageContent[2], packageContent[3], Integer.valueOf(packageContent[4]), packageContent[5], packageContent[6], packageContent[8]);
+                                game.initLocalProt(packageContent[2], packageContent[3], Integer.valueOf(packageContent[4]), packageContent[5], packageContent[6], packageContent[8], packageContent[9]);
                             } else {
-                                game.initOtherProt(packageContent[2], packageContent[3], Integer.valueOf(packageContent[4]), packageContent[5], packageContent[6], packageContent[8]);
+                                game.initOtherProt(packageContent[2], packageContent[3], Integer.valueOf(packageContent[4]), packageContent[5], packageContent[6], packageContent[8], packageContent[9]);
                             }
                             break;
                         case OGAME_INITGAME:

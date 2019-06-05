@@ -171,7 +171,7 @@ public class Graphic extends Group {
 
     }
 
-    public ProtagonistOnlineClient generateOtherOnlineProt(String name, String skinFileName, int indexId, String pubId, int playerAmount, double spawnY, String userId) {
+    public ProtagonistOnlineClient generateOtherOnlineProt(String name, String skinFileName, int indexId, String pubId, int playerAmount, double spawnY, String userId, String score) {
         double worldWidth = worldVector.size() * blockSize;
         double spawnX = (worldWidth / (playerAmount + 1)) * (indexId + 1);
         ProtagonistOnlineClient addProt = new ProtagonistOnlineClient(indexId, spawnX, spawnY, skinFileName, name, pubId, LEFT, RIGHT, UP, P, O, I, DOWN, userId);
@@ -189,6 +189,8 @@ public class Graphic extends Group {
         lblBox.setPadding(new Insets(0, 0, 0, 0));
         Label playerName = new Label(addProt.nameLbl.getText());
         Label varLbl = new Label("");
+        Label scoreLbl = new Label("Score: " + score);
+        scoreLbl.setFont(JumpNRun.game.language.getFont());
         ImageView avatar = new ImageView();
         avatar.setImage(new Image("https://v1.api.minortom.net/do/avatar.php?user=" + addProt.userId));
         avatar.setFitWidth(JumpNRun.game.language.getFontSize() * 3);
@@ -197,7 +199,7 @@ public class Graphic extends Group {
         playerName.setFont(JumpNRun.game.language.getFont());
         varLbl.setFont(JumpNRun.game.language.getFont());
         onlinePlayersVarLabels.put(addProt.pubId, varLbl);
-        lblBox.getChildren().addAll(playerName, varLbl);
+        lblBox.getChildren().addAll(playerName, scoreLbl);
         tmpBox.getChildren().addAll(avatar, lblBox);
         playerBoxes.add(tmpBox);
         Platform.runLater(new Runnable() {
@@ -209,7 +211,7 @@ public class Graphic extends Group {
         return addProt;
     }
 
-    public ProtagonistOnlineClient generateLocalOnlineProt(String name, String skinFileName, int indexId, String pubId, int playerAmount, double spawnY, String userId) {
+    public ProtagonistOnlineClient generateLocalOnlineProt(String name, String skinFileName, int indexId, String pubId, int playerAmount, double spawnY, String userId, String score) {
         double worldWidth = worldVector.size() * blockSize;
         double spawnX = (worldWidth / (playerAmount + 1)) * (indexId + 1);
         ProtagonistOnlineClient addProt = new ProtagonistOnlineClient(indexId, spawnX, spawnY, skinFileName, JumpNRun.game.language.playerNameLocalPlayer, pubId, LEFT, RIGHT, UP, P, O, I, DOWN, userId);
@@ -228,6 +230,8 @@ public class Graphic extends Group {
         lblBox.setPadding(new Insets(0, 0, 0, 0));
         Label playerName = new Label(addProt.nameLbl.getText());
         Label varLbl = new Label("");
+        Label scoreLbl = new Label("Score: " + score);
+        scoreLbl.setFont(JumpNRun.game.language.getFont());
         ImageView avatar = new ImageView();
         avatar.setImage(new Image("https://v1.api.minortom.net/do/avatar.php?user=" + addProt.userId));
         avatar.setFitWidth(JumpNRun.game.language.getFontSize() * 3);
@@ -236,7 +240,7 @@ public class Graphic extends Group {
         playerName.setFont(JumpNRun.game.language.getFont());
         varLbl.setFont(JumpNRun.game.language.getFont());
         onlinePlayersVarLabels.put(addProt.pubId, varLbl);
-        lblBox.getChildren().addAll(playerName, varLbl);
+        lblBox.getChildren().addAll(playerName, scoreLbl);
         tmpBox.getChildren().addAll(avatar, lblBox);
         playerBoxes.add(tmpBox);
         Platform.runLater(new Runnable() {
@@ -299,8 +303,8 @@ public class Graphic extends Group {
     public static void initOnlineOverlay() {
         onlinePlayersVarLabels = new HashMap<>();
         onlinePlayersBox = new HBox();
-        onlinePlayersBox.setLayoutX(JumpNRun.getWidth() / 2);
-        onlinePlayersBox.setLayoutY(JumpNRun.getHeight() - lblYDist - JumpNRun.game.language.getFontSize() * 3);
+        onlinePlayersBox.setLayoutX(20);
+        onlinePlayersBox.setLayoutY(JumpNRun.getHeight() - lblYDist - JumpNRun.game.language.getFontSize() * 5);
         onlinePlayersBox.setAlignment(Pos.CENTER);
         onlinePlayersBox.setSpacing(50);
         onlinePlayersBox.setPadding(new Insets(0, 20, 0, 20));

@@ -77,9 +77,12 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
     private String placement = "";
 
     private int coinsCollected;
+    
+    private int score;
 
-    public RemotePlayer(Server server, OnlGame game, String pubId, String objectId, String skin, String name, int index, int maxPlayer, String userId) {
+    public RemotePlayer(Server server, OnlGame game, String pubId, String objectId, String skin, String name, int index, int maxPlayer, String userId, int score) {
         super(index, (game.worldWidth / (maxPlayer + 1)) * (index + 1), OnlGame.spawnY);
+        this.score = score;
         this.server = server;
         this.game = game;
         this.pubId = pubId;
@@ -359,12 +362,12 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
     }
 
     void initClientOtherPlayer(RemotePlayer p2) {
-        server.tcpServer.get(pubId).getCommandHandler().sendCommand(ServerCommand.OGAME_INITPROT, new String[]{p2.name, p2.skin, String.valueOf(p2.index), p2.pubId, p2.getObjectId(), "0", p2.userId});
+        server.tcpServer.get(pubId).getCommandHandler().sendCommand(ServerCommand.OGAME_INITPROT, new String[]{p2.name, p2.skin, String.valueOf(p2.index), p2.pubId, p2.getObjectId(), "0", p2.userId, String.valueOf(p2.getScore())});
         // server.tcpServer.get(pubId).out.println(server.keyword + server.infoSeperator + "OGAME-INITPROT" + server.infoSeperator + p2.name + server.infoSeperator + p2.skin + server.infoSeperator + String.valueOf(p2.index) + server.infoSeperator + p2.pubId + server.infoSeperator + "0");
     }
 
     void initClientPendant(RemotePlayer p2) {
-        server.tcpServer.get(pubId).getCommandHandler().sendCommand(ServerCommand.OGAME_INITPROT, new String[]{p2.name, p2.skin, String.valueOf(p2.index), p2.pubId, p2.getObjectId(), "1", p2.userId});
+        server.tcpServer.get(pubId).getCommandHandler().sendCommand(ServerCommand.OGAME_INITPROT, new String[]{p2.name, p2.skin, String.valueOf(p2.index), p2.pubId, p2.getObjectId(), "1", p2.userId, String.valueOf(p2.getScore())});
         //server.tcpServer.get(pubId).out.println(server.keyword + server.infoSeperator + "OGAME-INITPROT" + server.infoSeperator + p2.name + server.infoSeperator + p2.skin + server.infoSeperator + String.valueOf(p2.index) + server.infoSeperator + p2.pubId + server.infoSeperator + "1");
     }
 
@@ -657,4 +660,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         return coinsCollected;
     }
 
+    public int getScore() {
+        return score;
+    }
 }

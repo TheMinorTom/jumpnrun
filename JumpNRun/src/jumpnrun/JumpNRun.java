@@ -325,15 +325,15 @@ public class JumpNRun extends Application {
         setUpOnlineKeyHandlers();
     }
 
-    public void initOtherProt(String name, String skinFileName, int index, String pubId, String objectId, String userId) {
-        ProtagonistOnlineClient addProt = graphic.generateOtherOnlineProt(name, skinFileName, index, pubId, playerAmount, onlineSpawnY, userId);
+    public void initOtherProt(String name, String skinFileName, int index, String pubId, String objectId, String userId, String score) {
+        ProtagonistOnlineClient addProt = graphic.generateOtherOnlineProt(name, skinFileName, index, pubId, playerAmount, onlineSpawnY, userId, score);
         onlineProts.put(pubId, addProt);
         onlineGameObjects.put(objectId, addProt);
         loopOnline.addObject(addProt);
     }
 
-    public void initLocalProt(String name, String skinFileName, int index, String pubId, String objectId, String userId) {
-        ProtagonistOnlineClient addProt = graphic.generateLocalOnlineProt(name, skinFileName, index, pubId, playerAmount, onlineSpawnY, userId);
+    public void initLocalProt(String name, String skinFileName, int index, String pubId, String objectId, String userId, String score) {
+        ProtagonistOnlineClient addProt = graphic.generateLocalOnlineProt(name, skinFileName, index, pubId, playerAmount, onlineSpawnY, userId, score);
         onlineProts.put(pubId, addProt);
         onlineGameObjects.put(objectId, addProt);
         loopOnline.addObject(addProt);
