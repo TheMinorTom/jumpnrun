@@ -896,5 +896,7 @@ public class JumpNRun extends Application {
     public HashMap getGameObjects() {
         return onlineGameObjects;
     }
+    
+   
 
 }
