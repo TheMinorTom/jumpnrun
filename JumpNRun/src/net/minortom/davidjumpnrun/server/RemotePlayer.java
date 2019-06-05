@@ -75,7 +75,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
     private boolean endGame = false;
 
     private String placement = "";
-    
+
     private int coinsCollected;
 
     public RemotePlayer(Server server, OnlGame game, String pubId, String objectId, String skin, String name, int index, int maxPlayer, String userId) {
@@ -323,7 +323,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
 
     public boolean collisionCheck(Vector<Vector<Block>> worldVec, HashMap<String, RemotePlayer> players) {
         double blockSize = game.blockSize;
-        if(OnlGame.worldCollisionCheck(worldVec, xPos, yPos, width, height, blockSize)) {
+        if (OnlGame.worldCollisionCheck(worldVec, xPos, yPos, width, height, blockSize)) {
             return true;
         }
         if (intersectsPlayer(players)) {
@@ -509,8 +509,10 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         game.players.forEach((id, p) -> {
             if (!id.equals(pubId)) {
                 if (intersects(remotePitchfork.getX(), remotePitchfork.getY(), remotePitchfork.getWidth(), remotePitchfork.getHeight(), p.getX(), p.getY(), width, height)) {
-                    p.hitten();
-                    incrementKills();
+                    if ((!p.isDead) && (!p.respawnDoing)) {
+                        p.hitten();
+                        incrementKills();
+                    }
                 }
             }
         });
@@ -650,7 +652,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
     public String getPlacement() {
         return placement;
     }
-    
+
     public int getCoinsCollected() {
         return coinsCollected;
     }
