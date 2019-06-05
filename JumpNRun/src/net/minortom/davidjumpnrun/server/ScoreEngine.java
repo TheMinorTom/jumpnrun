@@ -12,11 +12,17 @@ package net.minortom.davidjumpnrun.server;
 public class ScoreEngine {
     
     
-    public static int calculateScore() {
-        return 0;
+    public static int calculateScore(int placement, int playerAmount, String userId) {
+        int scoreAdd = (int)((playerAmount / placement) * 20);
+        return scoreAdd;
     }
     
-    public static int calculateXP() {
-        return 0;
+    public static int calculateXP(int kills, int deaths, int placement, int playerAmount) {
+        int xp = 0;
+        xp += kills *5;
+        xp += deaths;
+        xp += (int)((playerAmount/placement)*2);
+        xp += 5;
+        return xp;
     }
 }

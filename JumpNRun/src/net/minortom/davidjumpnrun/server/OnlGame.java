@@ -391,6 +391,8 @@ public class OnlGame implements Runnable {
     private void endGame() {
         ended = true;
         players = sortPlayers(players);
+        int playerAmount = players.size();
+        
         players.forEach((String key, RemotePlayer p) -> {
             p.endGame();
             try {
@@ -398,7 +400,7 @@ public class OnlGame implements Runnable {
                 if(Integer.parseInt(p.getPlacement()) == 1) {
                     winsAdd = 1;
                 }
-                server.dbConn.updateStats(p.userId, p.getKills(), p.getDeaths(), winsAdd, 1, ScoreEngine.calculateXP(), p.getCoinsCollected(), ScoreEngine.calculateScore());
+                server.dbConn.updateStats(p.userId, p.getKills(), p.getDeaths(), winsAdd, 1, ScoreEngine.calculateXP(p.getKills(), p.getDeaths(), Integer.parseInt(p.getPlacement()), playerAmount), p.getCoinsCollected(), ScoreEngine.calculateScore(Integer.parseInt(p.getPlacement()), playerAmount, p.userId));
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
