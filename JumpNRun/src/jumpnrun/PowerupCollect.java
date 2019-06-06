@@ -12,10 +12,12 @@ import worldeditor.Block;
  *
  * @author Norbert
  */
-public class PowerupCollect extends Powerup implements Updatable {
+public class PowerupCollect extends Powerup implements Updatable, OnlineUpdatableObject {
 
     private double timer;
     private IconViewport viewport;
+    private double xPos = 0;
+    private double yPos = 0;
 
     public PowerupCollect() {
         super(Powerup.IconViewport.DOUBLE_SPEED);
@@ -47,5 +49,21 @@ public class PowerupCollect extends Powerup implements Updatable {
                 viewport = Powerup.IconViewport.TRUCK;
                 break;
         }
+    }
+    
+    public void updateViewportOnline (double timeElapsed) {
+        update(timeElapsed, null, null, null, null);
+    }
+
+    @Override
+    public void updatePos(double x, double y, int animationState) {
+        xPos = x;
+        yPos = y;
+    }
+
+    @Override
+    public void updateGraphic(double xScroll, double yScroll) {
+        setLayoutX(xPos + xScroll);
+        setLayoutY(yPos + yScroll);
     }
 }

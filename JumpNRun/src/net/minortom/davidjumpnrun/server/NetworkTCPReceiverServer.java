@@ -146,7 +146,7 @@ public class NetworkTCPReceiverServer extends Thread {
         if ((pubId != null) && (gameName != null)) {
             RemotePlayer playerToRemove = server.games.get(gameName).players.get(pubId);
             OnlGame game = server.games.get(gameName);
-            game.onlineGameObjects.remove(playerToRemove.getObjectId());
+            game.getOnlineGameObjects().remove(playerToRemove.getObjectId());
             game.players.remove(pubId);
             game.sendAllTCPDelayed(ServerCommand.OGAME_REMOVEOBJECT, new String[]{playerToRemove.getObjectId()});
             int temp = 0;

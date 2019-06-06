@@ -69,6 +69,7 @@ public class JumpNRun extends Application {
 
     private static final double spawnY = 100;
     public static final double spawnXDist = 350;
+    public static final double powerupSize = 40;
 
     private static Graphic graphic;
 
@@ -278,6 +279,7 @@ public class JumpNRun extends Application {
     }
 
     public void initOnlineGame(String playerAmount, String spawnY, String gamemode, String limit, String gameName) {
+        powerupCollects = new Vector<PowerupCollect>();
         yScroll = 0;
         xScroll = 0;
         loopOnline = new GameLoopOnline();
@@ -499,6 +501,38 @@ public class JumpNRun extends Application {
                         onlineGameObjects.put(objectId, onlineDeathCount);
                         Platform.runLater(() -> {
                             graphic.getChildren().add(onlineDeathCount);
+                        });
+                    }
+
+                    break;
+                case POWERUP_COLLECT:
+                    if (alreadyExists) {
+                        ((PowerupCollect) onlineGameObjects.get(objectId)).updatePos(xPos, yPos, animationStateAsInt);
+                        //((OnlineUpdatableCounterLabel) onlineGameObjects.get(objectId)).updateText(String.valueOf((int) (animationStateAsInt / 60)) + "min, " + String.valueOf(animationStateAsInt % 60) + "s");
+
+                    } else {
+                        PowerupCollect collect = new PowerupCollect();
+                        loopOnline.addPowerupCollect(collect);
+
+                        onlineGameObjects.put(objectId, collect);
+                        Platform.runLater(() -> {
+                            graphic.getChildren().add(collect);
+                        });
+                    }
+
+                    break;
+                case POWERUP:
+                    if (alreadyExists) {
+                        ((Powerup) onlineGameObjects.get(objectId)).updatePos(xPos, yPos, animationStateAsInt);
+                        //((OnlineUpdatableCounterLabel) onlineGameObjects.get(objectId)).updateText(String.valueOf((int) (animationStateAsInt / 60)) + "min, " + String.valueOf(animationStateAsInt % 60) + "s");
+
+                    } else {
+                        Powerup powerup = new Powerup(animationStateAsInt);
+                        loopOnline.addObject(powerup);
+
+                        onlineGameObjects.put(objectId, powerup);
+                        Platform.runLater(() -> {
+                            graphic.getChildren().add(powerup);
                         });
                     }
 
@@ -896,7 +930,9 @@ public class JumpNRun extends Application {
     public HashMap getGameObjects() {
         return onlineGameObjects;
     }
-    
-   
+
+    public Vector<PowerupCollect> getPowerupCollects() {
+        return powerupCollects;
+    }
 
 }

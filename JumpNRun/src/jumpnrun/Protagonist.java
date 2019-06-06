@@ -78,6 +78,7 @@ public class Protagonist extends ImageView implements Updatable {
         shootDoing = false;
         jumpDone = false;
         respawnDoing = false;
+        isMachinePistol = false;
         
         setX(x);
         setY(y);

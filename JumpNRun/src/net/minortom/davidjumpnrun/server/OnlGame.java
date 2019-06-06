@@ -14,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
@@ -59,14 +60,16 @@ public class OnlGame implements Runnable {
     public int udpPort;
     public DatagramSocket udpSocket;
 
-    public HashMap<String, OnlineGameObject> onlineGameObjects;
+    private ConcurrentHashMap<String, OnlineGameObject> onlineGameObjects;
     public ObservableList<RemoteUpdatableObject> movingObjects;
     public ObservableList<RemoteUpdatableObject> shoots;
+    public ObservableList<RemoteObject> powerupCollects;
 
     private int currObjectId = Integer.MIN_VALUE;
 
     // loop
-    private double timeElapsedSeconds;
+    private double timeElapsedSeconds, summonPowerupTimer;
+    private double summonPowerupTime;
 
     private double gameTime;
     private OnlineCounterLabel gameTimer;
@@ -75,15 +78,19 @@ public class OnlGame implements Runnable {
 
     private ObservableList<OnlineCounterLabel> counterLabels, counterLabelsToRemove;
     private int playersAlive;
+    
 
     public OnlGame(Server server, String gameName, int playersMax, String gamemode, double timeLimit, int respawnLimit, String mapName, String playerOneId, String playerOneSkin) {
         this.server = server;
 
         this.gameName = gameName;
         this.playersMax = playersMax;
-        onlineGameObjects = new HashMap<>();
+        summonPowerupTime = 5;
+        summonPowerupTimer = 0;
+        onlineGameObjects = new ConcurrentHashMap<>();
         movingObjects = FXCollections.observableArrayList();
         shoots = FXCollections.observableArrayList();
+        powerupCollects = FXCollections.observableArrayList();
         counterLabels = FXCollections.observableArrayList();
         counterLabelsToRemove = FXCollections.observableArrayList();
         playersAtBeginn = new HashMap<>();
@@ -302,9 +309,11 @@ public class OnlGame implements Runnable {
                     players.forEach((id, player) -> {
                         if (!player.equals(shoot.getOwner())) {
                             if (shoot.intersects(player.getBoundsInLocal())) {
-                                deleteShoot(shoot);
-                                player.hitten();
-                                shoot.getOwner().incrementKills();
+                                if ((!shoot.getOwner().isDead()) && (!shoot.getOwner().isRespawning())) {
+                                    deleteShoot(shoot);
+                                    player.hitten();
+                                    shoot.getOwner().incrementKills();
+                                }
                             }
                         }
                     });
@@ -332,6 +341,44 @@ public class OnlGame implements Runnable {
                     endGame();
                 }
             }
+            
+            updateSummons(timeElapsedSeconds);
+            
+            onlineGameObjects.forEach((String key, OnlineGameObject o)->{
+                if(o.getYPos() > 20000) {
+                    onlineGameObjects.remove(key);
+                    sendAllTCPDelayed(ServerCommand.OGAME_REMOVEOBJECT, new String[]{key});
+                }
+            });
+        }
+    }
+    
+    public void updateSummons(double timeElapsed) {
+        summonPowerupTimer += timeElapsed;
+        if (summonPowerupTimer > summonPowerupTime) {
+            summonPowerupTimer = 0;
+            summonPowerupTime = (players.size() * 12) - (Math.random() * players.size() * 5);
+            summonPowerup();
+        }
+    }
+    
+    public void summonPowerup() {
+        boolean isSummoned = false;
+        while (!isSummoned) {
+            int xIndex = (int) (System.nanoTime() % (worldVector.size() - 2));
+            int yIndex = (int) (System.nanoTime() % (worldVector.get(0).size() - 2));
+            Block currBlock = worldVector.get(xIndex + 1).get(yIndex + 1);
+            if (!currBlock.getIsSolid()) {
+                Block blockUnder = worldVector.get(xIndex + 1).get(yIndex + 2);
+                Block blockAbove = worldVector.get(xIndex + 1).get(yIndex);
+                if (blockUnder != null && blockUnder.getIsSolid() && (!blockAbove.getIsSolid())) {
+                    RemoteObject powerupCollect = new RemoteObject(currBlock.getX(), currBlock.getY(), 0, 0 , GameObjectType.POWERUP_COLLECT, nextObjectId());
+                    onlineGameObjects.put(powerupCollect.getObjectId(), powerupCollect);
+                    powerupCollects.add(powerupCollect);
+                    isSummoned = true;
+                }
+            }
+
         }
     }
 
@@ -362,9 +409,19 @@ public class OnlGame implements Runnable {
     public void generateShoot(RemotePlayer p) {
         RemoteUpdatableObject shoot;
         if (p.isFacingLeft()) {
-            shoot = new RemoteUpdatableObject(nextObjectId(), Shoot.AnimationState.LEFT.getRect(), GameObjectType.SHOOT, p.getRemoteGun().getX() + 40, p.getRemoteGun().getY(), -1000, 0, 0, 200, this, p, Shoot.AnimationState.RIGHT.ordinal());
+            shoot = new RemoteUpdatableObject(nextObjectId(), Shoot.AnimationState.LEFT.getRect(), GameObjectType.SHOOT, p.getRemoteGun().getX() + 40, p.getRemoteGun().getY(), (-500)*p.getSpdFactor(), 0, 0, 200, this, p, Shoot.AnimationState.RIGHT.ordinal());
         } else {
-            shoot = new RemoteUpdatableObject(nextObjectId(), Shoot.AnimationState.LEFT.getRect(), GameObjectType.SHOOT, p.getRemoteGun().getX() + 40, p.getRemoteGun().getY(), 1000, 0, 0, 200, this, p, Shoot.AnimationState.RIGHT.ordinal());
+            shoot = new RemoteUpdatableObject(nextObjectId(), Shoot.AnimationState.LEFT.getRect(), GameObjectType.SHOOT, p.getRemoteGun().getX() + 40, p.getRemoteGun().getY(), 500*p.getSpdFactor(), 0, 0, 200, this, p, Shoot.AnimationState.RIGHT.ordinal());
+        }
+        addShoot(shoot);
+    }
+    
+    public void generateMachinePistolShoot(RemotePlayer p) {
+        RemoteUpdatableObject shoot;
+        if (p.isFacingLeft()) {
+            shoot = new RemoteUpdatableObject(nextObjectId(), Shoot.AnimationState.LEFT.getRect(), GameObjectType.SHOOT, p.getRemoteGun().getX() + 40, p.getRemoteGun().getY(), (-220)*p.getSpdFactor(), 0, 0, 150, this, p, Shoot.AnimationState.RIGHT.ordinal());
+        } else {
+            shoot = new RemoteUpdatableObject(nextObjectId(), Shoot.AnimationState.LEFT.getRect(), GameObjectType.SHOOT, p.getRemoteGun().getX() + 40, p.getRemoteGun().getY(), 220*p.getSpdFactor(), 0, 0, 150, this, p, Shoot.AnimationState.RIGHT.ordinal());
         }
         addShoot(shoot);
     }
@@ -397,12 +454,12 @@ public class OnlGame implements Runnable {
         ended = true;
         players = sortPlayers(players);
         int playerAmount = players.size();
-        
+
         players.forEach((String key, RemotePlayer p) -> {
             p.endGame();
             try {
                 int winsAdd = 0;
-                if(Integer.parseInt(p.getPlacement()) == 1) {
+                if (Integer.parseInt(p.getPlacement()) == 1) {
                     winsAdd = 1;
                 }
                 server.dbConn.updateStats(p.userId, p.getKills(), p.getDeaths(), winsAdd, 1, ScoreEngine.calculateXP(p.getKills(), p.getDeaths(), Integer.parseInt(p.getPlacement()), playerAmount), p.getCoinsCollected(), ScoreEngine.calculateScore(Integer.parseInt(p.getPlacement()), playerAmount, p.userId));
@@ -413,7 +470,7 @@ public class OnlGame implements Runnable {
         server.games.remove(gameName);
 
     }
-    
+
     public HashMap<String, RemotePlayer> sortPlayers(HashMap<String, RemotePlayer> unsortedMap) {
         /*
          killsHM = new HashMap<>();
@@ -484,5 +541,19 @@ public class OnlGame implements Runnable {
             }
         }
         return false;
+    }
+    
+    public synchronized void deletePowerupCollect (RemoteObject p) {
+        powerupCollects.remove(p);
+        onlineGameObjects.remove(p.getObjectId());
+        sendAllTCPDelayed(ServerCommand.OGAME_REMOVEOBJECT, new String[]{p.getObjectId()});
+    }
+    
+    public ConcurrentHashMap<String, OnlineGameObject> getOnlineGameObjects() {
+        return onlineGameObjects;
+    }
+    
+    public ObservableList<RemoteObject> getPowerups() {
+        return powerupCollects;
     }
 }

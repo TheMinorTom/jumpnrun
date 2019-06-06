@@ -30,30 +30,62 @@ public class GameLoopOnline extends AnimationTimer {
     private double[] xPositions, yPositions;    //index = protagonists id
     private Protagonist.CostumeViewport[] viewports; //-""-
     private ObservableList<OnlineUpdatableObject> updatableObjects, addObjects, removeObjects;
+    private ObservableList<PowerupCollect> powerupCollects, addPowerups, removePowerups;
 
     public GameLoopOnline() {
         super();
         updatableObjects = FXCollections.observableArrayList();
         addObjects = FXCollections.observableArrayList();
         removeObjects = FXCollections.observableArrayList();
+        powerupCollects = FXCollections.observableArrayList();
+        addPowerups = FXCollections.observableArrayList();
+        removePowerups = FXCollections.observableArrayList();
         game = JumpNRun.game;
+        isInited = false;
+
     }
 
     @Override
     public void handle(long now) {
-        game.updateScrolling();
-        updatableObjects.forEach((o) -> {
-            o.updateGraphic(game.getXScroll(), game.getYScroll());
-        });
-        if (addObjects.size() != 0) {
-            updatableObjects.addAll(addObjects);
-            addObjects.clear();
-        }
-        if (removeObjects.size() != 0) {
-            updatableObjects.removeAll(removeObjects);
-            removeObjects.clear();
-        }
+        try {
+            if (!isInited) {
+                oldTime = now;
+                isInited = true;
+            }
+            timeElapsed = now - oldTime;
+            oldTime = now;
+            timeElapsedSecond = timeElapsed / (1000.0d * 1000.0d * 1000.0d);
 
+            game.updateScrolling();
+            updatableObjects.forEach((o) -> {
+                o.updateGraphic(game.getXScroll(), game.getYScroll());
+            });
+
+            powerupCollects.forEach((PowerupCollect p) -> {
+                p.updateViewportOnline(timeElapsedSecond);
+            });
+
+            if (addObjects.size() != 0) {
+                updatableObjects.addAll(addObjects);
+                addObjects.clear();
+            }
+            if (removeObjects.size() != 0) {
+                updatableObjects.removeAll(removeObjects);
+                removeObjects.clear();
+            }
+            if (addPowerups.size() != 0) {
+                updatableObjects.addAll(addPowerups);
+                powerupCollects.addAll(addPowerups);
+                addPowerups.clear();
+            }
+            if (removePowerups.size() != 0) {
+                updatableObjects.removeAll(removePowerups);
+                powerupCollects.removeAll(removePowerups);
+                removePowerups.clear();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void addObject(OnlineUpdatableObject addObj) {
@@ -62,6 +94,14 @@ public class GameLoopOnline extends AnimationTimer {
 
     public void removeObject(OnlineUpdatableObject remObj) {
         removeObjects.add(remObj);
+    }
+
+    public void addPowerupCollect(PowerupCollect p) {
+        addPowerups.add(p);
+    }
+
+    public void removePowerupCollect(PowerupCollect p) {
+        removePowerups.add(p);
     }
 
 }
