@@ -17,7 +17,7 @@ import worldeditor.IO;
  *
  * @author Norbert
  */
-class Truck extends ImageView implements Updatable {
+public class Truck extends ImageView implements Updatable, OnlineUpdatableObject {
 
     private double xPos, yPos, xSpd, ySpd, yAcc;
     private final String imageSource = "sprites/TruckGes.png";
@@ -25,6 +25,8 @@ class Truck extends ImageView implements Updatable {
     private AnimationState animationState;
     private double existTimer;
     private final double lifeTime = 8;
+    private int animationStateAsInt;
+    private double opacity;
 
     Truck(double x, double y, boolean facingRight, Protagonist owner) {
         setImage(new Image(ConfigManager.getFileStream(imageSource)));
@@ -44,6 +46,16 @@ class Truck extends ImageView implements Updatable {
 
         yAcc = 5000;
         ySpd = 0;
+        opacity = 1;
+    }
+    
+    Truck(double x, double y, int animationState) {
+        setImage(new Image(ConfigManager.getFileStream(imageSource)));
+        animationStateAsInt = animationState;
+        setViewport(AnimationState.values()[animationState].getRect());
+        opacity = 1;
+        xPos = x;
+        yPos = y;
     }
 
     public void update(double timeElapsed, Vector<Vector<Block>> world, Protagonist prot1, Protagonist prot2, Vector<PowerupCollect> powerups) {
@@ -121,6 +133,24 @@ class Truck extends ImageView implements Updatable {
             }
         }
         return false;
+    }
+
+    @Override
+    public void updatePos(double x, double y, int animationState) {
+        xPos = x;
+        yPos = y;
+        if(animationState<(-1)) {
+            opacity = (1-(((animationState+1)*(-1))/4));
+        }
+        animationStateAsInt = animationState;
+    }
+
+    @Override
+    public void updateGraphic(double xScroll, double yScroll) {
+        setX(xPos + xScroll);
+        setY(yPos + yScroll);
+        setViewport(AnimationState.values()[animationStateAsInt].getRect());
+
     }
 
     public enum AnimationState {

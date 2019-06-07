@@ -537,6 +537,22 @@ public class JumpNRun extends Application {
                     }
 
                     break;
+                case TRUCK:
+                    if (alreadyExists) {
+                        ((Truck) onlineGameObjects.get(objectId)).updatePos(xPos, yPos, animationStateAsInt);
+                        //((OnlineUpdatableCounterLabel) onlineGameObjects.get(objectId)).updateText(String.valueOf((int) (animationStateAsInt / 60)) + "min, " + String.valueOf(animationStateAsInt % 60) + "s");
+
+                    } else {
+                        Truck truck = new Truck(xPos, yPos, animationStateAsInt);
+                        loopOnline.addObject(truck);
+
+                        onlineGameObjects.put(objectId, truck);
+                        Platform.runLater(() -> {
+                            graphic.getChildren().add(truck);
+                        });
+                    }
+
+                    break;
 
             }
 

@@ -50,7 +50,7 @@ public class OnlGame implements Runnable {
     public String gamemodeAsUpperString;
 
     public HashMap<String, String> playerSkins; // Id, skin
-    public HashMap<String, RemotePlayer> players; // Id, RemotePlayer
+    public ConcurrentHashMap<String, RemotePlayer> players; // Id, RemotePlayer
     public HashMap<String, RemotePlayer> playersAtBeginn;
 
     public Vector<Vector<Block>> worldVector;
@@ -64,6 +64,7 @@ public class OnlGame implements Runnable {
     public ObservableList<RemoteUpdatableObject> movingObjects;
     public ObservableList<RemoteUpdatableObject> shoots;
     public ObservableList<RemoteObject> powerupCollects;
+    public ObservableList<RemoteTruck> trucks;
 
     private int currObjectId = Integer.MIN_VALUE;
 
@@ -93,6 +94,7 @@ public class OnlGame implements Runnable {
         powerupCollects = FXCollections.observableArrayList();
         counterLabels = FXCollections.observableArrayList();
         counterLabelsToRemove = FXCollections.observableArrayList();
+        trucks = FXCollections.observableArrayList();
         playersAtBeginn = new HashMap<>();
 
         ended = false;
@@ -123,7 +125,7 @@ public class OnlGame implements Runnable {
         worldVector = IO.openWorldForServer(mapText, Server.getBlocksFolder());
         worldWidth = worldVector.size() * worldVector.get(0).get(0).getFitWidth();
         blockSize = worldVector.get(0).get(0).getFitWidth();
-        players = new HashMap<>();
+        players = new ConcurrentHashMap<>();
         playerSkins = new HashMap<>();
 
         addPlayer(playerOneId, playerOneSkin);
@@ -296,7 +298,7 @@ public class OnlGame implements Runnable {
              }
              });
              */
-            players.forEach((id, p) -> {
+            getPlayers().forEach((id, p) -> {
                 p.update(timeElapsedSeconds);
             });
 
@@ -409,9 +411,9 @@ public class OnlGame implements Runnable {
     public void generateShoot(RemotePlayer p) {
         RemoteUpdatableObject shoot;
         if (p.isFacingLeft()) {
-            shoot = new RemoteUpdatableObject(nextObjectId(), Shoot.AnimationState.LEFT.getRect(), GameObjectType.SHOOT, p.getRemoteGun().getX() + 40, p.getRemoteGun().getY(), (-500)*p.getSpdFactor(), 0, 0, 200, this, p, Shoot.AnimationState.RIGHT.ordinal());
+            shoot = new RemoteUpdatableObject(nextObjectId(), Shoot.AnimationState.LEFT.getRect(), GameObjectType.SHOOT, p.getRemoteGun().getX() + 40, p.getRemoteGun().getY(), -1000 + p.getXSpd(), p.getXSpd(), 0, 200, this, p, Shoot.AnimationState.RIGHT.ordinal());
         } else {
-            shoot = new RemoteUpdatableObject(nextObjectId(), Shoot.AnimationState.LEFT.getRect(), GameObjectType.SHOOT, p.getRemoteGun().getX() + 40, p.getRemoteGun().getY(), 500*p.getSpdFactor(), 0, 0, 200, this, p, Shoot.AnimationState.RIGHT.ordinal());
+            shoot = new RemoteUpdatableObject(nextObjectId(), Shoot.AnimationState.LEFT.getRect(), GameObjectType.SHOOT, p.getRemoteGun().getX() + 40, p.getRemoteGun().getY(), 1000 + p.getXSpd(), p.getXSpd(), 0, 200, this, p, Shoot.AnimationState.RIGHT.ordinal());
         }
         addShoot(shoot);
     }
@@ -419,9 +421,9 @@ public class OnlGame implements Runnable {
     public void generateMachinePistolShoot(RemotePlayer p) {
         RemoteUpdatableObject shoot;
         if (p.isFacingLeft()) {
-            shoot = new RemoteUpdatableObject(nextObjectId(), Shoot.AnimationState.LEFT.getRect(), GameObjectType.SHOOT, p.getRemoteGun().getX() + 40, p.getRemoteGun().getY(), (-220)*p.getSpdFactor(), 0, 0, 150, this, p, Shoot.AnimationState.RIGHT.ordinal());
+            shoot = new RemoteUpdatableObject(nextObjectId(), Shoot.AnimationState.LEFT.getRect(), GameObjectType.SHOOT, p.getRemoteGun().getX() + 40, p.getRemoteGun().getY(), -500 + p.getXSpd(), p.getXSpd(), 0, 150, this, p, Shoot.AnimationState.RIGHT.ordinal());
         } else {
-            shoot = new RemoteUpdatableObject(nextObjectId(), Shoot.AnimationState.LEFT.getRect(), GameObjectType.SHOOT, p.getRemoteGun().getX() + 40, p.getRemoteGun().getY(), 220*p.getSpdFactor(), 0, 0, 150, this, p, Shoot.AnimationState.RIGHT.ordinal());
+            shoot = new RemoteUpdatableObject(nextObjectId(), Shoot.AnimationState.LEFT.getRect(), GameObjectType.SHOOT, p.getRemoteGun().getX() + 40, p.getRemoteGun().getY(), 500 + p.getXSpd(), p.getXSpd(), 0, 150, this, p, Shoot.AnimationState.RIGHT.ordinal());
         }
         addShoot(shoot);
     }
@@ -471,7 +473,7 @@ public class OnlGame implements Runnable {
 
     }
 
-    public HashMap<String, RemotePlayer> sortPlayers(HashMap<String, RemotePlayer> unsortedMap) {
+    public ConcurrentHashMap<String, RemotePlayer> sortPlayers(ConcurrentHashMap<String, RemotePlayer> unsortedMap) {
         /*
          killsHM = new HashMap<>();
          unsortedMap.forEach((String key, RemotePlayer p) -> {
@@ -521,7 +523,7 @@ public class OnlGame implements Runnable {
 
         // put data from sorted list to hashmap  
         int counter = unsortedMap.size();
-        HashMap<String, RemotePlayer> sortedMap = new HashMap<>();
+        ConcurrentHashMap<String, RemotePlayer> sortedMap = new ConcurrentHashMap<>();
         for (java.util.Map.Entry<String, RemotePlayer> aa : playerList) {
             sortedMap.put(aa.getKey(), unsortedMap.get(aa.getKey()));
             sortedMap.get(aa.getKey()).setPlacement(String.valueOf(counter));
@@ -555,5 +557,24 @@ public class OnlGame implements Runnable {
     
     public ObservableList<RemoteObject> getPowerups() {
         return powerupCollects;
+    }
+    
+    public void addTruck(RemoteTruck r) {
+        trucks.add(r);
+        onlineGameObjects.put(r.getObjectId(), r);
+    }
+    
+    public void removeTruck (RemoteTruck r) {
+        trucks.remove(r);
+        onlineGameObjects.remove(r.getObjectId());
+        sendAllTCPDelayed(ServerCommand.OGAME_REMOVEOBJECT, new String[]{r.getObjectId()});
+    }
+    
+    public ObservableList<RemoteTruck> getTrucks() {
+        return trucks;
+    }
+    
+    public ConcurrentHashMap<String, RemotePlayer> getPlayers() {
+        return players;
     }
 }

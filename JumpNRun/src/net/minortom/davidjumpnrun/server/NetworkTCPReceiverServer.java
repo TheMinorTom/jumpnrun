@@ -119,10 +119,10 @@ public class NetworkTCPReceiverServer extends Thread {
                             }
                             break;
                         case OGAME_KEYPRESS:
-                            server.games.get(packageContent[3]).players.get(packageContent[2]).handleKeyPress(packageContent[4]);
+                            server.games.get(packageContent[3]).getPlayers().get(packageContent[2]).handleKeyPress(packageContent[4]);
                             break;
                         case OGAME_KEYRELEASE:
-                            server.games.get(packageContent[3]).players.get(packageContent[2]).handleKeyRelease(packageContent[4]);
+                            server.games.get(packageContent[3]).getPlayers().get(packageContent[2]).handleKeyRelease(packageContent[4]);
                             break;
                     }
 

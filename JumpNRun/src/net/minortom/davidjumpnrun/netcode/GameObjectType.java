@@ -19,5 +19,6 @@ public enum GameObjectType {
     RESPAWNTIMER,
     GAMETIMER,
     KILLCOUNT,
-    DEATHCOUNT;
+    DEATHCOUNT,
+    TRUCK;
 }
