@@ -818,7 +818,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         return spdFactor;
     }
     
-    public synchronized ObservableList<RemoteTruck> getTrucks() {
+    public ObservableList<RemoteTruck> getTrucks() {
         return trucks;
     }
     
