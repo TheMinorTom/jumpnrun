@@ -657,7 +657,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
             setAnimationState(CostumeViewport.RIGHT_SHOOT);
             remoteGun.setAnimationState(3);
         }
-        remoteGun.setY(getY() + 22);
+        remoteGun.setY(yPos + 22);
 
         if (machinePistolTimer > 0.5) {
 
