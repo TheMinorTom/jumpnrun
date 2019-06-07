@@ -264,8 +264,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
             intersects = false;
             ySpeed += timeElapsedSeconds * accPerSec;
             yPos += ySpeed * timeElapsedSeconds;
-            setX(xPos);
-            setY(yPos);
+
 
             intersects = collisionCheck(game.worldVector, game.players);
 
@@ -279,8 +278,6 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
             }
 
             xPos += xSpeed * spdFactor * timeElapsedSeconds;
-            setX(xPos);
-            setY(yPos);
 
             intersects = collisionCheck(game.worldVector, game.players);
             if (intersects) {
@@ -289,8 +286,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
                 //resetAnimation();
             }
 
-            setX(xPos);
-            setY(yPos);
+
             animationStateAsInt = currCostume.ordinal();
         } else if (respawnDoing) {
             updateRespawn(timeElapsedSeconds);
@@ -313,8 +309,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
             animationStateAsInt = -1;
 
         }
-        setX(xPos);
-        setY(yPos);
+
         if(trucksToRemove.size() != 0) {
             getTrucks().removeAll(trucksToRemove);
             trucksToRemove.clear();
@@ -618,7 +613,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         }
         shootTimer += timeElapsedSeconds;
         if (isFacingLeft) {
-            remoteGun.setX(getX() - 20); //- forkAnimationXPosAdd);
+            remoteGun.setX(xPos - 20); //- forkAnimationXPosAdd);
             setAnimationState(CostumeViewport.LEFT_SHOOT);
             if (shootTimer < 1) {
                 remoteGun.setAnimationState(Gun.AnimationState.LEFT.ordinal());
@@ -626,7 +621,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
                 remoteGun.setAnimationState(Gun.AnimationState.LEFT_SHOOT.ordinal());
             }
         } else {
-            remoteGun.setX(getX() + 5); //+ forkAnimationXPosAdd);
+            remoteGun.setX(xPos + 5); //+ forkAnimationXPosAdd);
             setAnimationState(CostumeViewport.RIGHT_SHOOT);
             if (shootTimer < 1) {
                 remoteGun.setAnimationState(Gun.AnimationState.RIGHT.ordinal());
@@ -634,7 +629,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
                 remoteGun.setAnimationState(Gun.AnimationState.RIGHT_SHOOT.ordinal());
             }
         }
-        remoteGun.setY(getY() + 22); ///
+        remoteGun.setY(yPos + 22); ///
         // gun.updateShoot(shootTimer);
 
         if (shootTimer > 2) {
