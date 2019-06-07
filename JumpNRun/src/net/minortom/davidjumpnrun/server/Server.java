@@ -39,6 +39,7 @@ public class Server {
          System.exit(1);
          } */
         // TODO: Remove before release
+        System.out.println("This is newest lool ----------------------------------------------------------------------------------");
         if (false) {
             storageLocation = "H:\\Eigene Dateien\\Informatik1819\\meine_programme\\JumpNRun\\jumpnrun-master\\jumpnrun-master\\JumpNRun\\appdata\\";
         }
