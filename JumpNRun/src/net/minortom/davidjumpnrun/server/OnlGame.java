@@ -79,7 +79,6 @@ public class OnlGame implements Runnable {
 
     private ObservableList<OnlineCounterLabel> counterLabels, counterLabelsToRemove;
     private int playersAlive;
-    
 
     public OnlGame(Server server, String gameName, int playersMax, String gamemode, double timeLimit, int respawnLimit, String mapName, String playerOneId, String playerOneSkin) {
         this.server = server;
@@ -283,78 +282,83 @@ public class OnlGame implements Runnable {
 
         isStarted = true;
         while (!ended) {
-            now = System.nanoTime();
-            timeElapsed = now - oldTime;
-            oldTime = now;
-            timeElapsedSeconds = timeElapsed / (1000.0d * 1000.0d * 1000.0d);
-            runtimeSeconds += timeElapsedSeconds;
-            /*
-             players.forEach((id, p) -> {
-             sendAllTCP(ServerCommand.OGAME_UPDATEPROT, new String[]{p.pubId, String.valueOf(p.getXPos()), String.valueOf(p.getYPos()), String.valueOf(p.getAnimationStateAsInt())});
-             try {
-             Thread.sleep(5);
-             } catch (InterruptedException ex) {
-             Logger.getLogger(OnlGame.class.getName()).log(Level.SEVERE, null, ex);
-             }
-             });
-             */
-            getPlayers().forEach((id, p) -> {
-                p.update(timeElapsedSeconds);
-            });
-
-            movingObjects.forEach((o) -> {
-                o.update(timeElapsedSeconds);
-            });
-
             try {
-                shoots.forEach((shoot) -> {
-                    players.forEach((id, player) -> {
-                        if (!player.equals(shoot.getOwner())) {
-                            if (shoot.intersects(player.getBoundsInLocal())) {
-                                if ((!shoot.getOwner().isDead()) && (!shoot.getOwner().isRespawning())) {
-                                    deleteShoot(shoot);
-                                    player.hitten();
-                                    shoot.getOwner().incrementKills();
+                now = System.nanoTime();
+                timeElapsed = now - oldTime;
+                oldTime = now;
+                timeElapsedSeconds = timeElapsed / (1000.0d * 1000.0d * 1000.0d);
+                runtimeSeconds += timeElapsedSeconds;
+                /*
+                 players.forEach((id, p) -> {
+                 sendAllTCP(ServerCommand.OGAME_UPDATEPROT, new String[]{p.pubId, String.valueOf(p.getXPos()), String.valueOf(p.getYPos()), String.valueOf(p.getAnimationStateAsInt())});
+                 try {
+                 Thread.sleep(5);
+                 } catch (InterruptedException ex) {
+                 Logger.getLogger(OnlGame.class.getName()).log(Level.SEVERE, null, ex);
+                 }
+                 });
+                 */
+                getPlayers().forEach((id, p) -> {
+                    p.update(timeElapsedSeconds);
+                });
+
+                movingObjects.forEach((o) -> {
+                    o.update(timeElapsedSeconds);
+                });
+
+                try {
+                    shoots.forEach((shoot) -> {
+                        players.forEach((id, player) -> {
+                            if (!player.equals(shoot.getOwner())) {
+                                if (shoot.intersects(player.getBoundsInLocal())) {
+                                    if ((!shoot.getOwner().isDead()) && (!shoot.getOwner().isRespawning())) {
+                                        deleteShoot(shoot);
+                                        player.hitten();
+                                        shoot.getOwner().incrementKills();
+                                    }
                                 }
                             }
-                        }
-                    });
+                        });
 
-                    if (worldCollisionCheck(worldVector, shoot.getXPos(), shoot.getYPos(), shoot.getWidth(), shoot.getHeight(), blockSize)) {
-                        deleteShoot(shoot);
-                    };
+                        if (worldCollisionCheck(worldVector, shoot.getXPos(), shoot.getYPos(), shoot.getWidth(), shoot.getHeight(), blockSize)) {
+                            deleteShoot(shoot);
+                        };
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if (gamemode == JumpNRun.Gamemode.TIME) {
+                    gameTimer.addVal(-1 * timeElapsedSeconds);
+                } else {
+                    gameTimer.addVal(timeElapsedSeconds);
+                }
+
+                if (counterLabelsToRemove.size() != 0) {
+                    counterLabels.removeAll(counterLabelsToRemove);
+                    counterLabelsToRemove.clear();
+                }
+
+                if (gamemode.equals(gamemode.TIME)) {
+                    if (runtimeSeconds > timeLimitSeconds) {
+                        endGame();
+                    }
+                }
+
+                updateSummons(timeElapsedSeconds);
+
+                onlineGameObjects.forEach((String key, OnlineGameObject o) -> {
+                    if (o.getYPos() > 20000) {
+                        onlineGameObjects.remove(key);
+                        sendAllTCPDelayed(ServerCommand.OGAME_REMOVEOBJECT, new String[]{key});
+                    }
                 });
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            if (gamemode == JumpNRun.Gamemode.TIME) {
-                gameTimer.addVal(-1 * timeElapsedSeconds);
-            } else {
-                gameTimer.addVal(timeElapsedSeconds);
-            }
-
-            if (counterLabelsToRemove.size() != 0) {
-                counterLabels.removeAll(counterLabelsToRemove);
-                counterLabelsToRemove.clear();
-            }
-
-            if (gamemode.equals(gamemode.TIME)) {
-                if (runtimeSeconds > timeLimitSeconds) {
-                    endGame();
-                }
-            }
-            
-            updateSummons(timeElapsedSeconds);
-            
-            onlineGameObjects.forEach((String key, OnlineGameObject o)->{
-                if(o.getYPos() > 20000) {
-                    onlineGameObjects.remove(key);
-                    sendAllTCPDelayed(ServerCommand.OGAME_REMOVEOBJECT, new String[]{key});
-                }
-            });
         }
+
     }
-    
+
     public void updateSummons(double timeElapsed) {
         summonPowerupTimer += timeElapsed;
         if (summonPowerupTimer > summonPowerupTime) {
@@ -363,7 +367,7 @@ public class OnlGame implements Runnable {
             summonPowerup();
         }
     }
-    
+
     public void summonPowerup() {
         boolean isSummoned = false;
         while (!isSummoned) {
@@ -374,7 +378,7 @@ public class OnlGame implements Runnable {
                 Block blockUnder = worldVector.get(xIndex + 1).get(yIndex + 2);
                 Block blockAbove = worldVector.get(xIndex + 1).get(yIndex);
                 if (blockUnder != null && blockUnder.getIsSolid() && (!blockAbove.getIsSolid())) {
-                    RemoteObject powerupCollect = new RemoteObject(currBlock.getX(), currBlock.getY(), 0, 0 , GameObjectType.POWERUP_COLLECT, nextObjectId());
+                    RemoteObject powerupCollect = new RemoteObject(currBlock.getX(), currBlock.getY(), 0, 0, GameObjectType.POWERUP_COLLECT, nextObjectId());
                     onlineGameObjects.put(powerupCollect.getObjectId(), powerupCollect);
                     powerupCollects.add(powerupCollect);
                     isSummoned = true;
@@ -417,7 +421,7 @@ public class OnlGame implements Runnable {
         }
         addShoot(shoot);
     }
-    
+
     public void generateMachinePistolShoot(RemotePlayer p) {
         RemoteUpdatableObject shoot;
         if (p.isFacingLeft()) {
@@ -544,36 +548,36 @@ public class OnlGame implements Runnable {
         }
         return false;
     }
-    
-    public synchronized void deletePowerupCollect (RemoteObject p) {
+
+    public synchronized void deletePowerupCollect(RemoteObject p) {
         powerupCollects.remove(p);
         onlineGameObjects.remove(p.getObjectId());
         sendAllTCPDelayed(ServerCommand.OGAME_REMOVEOBJECT, new String[]{p.getObjectId()});
     }
-    
+
     public ConcurrentHashMap<String, OnlineGameObject> getOnlineGameObjects() {
         return onlineGameObjects;
     }
-    
+
     public ObservableList<RemoteObject> getPowerups() {
         return powerupCollects;
     }
-    
+
     public void addTruck(RemoteTruck r) {
         trucks.add(r);
         onlineGameObjects.put(r.getObjectId(), r);
     }
-    
-    public void removeTruck (RemoteTruck r) {
+
+    public void removeTruck(RemoteTruck r) {
         trucks.remove(r);
         onlineGameObjects.remove(r.getObjectId());
         sendAllTCPDelayed(ServerCommand.OGAME_REMOVEOBJECT, new String[]{r.getObjectId()});
     }
-    
+
     public ObservableList<RemoteTruck> getTrucks() {
         return trucks;
     }
-    
+
     public ConcurrentHashMap<String, RemotePlayer> getPlayers() {
         return players;
     }
