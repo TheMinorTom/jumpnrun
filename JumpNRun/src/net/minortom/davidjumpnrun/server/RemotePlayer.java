@@ -314,6 +314,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
             getTrucks().removeAll(trucksToRemove);
             trucksToRemove.clear();
         }
+        int temp = 0;
         for (RemoteTruck currTruck : getTrucks()) {
             
             currTruck.update(timeElapsedSeconds);
