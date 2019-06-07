@@ -319,6 +319,8 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
             
             currTruck.update(timeElapsedSeconds);
         }
+        setX(xPos);
+        setY(yPos);
 
     }
 
@@ -527,8 +529,6 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         if ((!respawnDoing) && (!isDead)) {
             xPos = xSpawn;
             yPos = ySpawn;
-            setX(xPos);
-            setY(yPos);
             respawnDoing = true;
             respawnLabel.setVal(3.999999999);
             game.getCounterLabels().add(respawnLabel);
