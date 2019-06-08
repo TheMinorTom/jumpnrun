@@ -13,7 +13,7 @@ public class ScoreEngine {
     
     
     public static int calculateScore(int placement, int playerAmount, String userId) {
-        int scoreAdd = (int)((playerAmount / placement) * 20);
+        int scoreAdd = (int)((playerAmount / placement) * 30) - (playerAmount * 20);
         return scoreAdd;
     }
     

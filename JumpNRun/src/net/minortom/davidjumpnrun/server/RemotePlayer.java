@@ -89,6 +89,8 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
     private double timeSinceLastMachineGunShoot, timeSinceLastTruckSpawned;
     private double truckTimer;
     private ObservableList<RemoteTruck> trucks, trucksToRemove;
+    
+    private boolean isSpawnProtection;
 
     public RemotePlayer(Server server, OnlGame game, String pubId, String objectId, String skin, String name, int index, int maxPlayer, String userId, int score) {
         super(index, (game.worldWidth / (maxPlayer + 1)) * (index + 1), OnlGame.spawnY);
@@ -111,6 +113,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
 
         needsToUpdatePowerup = true;
         isTruck = false;
+        isSpawnProtection = false;
         currentPowerup = new RemoteObject(Rectangle2D.EMPTY, GameObjectType.POWERUP, game.nextObjectId());
         currentPowerup.setAnimationState(-1);
         animationStateAsInt = currCostume.ordinal();
@@ -231,12 +234,14 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
             updatePowerups();
 
             if (hitDoing) {
+                isSpawnProtection = false;
                 updateHit(timeElapsedSeconds);
             } else if (isMachinePistol) {
                 updateMachinePistol(timeElapsedSeconds);
             } else if (isTruck) {
                 updateTruck(timeElapsedSeconds);
             } else if (shootDoing) {
+                isSpawnProtection = false;
                 goesRight = false;
                 goesLeft = false;
                 updateShoot(timeElapsedSeconds);
@@ -265,7 +270,6 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
             ySpeed += timeElapsedSeconds * accPerSec;
             yPos += ySpeed * timeElapsedSeconds;
 
-
             intersects = collisionCheck(game.worldVector, game.players);
 
             if (intersects) {
@@ -285,7 +289,6 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
                 xSpeed = 0;
                 //resetAnimation();
             }
-
 
             animationStateAsInt = currCostume.ordinal();
         } else if (respawnDoing) {
@@ -310,13 +313,13 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
 
         }
 
-        if(trucksToRemove.size() != 0) {
+        if (trucksToRemove.size() != 0) {
             getTrucks().removeAll(trucksToRemove);
             trucksToRemove.clear();
         }
         int temp = 0;
         for (RemoteTruck currTruck : getTrucks()) {
-            
+
             currTruck.update(timeElapsedSeconds);
         }
         setX(xPos);
@@ -337,7 +340,6 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
 
         }
     }
-    
 
     private void doCollect() {
         int collectType = (int) (System.nanoTime() % 3);
@@ -540,6 +542,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
             spdFactor = defaultSpdFactor;
             isMachinePistol = false;
             isTruck = false;
+            shootDoing = false;
         }
     }
 
@@ -592,7 +595,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         game.players.forEach((id, p) -> {
             if (!id.equals(pubId)) {
                 if (intersects(remotePitchfork.getX(), remotePitchfork.getY(), remotePitchfork.getWidth(), remotePitchfork.getHeight(), p.getX(), p.getY(), width, height)) {
-                    if ((!p.isDead) && (!p.respawnDoing)) {
+                    if ((!p.isDead) && (!p.respawnDoing) && (!p.isSpawnProtection)) {
                         p.hitten();
                         incrementKills();
                     }
@@ -722,21 +725,24 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         respawnLabel.addVal(-1 * timeElapsedSeconds);
         remoteGun.setAnimationState(-1);
         remotePitchfork.setAnimationState(-1);
-
-        if (respawnTimer < 0) {
+        if (respawnTimer < -4) {
+            isSpawnProtection = false;
+            respawnTimer = 3;
+        } else if (respawnTimer < 0) {
+            respawnDoing = false;
             remoteGun.setAnimationState(-1);
             remotePitchfork.setAnimationState(-1);
             game.removeCounterLabel(respawnLabel);
-
-            respawnDoing = false;
-            respawnTimer = 3;
 
             setVisible(true);
             animationStateAsInt = CostumeViewport.MID.ordinal();
             setAnimationState(CostumeViewport.MID);
             currCostume = CostumeViewport.MID;
             game.sendAllTCPDelayed(ServerCommand.OGAME_REMOVEOBJECT, new String[]{respawnLabel.getObjectId()});
+            isSpawnProtection = true;
 
+        } else {
+            isSpawnProtection = false;
         }
 
     }
@@ -820,16 +826,20 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
     public double getSpdFactor() {
         return spdFactor;
     }
-    
+
     public ObservableList<RemoteTruck> getTrucks() {
         return trucks;
     }
-    
+
     public double getXSpd() {
         return xSpeed;
     }
-    
+
     public double getYSpd() {
         return ySpeed;
+    }
+    
+    public boolean isSpawnProtection() {
+        return isSpawnProtection;
     }
 }

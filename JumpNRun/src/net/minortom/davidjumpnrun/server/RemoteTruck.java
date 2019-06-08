@@ -87,7 +87,7 @@ public class RemoteTruck extends RemoteObject {
 
         game.players.forEach((String id, RemotePlayer p) -> {
             if (!p.equals(owner)) {
-                if ((!p.isRespawning()) && (!p.isDead())) {
+                if ((!p.isRespawning()) && (!p.isDead()) && (!p.isSpawnProtection())) {
                     if (owner.intersects(xPos, yPos, width, height, p.getXPos(), p.getYPos(), RemotePlayer.width, RemotePlayer.height)) {
                         p.hitten();
                         owner.incrementKills();

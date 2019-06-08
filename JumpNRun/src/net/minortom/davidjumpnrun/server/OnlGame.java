@@ -311,7 +311,7 @@ public class OnlGame implements Runnable {
                         players.forEach((id, player) -> {
                             if (!player.equals(shoot.getOwner())) {
                                 if (shoot.intersects(player.getBoundsInLocal())) {
-                                    if ((!shoot.getOwner().isDead()) && (!shoot.getOwner().isRespawning())) {
+                                    if ((!shoot.getOwner().isDead()) && (!shoot.getOwner().isRespawning()) && (!shoot.getOwner().isSpawnProtection())) {
                                         deleteShoot(shoot);
                                         player.hitten();
                                         shoot.getOwner().incrementKills();
