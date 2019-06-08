@@ -89,7 +89,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
     private double timeSinceLastMachineGunShoot, timeSinceLastTruckSpawned;
     private double truckTimer;
     private ObservableList<RemoteTruck> trucks, trucksToRemove;
-    
+
     private boolean isSpawnProtection;
 
     public RemotePlayer(Server server, OnlGame game, String pubId, String objectId, String skin, String name, int index, int maxPlayer, String userId, int score) {
@@ -234,14 +234,14 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
             updatePowerups();
 
             if (hitDoing) {
-                isSpawnProtection = false;
+                endSpawnProtection();
                 updateHit(timeElapsedSeconds);
             } else if (isMachinePistol) {
                 updateMachinePistol(timeElapsedSeconds);
             } else if (isTruck) {
                 updateTruck(timeElapsedSeconds);
             } else if (shootDoing) {
-                isSpawnProtection = false;
+                endSpawnProtection();
                 goesRight = false;
                 goesLeft = false;
                 updateShoot(timeElapsedSeconds);
@@ -747,6 +747,13 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
 
     }
 
+    public void endSpawnProtection() {
+        isSpawnProtection = false;
+        if (!respawnDoing) {
+            respawnTimer = 3;
+        }
+    }
+
     public void endGame() {
         endGame = true;
     }
@@ -838,7 +845,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
     public double getYSpd() {
         return ySpeed;
     }
-    
+
     public boolean isSpawnProtection() {
         return isSpawnProtection;
     }
