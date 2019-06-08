@@ -538,6 +538,8 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
             remoteGun.setAnimationState(-1);
             remotePitchfork.setAnimationState(-1);
             spdFactor = defaultSpdFactor;
+            isMachinePistol = false;
+            isTruck = false;
         }
     }
 
