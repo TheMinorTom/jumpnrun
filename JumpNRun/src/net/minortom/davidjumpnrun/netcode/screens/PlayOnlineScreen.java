@@ -15,6 +15,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import jumpnrun.JumpNRun;
 import net.minortom.davidjumpnrun.netcode.NetworkManager;
+import net.minortom.davidjumpnrun.netcode.ServerConnection;
 
 /**
  *
@@ -49,7 +50,7 @@ public class PlayOnlineScreen extends VBox {
 
         backBt = new Button("ERR");
         backBt.setOnAction((ActionEvent e) -> {
-            game.openNetworkScreen();
+            game.openMainMenu();
         });
 
         updateStrings();
@@ -58,7 +59,6 @@ public class PlayOnlineScreen extends VBox {
         setSpacing(50);
         setPadding(new Insets(0, 50, 0, 50));
 
-        getChildren().addAll(playWithoutLoginBt, loginBt, new Separator(), backBt);
     }
 
     public void updateStrings() {
@@ -71,6 +71,8 @@ public class PlayOnlineScreen extends VBox {
 
         backBt.setText(game.language.backBt);
         backBt.setFont(defaultFont);
+        
+        playAs.setFont(defaultFont);
 
         getChildren().clear();
         if (game.config.networkLoggedIn) {
@@ -80,13 +82,32 @@ public class PlayOnlineScreen extends VBox {
         }
 
     }
-    
+
     public void updateButtonsLoggedIn() {
-        playAs.setText(game.language.plOnlMnPlayAs + game.config.);
-            getChildren().addAll(playWithoutLoginBt, playAs, loginBt, new Separator(), backBt);
+
+        loginBt.setText(game.language.NetworManagerLoginBtLoggedIn);
+        getChildren().clear();
+        getChildren().addAll(playWithoutLoginBt, playAs, loginBt, new Separator(), backBt);
+        if (game.networkManager.serverConnection == null) {
+            game.networkManager.serverConnection = new ServerConnection(game.config.networkUserId, game.config.networkUserToken, game.config.networkHost, game);
+            game.networkManager.serverConnection.connect();
+            if (null != game.networkManager.serverConnection.currentConnState) {
+                switch (game.networkManager.serverConnection.currentConnState) {
+                    case CONNECTED:
+                        playAs.setText(game.language.plOnlMnPlayAs + game.networkManager.serverConnection.userName);
+                        break;
+                    default:
+                        updateButtonsLoggedOut();
+                        break;
+                }
+
+            }
+        }
+
     }
-    
+
     public void updateButtonsLoggedOut() {
+        getChildren().clear();
         getChildren().addAll(playWithoutLoginBt, loginBt, new Separator(), backBt);
     }
 }
