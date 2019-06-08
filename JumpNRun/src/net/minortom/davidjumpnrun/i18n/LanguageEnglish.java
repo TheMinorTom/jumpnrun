@@ -94,6 +94,10 @@ public class LanguageEnglish extends Language{
         
         // Map Choose Menu
         
+        // Play Online Screen
+        this.plOnlMnPlayWithoutLogin = "Play without login";
+        this.plOnlMnPlayAs = "Play as: ";
+        
         //Skin Choose Menu
         this.SkinColorBlue = "Blue";
         this.SkinColorGreen = "Green";

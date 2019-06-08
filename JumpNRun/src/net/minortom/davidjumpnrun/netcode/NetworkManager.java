@@ -66,7 +66,7 @@ public class NetworkManager extends VBox {
         
         backBt = new Button("ERR");
         backBt.setOnAction((ActionEvent e) -> {
-            game.openMainMenu();
+            game.openPlayOnlineScreen();
         });
         
         loginBt = new Button("ERR");

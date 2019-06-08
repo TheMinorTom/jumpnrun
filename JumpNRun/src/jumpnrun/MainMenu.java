@@ -60,7 +60,7 @@ public class MainMenu extends VBox {
 
         onlineBt = new Button("ERR");
         onlineBt.setOnAction((ActionEvent e) -> {
-            game.openNetworkScreen();
+            game.openPlayOnlineScreen();
         });
         
         exitBt = new Button("Spiel verlassen");

@@ -105,6 +105,12 @@ public class Language implements Serializable {
     
     // Map Choose Menu
     
+    // Play Onine Menu
+    public transient String plOnlMnPlayWithoutLogin;
+    public transient String plOnlMnPlayAs;
+
+
+    
     // Skin Choose Menu
     public transient String SkinColorBlue;
     public transient String SkinColorGreen;

@@ -74,7 +74,7 @@ public class LoginScreen extends VBox {
 
         backBt = new Button("ERR");
         backBt.setOnAction((ActionEvent e) -> {
-            game.openNetworkScreen();
+            game.openPlayOnlineScreen();
         });
 
         updateStrings();

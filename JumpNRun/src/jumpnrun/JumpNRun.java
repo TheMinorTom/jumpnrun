@@ -49,6 +49,7 @@ import net.minortom.davidjumpnrun.i18n.LanguageGerman;
 import net.minortom.davidjumpnrun.netcode.GameObjectType;
 import net.minortom.davidjumpnrun.netcode.NetworkManager;
 import net.minortom.davidjumpnrun.netcode.screens.OnlineEndScreen;
+import net.minortom.davidjumpnrun.netcode.screens.PlayOnlineScreen;
 import net.minortom.davidjumpnrun.server.OnlineGameObject;
 import net.minortom.davidjumpnrun.server.Server;
 import worldeditor.GUI;
@@ -89,7 +90,7 @@ public class JumpNRun extends Application {
     public static GUI worldEditGUI;
     private static double summonTimer, summonTime;
     private static Vector<Updatable> updatables;
-    private static Parent mainMenu, gameScene, chooseGamemodeScreen, winScreen, offlineSkinChooseScreen1, offlineSkinChooseScreen2, onlineSkinChooseCreateGame, onlineSkinChooseJoinGame, worldEditorScreen, onlineEndScreen;
+    private static Parent mainMenu, gameScene, chooseGamemodeScreen, winScreen, offlineSkinChooseScreen1, offlineSkinChooseScreen2, onlineSkinChooseCreateGame, onlineSkinChooseJoinGame, worldEditorScreen, onlineEndScreen, playOnlineScreen;
     private static CreditsScreen creditsScreen;
     private Gamemode currGamemode;
     private static int deathLimit;
@@ -181,6 +182,7 @@ public class JumpNRun extends Application {
             onlineSkinChooseJoinGame = new SkinChooseMenu(this, SkinChooseMenu.SkinChooseMode.ONLINE_JOIN_GAME);
             creditsScreen = new CreditsScreen(this);
             onlineEndScreen = new OnlineEndScreen(this);
+            playOnlineScreen = new PlayOnlineScreen(this);
 
             scene = new Scene(mainMenu);
             primaryStage.setScene(scene);
@@ -949,6 +951,11 @@ public class JumpNRun extends Application {
 
     public Vector<PowerupCollect> getPowerupCollects() {
         return powerupCollects;
+    }
+    
+    public void openPlayOnlineScreen() {
+        ((PlayOnlineScreen)playOnlineScreen).updateStrings();
+        scene.setRoot(playOnlineScreen);
     }
 
 }
