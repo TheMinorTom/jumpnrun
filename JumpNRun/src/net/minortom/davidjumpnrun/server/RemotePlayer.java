@@ -290,7 +290,9 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
                 xSpeed = 0;
                 //resetAnimation();
             }
-
+            if(isSpawnProtection) {
+                updateRespawn(timeElapsedSeconds);
+            }
             animationStateAsInt = currCostume.ordinal();
         } else if (respawnDoing || isSpawnProtection) {
             updateRespawn(timeElapsedSeconds);
@@ -532,7 +534,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         if ((!respawnDoing) && (!isDead)) {
             xPos = xSpawn;
             yPos = ySpawn;
-            respawnDoing = true;
+            startRespawn();
             respawnLabel.setVal(3.999999999);
             game.getCounterLabels().add(respawnLabel);
             ySpeed = 0;
@@ -728,7 +730,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         remotePitchfork.setAnimationState(-1);
         if (respawnTimer < -4) {
             isSpawnProtection = false;
-
+            respawnDoing = false;
             respawnTimer = 3;
         } else if (respawnTimer < 0) {
             if (!spawnprotectionStarted) {
@@ -856,5 +858,11 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
 
     public boolean isSpawnProtection() {
         return isSpawnProtection;
+    }
+    
+    public void startRespawn() {
+        respawnDoing = true;
+        isSpawnProtection = false;
+        respawnTimer = 3;
     }
 }
