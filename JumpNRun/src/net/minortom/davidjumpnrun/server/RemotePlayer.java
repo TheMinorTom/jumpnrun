@@ -753,6 +753,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
 
         } else {
             isSpawnProtection = false;
+            spawnprotectionStarted = false;
         }
 
     }
