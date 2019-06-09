@@ -91,6 +91,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
     private ObservableList<RemoteTruck> trucks, trucksToRemove;
 
     private boolean isSpawnProtection;
+    private boolean spawnprotectionStarted = false;
 
     public RemotePlayer(Server server, OnlGame game, String pubId, String objectId, String skin, String name, int index, int maxPlayer, String userId, int score) {
         super(index, (game.worldWidth / (maxPlayer + 1)) * (index + 1), OnlGame.spawnY);
@@ -291,7 +292,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
             }
 
             animationStateAsInt = currCostume.ordinal();
-        } else if (respawnDoing) {
+        } else if (respawnDoing || isSpawnProtection) {
             updateRespawn(timeElapsedSeconds);
 
         } else {
@@ -727,19 +728,26 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         remotePitchfork.setAnimationState(-1);
         if (respawnTimer < -4) {
             isSpawnProtection = false;
+
             respawnTimer = 3;
         } else if (respawnTimer < 0) {
-            respawnDoing = false;
+            if (!spawnprotectionStarted) {
+                game.removeCounterLabel(respawnLabel);
+                game.sendAllTCPDelayed(ServerCommand.OGAME_REMOVEOBJECT, new String[]{respawnLabel.getObjectId()});
+                setVisible(true);
+                animationStateAsInt = CostumeViewport.MID.ordinal();
+                setAnimationState(CostumeViewport.MID);
+                currCostume = CostumeViewport.MID;
+            }
             remoteGun.setAnimationState(-1);
-            remotePitchfork.setAnimationState(-1);
-            game.removeCounterLabel(respawnLabel);
+                remotePitchfork.setAnimationState(-1);
+                
 
-            setVisible(true);
-            animationStateAsInt = CostumeViewport.MID.ordinal();
-            setAnimationState(CostumeViewport.MID);
-            currCostume = CostumeViewport.MID;
-            game.sendAllTCPDelayed(ServerCommand.OGAME_REMOVEOBJECT, new String[]{respawnLabel.getObjectId()});
-            isSpawnProtection = true;
+                
+                
+                isSpawnProtection = true;
+                spawnprotectionStarted = true;
+                respawnDoing = false;
 
         } else {
             isSpawnProtection = false;
@@ -748,10 +756,10 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
     }
 
     public void endSpawnProtection() {
-        isSpawnProtection = false;
-        if (!respawnDoing) {
-            respawnTimer = 3;
+        if (isSpawnProtection) {
+            respawnTimer = -4.1;
         }
+
     }
 
     public void endGame() {

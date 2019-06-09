@@ -287,6 +287,11 @@ public class OnlGame implements Runnable {
                 timeElapsed = now - oldTime;
                 oldTime = now;
                 timeElapsedSeconds = timeElapsed / (1000.0d * 1000.0d * 1000.0d);
+                
+                if(timeElapsedSeconds > 0.2) {
+                    timeElapsedSeconds = 0.2;
+                }
+                
                 runtimeSeconds += timeElapsedSeconds;
                 /*
                  players.forEach((id, p) -> {
