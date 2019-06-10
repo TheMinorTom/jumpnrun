@@ -115,7 +115,7 @@ public class NetworkTCPReceiverClient extends Thread {
                             game.updateOnlineObjects(packageContent[2]);
                             break;
                         case OGAME_START:
-                            Graphic.drawOnlineOverlay();
+                            JumpNRun.getGraphic().drawOnlineOverlay();
                             game.startOnlineGame();
                             break;
                         case OGAME_REMOVEOBJECT:

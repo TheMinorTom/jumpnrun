@@ -90,6 +90,8 @@ public class ServerMysqlConnection {
                 + ", Score = " + score
                 + " WHERE id = " + id;
         statement.execute(query);
+        System.out.println("___________________________________________________________"
+                + "Id: " + id +"             Score: " + score);
     }
     
     private void addPlayerStatsEntry(String playerId) throws SQLException {

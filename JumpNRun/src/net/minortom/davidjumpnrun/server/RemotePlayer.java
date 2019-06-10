@@ -26,7 +26,7 @@ import net.minortom.davidjumpnrun.netcode.GameObjectType;
 import net.minortom.davidjumpnrun.netcode.ServerCommand;
 import worldeditor.Block;
 
-public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObject {
+public class RemotePlayer extends Protagonist implements /*Runnable,*/ OnlineGameObject {
 
     public static final double ySpectatorSpeed = 500;
     public static final double xSpectatorSpeed = 500;
@@ -93,6 +93,8 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
     private boolean isSpawnProtection;
     private boolean spawnprotectionStarted = false;
 
+    private ObservableList<String[]> objectsUpdateArgs;
+
     public RemotePlayer(Server server, OnlGame game, String pubId, String objectId, String skin, String name, int index, int maxPlayer, String userId, int score) {
         super(index, (game.worldWidth / (maxPlayer + 1)) * (index + 1), OnlGame.spawnY);
         this.score = score;
@@ -111,6 +113,8 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         truckTimer = 0;
         trucks = FXCollections.observableArrayList();
         trucksToRemove = FXCollections.observableArrayList();
+
+        objectsUpdateArgs = FXCollections.observableArrayList();
 
         needsToUpdatePowerup = true;
         isTruck = false;
@@ -148,67 +152,62 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
 
     }
 
-    @Override
-    public void run() {
-        ObservableList<String[]> objectsUpdateArgs = FXCollections.observableArrayList();
-
-        while (!endGame) {
-            try {
-                objectsUpdateArgs.clear();
-                /*
-                 game.players.forEach((id, player)->{
-                 server.tcpServer.get(pubId).getCommandHandler().sendCommand(ServerCommand.OGAME_UPDATEPROT, new String[]{player.pubId, String.valueOf(player.getXPos()), String.valueOf(player.getYPos()), String.valueOf(player.getAnimationStateAsInt())});
-                 });
-                 */
-                game.getOnlineGameObjects().forEach((String id, OnlineGameObject o) -> {
-                    //server.tcpServer.get(pubId).getCommandHandler().sendCommand(ServerCommand.OGAME_UPDATEOBJECT, new String[]{o.getObjectId(), String.valueOf(o.getObjectTypeAsInt()), String.valueOf((float)o.getXPos()), String.valueOf((float)o.getYPos()), String.valueOf(o.getAnimationStateAsInt())});
-                    objectsUpdateArgs.add(new String[]{o.getObjectId(), String.valueOf(o.getObjectTypeAsInt()), String.valueOf((float) o.getXPos()), String.valueOf((float) o.getYPos()), String.valueOf(o.getAnimationStateAsInt())});
-                });
-                game.getCounterLabels().forEach((OnlineCounterLabel currCounter) -> {
-                    if (currCounter.needsUpdate()) {
-                        objectsUpdateArgs.add(new String[]{currCounter.getObjectId(), currCounter.getTypeString(), String.valueOf(currCounter.getXPos()), String.valueOf(currCounter.getYPos()), currCounter.getValIntString()});
-                    }
-
-                });
-                thisCounterLabels.forEach((OnlineCounterLabel currCounter) -> {
-                    if (currCounter.needsUpdate()) {
-                        objectsUpdateArgs.add(new String[]{currCounter.getObjectId(), currCounter.getTypeString(), String.valueOf(currCounter.getXPos()), String.valueOf(currCounter.getYPos()), currCounter.getValIntString()});
-                    }
-
-                });
-                if (needsToUpdatePowerup) {
-                    needsToUpdatePowerup = false;
-                    objectsUpdateArgs.add(new String[]{currentPowerup.getObjectId(), String.valueOf(currentPowerup.getObjectTypeAsInt()), "0", "0", String.valueOf(currentPowerup.getAnimationState())});
-                }
-                server.tcpServer.get(pubId).getCommandHandler().sendUpdateCommand(objectsUpdateArgs);
-                try {
-                    Thread.sleep(5);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                if (serverCommandsToSend.size() > 0) {
-                    for (int i = 0; i < serverCommandsToSend.size(); i++) {
-                        server.tcpServer.get(pubId).getCommandHandler().sendCommand(serverCommandsToSend.get(i), argsToSend.get(i));
-                    }
-                    serverCommandsToSend.clear();
-                    argsToSend.clear();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+    public void updateClient() {
+        try {
+            objectsUpdateArgs.clear();
             /*
-             update();
-             // game.sendAllTCP(server.keyword + server.infoSeperator + "OGAME-UPDATEPROT" + server.infoSeperator + pubId + server.infoSeperator + String.valueOf(xPos) + server.infoSeperator + String.valueOf(yPos) + server.infoSeperator + String.valueOf(animationStateAsInt));
-             // game.sendAllTCP(ServerCommand.OGAME_UPDATEPROT, new String[]{pubId, String.valueOf(xPos), String.valueOf(yPos), String.valueOf(animationStateAsInt)});
-
-             //server.tcpServer.get(pubId).out.println(server.keyword + server.infoSeperator + "OGAME-UPDATEPROT" + server.infoSeperator + pubId + server.infoSeperator + String.valueOf(xPos) + server.infoSeperator + String.valueOf(yPos) + server.infoSeperator + String.valueOf(animationStateAsInt));
+             game.players.forEach((id, player)->{
+             server.tcpServer.get(pubId).getCommandHandler().sendCommand(ServerCommand.OGAME_UPDATEPROT, new String[]{player.pubId, String.valueOf(player.getXPos()), String.valueOf(player.getYPos()), String.valueOf(player.getAnimationStateAsInt())});
+             });
              */
-        }
+            game.getOnlineGameObjects().forEach((String id, OnlineGameObject o) -> {
+                //server.tcpServer.get(pubId).getCommandHandler().sendCommand(ServerCommand.OGAME_UPDATEOBJECT, new String[]{o.getObjectId(), String.valueOf(o.getObjectTypeAsInt()), String.valueOf((float)o.getXPos()), String.valueOf((float)o.getYPos()), String.valueOf(o.getAnimationStateAsInt())});
+                objectsUpdateArgs.add(new String[]{o.getObjectId(), String.valueOf(o.getObjectTypeAsInt()), String.valueOf((float) o.getXPos()), String.valueOf((float) o.getYPos()), String.valueOf(o.getAnimationStateAsInt())});
+            });
+            game.getCounterLabels().forEach((OnlineCounterLabel currCounter) -> {
+                if (currCounter.needsUpdate()) {
+                    objectsUpdateArgs.add(new String[]{currCounter.getObjectId(), currCounter.getTypeString(), String.valueOf(currCounter.getXPos()), String.valueOf(currCounter.getYPos()), currCounter.getValIntString()});
+                }
 
-        // #ENDGAME
-        server.tcpServer.get(pubId).getCommandHandler().sendEndGame(game.playersAtBeginn);
+            });
+            thisCounterLabels.forEach((OnlineCounterLabel currCounter) -> {
+                if (currCounter.needsUpdate()) {
+                    objectsUpdateArgs.add(new String[]{currCounter.getObjectId(), currCounter.getTypeString(), String.valueOf(currCounter.getXPos()), String.valueOf(currCounter.getYPos()), currCounter.getValIntString()});
+                }
+
+            });
+            if (needsToUpdatePowerup) {
+                needsToUpdatePowerup = false;
+                objectsUpdateArgs.add(new String[]{currentPowerup.getObjectId(), String.valueOf(currentPowerup.getObjectTypeAsInt()), "0", "0", String.valueOf(currentPowerup.getAnimationState())});
+            }
+            server.tcpServer.get(pubId).getCommandHandler().sendUpdateCommand(objectsUpdateArgs);
+
+            if (serverCommandsToSend.size() > 0) {
+                for (int i = 0; i < serverCommandsToSend.size(); i++) {
+                    server.tcpServer.get(pubId).getCommandHandler().sendCommand(serverCommandsToSend.get(i), argsToSend.get(i));
+                }
+                serverCommandsToSend.clear();
+                argsToSend.clear();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
+    /*
+     @Override
+     public void run() {
+        
+
+     while (!endGame) {
+            
+     updateClient();
+     }
+
+     // #ENDGAME
+        
+     }
+     */
     public void update(double timeElapsedSeconds) {
 
         remotePitchfork.setX(xPos);
@@ -290,7 +289,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
                 xSpeed = 0;
                 //resetAnimation();
             }
-            if(isSpawnProtection) {
+            if (isSpawnProtection) {
                 updateRespawn(timeElapsedSeconds);
             }
             animationStateAsInt = currCostume.ordinal();
@@ -327,6 +326,11 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         }
         setX(xPos);
         setY(yPos);
+
+        updateClient();
+        if (endGame) {
+            server.tcpServer.get(pubId).getCommandHandler().sendEndGame(game.playersAtBeginn);
+        }
 
     }
 
@@ -742,14 +746,11 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
                 currCostume = CostumeViewport.MID;
             }
             remoteGun.setAnimationState(-1);
-                remotePitchfork.setAnimationState(-1);
-                
+            remotePitchfork.setAnimationState(-1);
 
-                
-                
-                isSpawnProtection = true;
-                spawnprotectionStarted = true;
-                respawnDoing = false;
+            isSpawnProtection = true;
+            spawnprotectionStarted = true;
+            respawnDoing = false;
 
         } else {
             isSpawnProtection = false;
@@ -860,7 +861,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
     public boolean isSpawnProtection() {
         return isSpawnProtection;
     }
-    
+
     public void startRespawn() {
         respawnDoing = true;
         isSpawnProtection = false;

@@ -123,6 +123,7 @@ public class Graphic extends Group {
     public void updateScrolling() {
         double xScroll = JumpNRun.game.getXScroll() * (-1);
         double yScroll = JumpNRun.game.getYScroll() * (-1);
+        /*
         Block block;
         if ((!onlineScrollingInited) && (xScroll != 0)) {
             onlineScrollingInited = true;
@@ -143,9 +144,14 @@ public class Graphic extends Group {
                 }
             }
         }
+        */
+        worldGroup.setLayoutX(xScroll * (-1));
+        worldGroup.setLayoutY(yScroll * (-1));
+        
     }
 
     public void updateWholeWorld() {
+        /*
         Block block;
         double xScroll = JumpNRun.game.getXScroll() * (-1);
         double yScroll = JumpNRun.game.getYScroll() * (-1);
@@ -159,6 +165,8 @@ public class Graphic extends Group {
                 }
             }
         }
+                */
+        updateScrolling();
     }
 
     public Graphic(Vector<Vector<Block>> worldVec) {
@@ -177,7 +185,7 @@ public class Graphic extends Group {
         ProtagonistOnlineClient addProt = new ProtagonistOnlineClient(indexId, spawnX, spawnY, skinFileName, name, pubId, LEFT, RIGHT, UP, P, O, I, DOWN, userId);
 
         Platform.runLater(() -> {
-            worldGroup.getChildren().addAll(addProt, addProt.getNameLabel());
+            getChildren().addAll(addProt, addProt.getNameLabel());
         });
         HBox tmpBox = new HBox();
         tmpBox.setAlignment(Pos.CENTER);
@@ -218,7 +226,7 @@ public class Graphic extends Group {
         JumpNRun.game.setLocalProt(addProt);
         addProt.getNameLabel().setFont(new Font("Arial Black", 30));
         Platform.runLater(() -> {
-            worldGroup.getChildren().addAll(addProt, addProt.getNameLabel());
+            getChildren().addAll(addProt, addProt.getNameLabel());
         });
         HBox tmpBox = new HBox();
         tmpBox.setAlignment(Pos.CENTER);
@@ -311,13 +319,13 @@ public class Graphic extends Group {
         playerBoxes = new ArrayList<>();
     }
 
-    public static void drawOnlineOverlay() {
+    public void drawOnlineOverlay() {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
                 System.out.println("executed onlineplayersbox");
-                if (!worldGroup.getChildren().contains(onlinePlayersBox)) {
-                    worldGroup.getChildren().addAll(onlinePlayersBox);
+                if (!getChildren().contains(onlinePlayersBox)) {
+                    getChildren().addAll(onlinePlayersBox);
                 }
             }
         });

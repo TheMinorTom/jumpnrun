@@ -270,7 +270,7 @@ public class OnlGame implements Runnable {
         }
 
         for (java.util.Map.Entry<String, RemotePlayer> entry : players.entrySet()) {
-            (new Thread(entry.getValue())).start();
+            // (new Thread(entry.getValue())).start();
         }
 
         double now = System.nanoTime();
