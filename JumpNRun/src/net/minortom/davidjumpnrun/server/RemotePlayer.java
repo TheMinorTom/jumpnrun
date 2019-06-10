@@ -203,7 +203,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
             
      updateClient();
          try {
-             Thread.sleep(5);
+             Thread.sleep(10);
          } catch (InterruptedException ex) {
              ex.printStackTrace();
          }
