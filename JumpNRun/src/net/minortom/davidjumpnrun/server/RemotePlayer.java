@@ -26,7 +26,7 @@ import net.minortom.davidjumpnrun.netcode.GameObjectType;
 import net.minortom.davidjumpnrun.netcode.ServerCommand;
 import worldeditor.Block;
 
-public class RemotePlayer extends Protagonist implements /*Runnable,*/ OnlineGameObject {
+public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObject {
 
     public static final double ySpectatorSpeed = 500;
     public static final double xSpectatorSpeed = 500;
@@ -194,7 +194,7 @@ public class RemotePlayer extends Protagonist implements /*Runnable,*/ OnlineGam
         }
     }
 
-    /*
+    
      @Override
      public void run() {
         
@@ -207,7 +207,7 @@ public class RemotePlayer extends Protagonist implements /*Runnable,*/ OnlineGam
      // #ENDGAME
         
      }
-     */
+     
     public void update(double timeElapsedSeconds) {
 
         remotePitchfork.setX(xPos);
@@ -327,10 +327,6 @@ public class RemotePlayer extends Protagonist implements /*Runnable,*/ OnlineGam
         setX(xPos);
         setY(yPos);
 
-        updateClient();
-        if (endGame) {
-            server.tcpServer.get(pubId).getCommandHandler().sendEndGame(game.playersAtBeginn);
-        }
 
     }
 
