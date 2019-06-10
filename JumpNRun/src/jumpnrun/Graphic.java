@@ -56,11 +56,10 @@ public class Graphic extends Group {
     private static ArrayList<HBox> playerBoxes;
 
     private boolean onlineScrollingInited = false;
-    
-    private int serverFPSCounter, graphicFPSCounter;
-    
-    private double fpsTimer;
 
+    private int serverFPSCounter, graphicFPSCounter;
+
+    private double fpsTimer;
 
     public Graphic(Vector<Vector<Block>> worldVec, Protagonist prot1, Protagonist prot2, JumpNRun.Gamemode gamemode) {
         super();
@@ -128,7 +127,7 @@ public class Graphic extends Group {
     public void updateScrolling() {
         double xScroll = JumpNRun.game.getXScroll() * (-1);
         double yScroll = JumpNRun.game.getYScroll() * (-1);
-        
+
         Block block;
         if ((!onlineScrollingInited) && (xScroll != 0)) {
             onlineScrollingInited = true;
@@ -142,20 +141,22 @@ public class Graphic extends Group {
                     if (j >= 0) {
                         block = worldVector.get(i).get(j);
                         if (block != null) {
-                            block.relocate((blockSize * i) - xScroll, (blockSize * j) - yScroll);
+                            // block.relocate((blockSize * i) - xScroll, (blockSize * j) - yScroll);
+                            block.setTranslateX(-1 * xScroll);
+                            block.setTranslateY(-1 * yScroll);
                         }
                     }
                 }
             }
         }
         /*
-        worldGroup.setLayoutX(xScroll * (-1));
-        worldGroup.setLayoutY(yScroll * (-1));
-        */
+         worldGroup.setLayoutX(xScroll * (-1));
+         worldGroup.setLayoutY(yScroll * (-1));
+         */
     }
 
     public void updateWholeWorld() {
-        
+
         Block block;
         double xScroll = JumpNRun.game.getXScroll() * (-1);
         double yScroll = JumpNRun.game.getYScroll() * (-1);
@@ -163,12 +164,14 @@ public class Graphic extends Group {
             for (int j = 0; j < worldVector.get(i).size(); j++) {
                 block = worldVector.get(i).get(j);
                 if (block != null) {
-                    block.relocate((blockSize * i) - xScroll, (blockSize * j) - yScroll);
+                    // block.relocate((blockSize * i) - xScroll, (blockSize * j) - yScroll);
+                    block.setTranslateX(-1 * xScroll);
+                    block.setTranslateY(-1 * yScroll);
 
                 }
             }
         }
-                
+
         updateScrolling();
     }
 
@@ -177,7 +180,7 @@ public class Graphic extends Group {
         worldVector = worldVec;
         System.out.println("World: " + worldVec);
         worldGroup = GUI.drawWorldOnlineClient(worldVec, worldVec.get(0).get(0).getFitWidth());
-        graphicFPS = new Label ("Graphic(FPS): 0");
+        graphicFPS = new Label("Graphic(FPS): 0");
         serverFPS = new Label("Server(FPS): 0");
         HBox fpsBox = new HBox(graphicFPS, serverFPS);
         fpsBox.setLayoutY(300);
@@ -187,7 +190,6 @@ public class Graphic extends Group {
         serverFPSCounter = 0;
         graphicFPSCounter = 0;
         fpsTimer = 0;
-        
 
     }
 
@@ -418,20 +420,20 @@ public class Graphic extends Group {
     public CountDownLabel getOnlineTimeLabel() {
         return onlinetimeLabel;
     }
-    
+
     public void addServerFPS() {
         serverFPSCounter++;
     }
-    
-    public void addGraphicFPS (){
+
+    public void addGraphicFPS() {
         graphicFPSCounter++;
     }
-    
-    public void updateFPS (double timeElapsedSeconds) {
+
+    public void updateFPS(double timeElapsedSeconds) {
         fpsTimer += timeElapsedSeconds;
-        serverFPS.setText("Server(FPS): " + ((int)(serverFPSCounter / fpsTimer)));
-        graphicFPS.setText("Graphic(FPS): " + ((int)(graphicFPSCounter / fpsTimer)));
-        if(fpsTimer > 5) {
+        serverFPS.setText("Server(FPS): " + ((int) (serverFPSCounter / fpsTimer)));
+        // graphicFPS.setText("Graphic(FPS): " + ((int) (graphicFPSCounter / fpsTimer)));
+        if (fpsTimer > 5) {
             fpsTimer = 0;
             serverFPSCounter = 0;
             graphicFPSCounter = 0;
