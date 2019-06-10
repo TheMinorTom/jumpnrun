@@ -289,7 +289,8 @@ public class OnlGame implements Runnable {
                 timeElapsedSeconds = timeElapsed / (1000.0d * 1000.0d * 1000.0d);
                 
                 if(timeElapsedSeconds > 0.2) {
-                    timeElapsedSeconds = 0.2;
+                    System.out.println("Lagging: " + timeElapsedSeconds);
+                    timeElapsedSeconds = 0.2d;
                 }
                 
                 runtimeSeconds += timeElapsedSeconds;
