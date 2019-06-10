@@ -79,6 +79,8 @@ public class OnlGame implements Runnable {
 
     private ObservableList<OnlineCounterLabel> counterLabels, counterLabelsToRemove;
     private int playersAlive;
+    private int fpsCounter;
+    private double fpsTimer;
 
     public OnlGame(Server server, String gameName, int playersMax, String gamemode, double timeLimit, int respawnLimit, String mapName, String playerOneId, String playerOneSkin) {
         this.server = server;
@@ -129,6 +131,8 @@ public class OnlGame implements Runnable {
 
         addPlayer(playerOneId, playerOneSkin);
         playersAlive = 0;
+        fpsCounter = 0;
+        fpsTimer = 0;
 
     }
 
@@ -288,6 +292,17 @@ public class OnlGame implements Runnable {
                 oldTime = now;
                 timeElapsedSeconds = timeElapsed / (1000.0d * 1000.0d * 1000.0d);
                 
+                
+                fpsCounter++;
+                fpsTimer += timeElapsedSeconds;
+                if(fpsTimer > 3)
+                {
+                    System.out.println("--------------------------------------------------------\nServerfps :" + ((int)(fpsCounter/fpsTimer)) + "\n--------------------------------------------------------");
+                    fpsCounter = 0;
+                    fpsTimer = 0;
+                }                
+                
+                
                 if(timeElapsedSeconds > 0.2) {
                     System.out.println("Lagging: " + timeElapsedSeconds);
                     timeElapsedSeconds = 0.2d;
@@ -358,6 +373,8 @@ public class OnlGame implements Runnable {
                         sendAllTCPDelayed(ServerCommand.OGAME_REMOVEOBJECT, new String[]{key});
                     }
                 });
+                
+                
             } catch (Exception e) {
                 e.printStackTrace();
             }
