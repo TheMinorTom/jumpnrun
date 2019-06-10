@@ -126,7 +126,7 @@ public class Graphic extends Group {
     public void updateScrolling() {
         double xScroll = JumpNRun.game.getXScroll() * (-1);
         double yScroll = JumpNRun.game.getYScroll() * (-1);
-        /*
+        
         Block block;
         if ((!onlineScrollingInited) && (xScroll != 0)) {
             onlineScrollingInited = true;
@@ -140,8 +140,7 @@ public class Graphic extends Group {
                     if (j >= 0) {
                         block = worldVector.get(i).get(j);
                         if (block != null) {
-                            block.setX((blockSize * i) - xScroll);
-                            block.setY((blockSize * j) - yScroll);
+                            block.relocate((blockSize * i) - xScroll, (blockSize * j) - yScroll);
                         }
                     }
                 }
@@ -154,7 +153,7 @@ public class Graphic extends Group {
     }
 
     public void updateWholeWorld() {
-        /*
+        
         Block block;
         double xScroll = JumpNRun.game.getXScroll() * (-1);
         double yScroll = JumpNRun.game.getYScroll() * (-1);
@@ -162,13 +161,12 @@ public class Graphic extends Group {
             for (int j = 0; j < worldVector.get(i).size(); j++) {
                 block = worldVector.get(i).get(j);
                 if (block != null) {
-                    block.setX((blockSize * i) - xScroll);
-                    block.setY((blockSize * j) - yScroll);
+                    block.relocate((blockSize * i) - xScroll, (blockSize * j) - yScroll);
 
                 }
             }
         }
-                */
+                
         updateScrolling();
     }
 

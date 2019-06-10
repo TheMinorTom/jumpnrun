@@ -96,9 +96,6 @@ public class ProtagonistOnlineClient extends ImageView implements OnlineUpdatabl
         setViewport(currViewport);
         nameLbl.setLayoutX((getX() + width / 2) - (nameLbl.getWidth() / 2));
         nameLbl.setLayoutY(getY() - 40);
-        if (!isVisible()) {
-            JumpNRun.getGraphic().updateWholeWorld();
-        }
     }
 
     public Label getNameLabel() {

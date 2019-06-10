@@ -75,7 +75,7 @@ public class Block extends ImageView {
 
         setVisible(true);
         updateSize();
-        setCache(true);
+        //setCache(true);
         setCacheHint(CacheHint.SPEED);
     }
 

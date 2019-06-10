@@ -342,6 +342,7 @@ public class JumpNRun extends Application {
         onlineGameObjects.put(objectId, addProt);
         loopOnline.addObject(addProt);
         updateScrolling();
+        graphic.updateWholeWorld();
     }
 
     public void setLocalProt(ProtagonistOnlineClient p) {
