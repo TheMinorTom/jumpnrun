@@ -83,6 +83,9 @@ public class GameLoopOnline extends AnimationTimer {
                 powerupCollects.removeAll(removePowerups);
                 removePowerups.clear();
             }
+            JumpNRun.getGraphic().addGraphicFPS();
+            JumpNRun.getGraphic().updateFPS(timeElapsedSecond);
+            
         } catch (Exception e) {
             e.printStackTrace();
         }

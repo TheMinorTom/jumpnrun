@@ -44,7 +44,7 @@ public class Graphic extends Group {
 
     private static Vector<Vector<Block>> worldVector;
     private static Group worldGroup;
-    private static Label leftLbl, rightLbl, timeLabel;
+    private static Label leftLbl, rightLbl, timeLabel, serverFPS, graphicFPS;
     private static int deaths1, deaths2, respawnsLeft1, respawnsLeft2;
     private static double blockSize;
     private static Protagonist protagonist1, protagonist2;
@@ -56,6 +56,9 @@ public class Graphic extends Group {
     private static ArrayList<HBox> playerBoxes;
 
     private boolean onlineScrollingInited = false;
+    
+    private int serverFPSCounter, graphicFPSCounter;
+    private double fpsTimer;
 
     public Graphic(Vector<Vector<Block>> worldVec, Protagonist prot1, Protagonist prot2, JumpNRun.Gamemode gamemode) {
         super();
@@ -174,8 +177,17 @@ public class Graphic extends Group {
         worldVector = worldVec;
         System.out.println("World: " + worldVec);
         worldGroup = GUI.drawWorldOnlineClient(worldVec, worldVec.get(0).get(0).getFitWidth());
-        getChildren().addAll(worldGroup);
+        graphicFPS = new Label ("Graphic(FPS): 0");
+        serverFPS = new Label("Server(FPS): 0");
+        HBox fpsBox = new HBox(graphicFPS, serverFPS);
+        fpsBox.setLayoutY(300);
+        fpsBox.setSpacing(50);
+        getChildren().addAll(worldGroup, fpsBox);
         blockSize = worldVec.get(0).get(0).getFitHeight();
+        serverFPSCounter = 0;
+        graphicFPSCounter = 0;
+        fpsTimer = 0;
+        
 
     }
 
@@ -406,4 +418,24 @@ public class Graphic extends Group {
     public CountDownLabel getOnlineTimeLabel() {
         return onlinetimeLabel;
     }
+    
+    public void addServerFPS() {
+        serverFPSCounter++;
+    }
+    
+    public void addGraphicFPS (){
+        graphicFPSCounter++;
+    }
+    
+    public void updateFPS (double timeElapsedSeconds) {
+        fpsTimer += timeElapsedSeconds;
+        serverFPS.setText("Server(FPS): " + ((int)(serverFPSCounter / fpsTimer)));
+        graphicFPS.setText("Graphic(FPS): " + ((int)(graphicFPSCounter / fpsTimer)));
+        if(fpsTimer > 5) {
+            fpsTimer = 0;
+            serverFPSCounter = 0;
+            graphicFPSCounter = 0;
+        }
+    }
+
 }

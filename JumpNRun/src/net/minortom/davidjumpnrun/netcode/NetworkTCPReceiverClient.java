@@ -112,6 +112,7 @@ public class NetworkTCPReceiverClient extends Thread {
                             game.updateOnlineObject(packageContent[2], packageContent[3], packageContent[4], packageContent[5], packageContent[6]);
                             break;
                         case OGAME_UPDATEOBJECTS:
+                            JumpNRun.getGraphic().addServerFPS();
                             game.updateOnlineObjects(packageContent[2]);
                             break;
                         case OGAME_START:
