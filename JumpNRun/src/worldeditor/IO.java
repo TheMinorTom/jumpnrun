@@ -12,9 +12,11 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Vector;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.Image;
 import jumpnrun.JumpNRun;
 import net.minortom.davidjumpnrun.configstore.ConfigManager;
 
@@ -146,7 +148,10 @@ public class IO {
         return retVec;
     }
     
+    
+    // Used by Onlinegame
     public static Vector<Vector<Block>> openWorld(String worldString, String blockDir) {
+        HashMap<String, Image> images = new HashMap<>();
         Vector<Vector<Block>> retVec = new Vector();
         Vector<Block> blocks = new Vector<Block>();
         
@@ -183,7 +188,7 @@ public class IO {
                     } catch(NumberFormatException e) {
                         System.err.println(currBlock);
                     }
-                    addBlock = new Block(addName, blockDir, addFileName, addIsSolid);
+                    addBlock = new Block(addName, blockDir, addFileName, addIsSolid, images);
                     addBlock.setX(xIndex * blockSize);
                     addBlock.setY(yIndex * blockSize);
                     

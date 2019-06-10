@@ -5,6 +5,7 @@
  */
 package worldeditor;
 
+import java.util.HashMap;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import net.minortom.davidjumpnrun.configstore.ConfigManager;
@@ -24,30 +25,56 @@ public class Block extends ImageView {
     Block(String n, String dir, String fileName, boolean solid) {
         super();
         isSolid = solid;
-        if(!isSolid)
-        {
+        if (!isSolid) {
             setOpacity(0.5);
         }
         imageFileName = fileName;
         blocksDir = dir;
-        
+
         int fileNameLength = fileName.length();
         boolean empty = (fileNameLength == 0);
-        if(empty)
-        {
-            
-        }else
-        {
-            image = new Image(ConfigManager.getFileStream(dir+fileName));
+        if (empty) {
+
+        } else {
+            image = new Image(ConfigManager.getFileStream(dir + fileName));
             setImage(image);
         }
-        
+
         name = n;
 
         setVisible(true);
         updateSize();
     }
-    
+
+    Block(String n, String dir, String fileName, boolean solid, HashMap<String, Image> images) {
+        super();
+        isSolid = solid;
+        if (!isSolid) {
+            setOpacity(0.5);
+        }
+        imageFileName = fileName;
+        blocksDir = dir;
+
+        int fileNameLength = fileName.length();
+        boolean empty = (fileNameLength == 0);
+        if (empty) {
+
+        } else {
+            if (images.containsKey(n)) {
+                setImage(images.get(n));
+            } else {
+                image = new Image(ConfigManager.getFileStream(dir + fileName));
+                setImage(image);
+                images.put(n, image);
+            }
+
+        }
+
+        name = n;
+
+        setVisible(true);
+        updateSize();
+    }
 
     private Block(Block b) {
         super();
@@ -103,9 +130,8 @@ public class Block extends ImageView {
     public boolean getIsSolid() {
         return isSolid;
     }
-    
-    public String getBlocksDir()
-    {
+
+    public String getBlocksDir() {
         return blocksDir;
     }
 

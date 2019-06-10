@@ -147,10 +147,10 @@ public class Graphic extends Group {
                 }
             }
         }
-        */
+        /*
         worldGroup.setLayoutX(xScroll * (-1));
         worldGroup.setLayoutY(yScroll * (-1));
-        
+        */
     }
 
     public void updateWholeWorld() {
