@@ -58,7 +58,9 @@ public class Graphic extends Group {
     private boolean onlineScrollingInited = false;
     
     private int serverFPSCounter, graphicFPSCounter;
+    
     private double fpsTimer;
+
 
     public Graphic(Vector<Vector<Block>> worldVec, Protagonist prot1, Protagonist prot2, JumpNRun.Gamemode gamemode) {
         super();

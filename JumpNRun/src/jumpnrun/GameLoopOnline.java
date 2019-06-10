@@ -31,6 +31,7 @@ public class GameLoopOnline extends AnimationTimer {
     private Protagonist.CostumeViewport[] viewports; //-""-
     private ObservableList<OnlineUpdatableObject> updatableObjects, addObjects, removeObjects;
     private ObservableList<PowerupCollect> powerupCollects, addPowerups, removePowerups;
+    private double updateWohleWorldTimer;
 
     public GameLoopOnline() {
         super();
@@ -42,6 +43,7 @@ public class GameLoopOnline extends AnimationTimer {
         removePowerups = FXCollections.observableArrayList();
         game = JumpNRun.game;
         isInited = false;
+        updateWohleWorldTimer = 0;
 
     }
 
@@ -55,7 +57,10 @@ public class GameLoopOnline extends AnimationTimer {
             timeElapsed = now - oldTime;
             oldTime = now;
             timeElapsedSecond = timeElapsed / (1000.0d * 1000.0d * 1000.0d);
-
+            updateWohleWorldTimer += timeElapsed;
+            if(updateWohleWorldTimer > 0.5) {
+                JumpNRun.getGraphic().updateWholeWorld();
+            }
             game.updateScrolling();
             updatableObjects.forEach((o) -> {
                 o.updateGraphic(game.getXScroll(), game.getYScroll());
@@ -85,7 +90,7 @@ public class GameLoopOnline extends AnimationTimer {
             }
             JumpNRun.getGraphic().addGraphicFPS();
             JumpNRun.getGraphic().updateFPS(timeElapsedSecond);
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         }
