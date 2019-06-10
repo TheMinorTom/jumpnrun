@@ -60,6 +60,7 @@ public class GameLoopOnline extends AnimationTimer {
             updateWohleWorldTimer += timeElapsed;
             if(updateWohleWorldTimer > 0.5) {
                 JumpNRun.getGraphic().updateWholeWorld();
+                updateWohleWorldTimer = 0;
             }
             game.updateScrolling();
             updatableObjects.forEach((o) -> {
