@@ -374,6 +374,8 @@ public class OnlGame implements Runnable {
                     }
                 });
                 
+                Thread.sleep(5);
+                
                 
             } catch (Exception e) {
                 e.printStackTrace();

@@ -202,6 +202,11 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
      while (!endGame) {
             
      updateClient();
+         try {
+             Thread.sleep(5);
+         } catch (InterruptedException ex) {
+             ex.printStackTrace();
+         }
      }
 
      // #ENDGAME
