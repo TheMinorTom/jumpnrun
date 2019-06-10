@@ -6,6 +6,7 @@
 package worldeditor;
 
 import java.util.HashMap;
+import javafx.scene.CacheHint;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import net.minortom.davidjumpnrun.configstore.ConfigManager;
@@ -74,6 +75,8 @@ public class Block extends ImageView {
 
         setVisible(true);
         updateSize();
+        setCache(true);
+        setCacheHint(CacheHint.SPEED);
     }
 
     private Block(Block b) {
