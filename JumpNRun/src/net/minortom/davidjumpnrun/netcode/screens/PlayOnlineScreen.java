@@ -95,6 +95,7 @@ public class PlayOnlineScreen extends VBox {
                 switch (game.networkManager.serverConnection.currentConnState) {
                     case CONNECTED:
                         playAs.setText(game.language.plOnlMnPlayAs + game.networkManager.serverConnection.userName);
+                        game.networkManager.loadAvatar();
                         break;
                     default:
                         updateButtonsLoggedOut();

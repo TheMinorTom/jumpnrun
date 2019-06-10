@@ -210,7 +210,6 @@ public class NetworkManager extends VBox {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                System.out.println("Loading Avatar for Menu");
                 avatarImg = new Image("https://v1.api.minortom.net/do/avatar.php?user=" + game.config.networkUserId);
                 avatar.setImage(avatarImg);
             }
