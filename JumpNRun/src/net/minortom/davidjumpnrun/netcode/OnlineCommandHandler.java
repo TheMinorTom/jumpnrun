@@ -13,6 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import static net.minortom.davidjumpnrun.netcode.ServerCommand.*;
@@ -63,7 +64,7 @@ public class OnlineCommandHandler {
         out.println(message);
     }
 
-    public void sendEndGame(HashMap<String, RemotePlayer> players) {
+    public void sendEndGame(ConcurrentHashMap<String, RemotePlayer> players) {
         message = "";
         message += NetworkManager.keyword + NetworkManager.infoSeperator + String.valueOf(OGAME_ENDGAME.ordinal()) + NetworkManager.infoSeperator;
         players.forEach((String key, RemotePlayer player) -> {

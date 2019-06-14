@@ -208,6 +208,8 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
              ex.printStackTrace();
          }
      }
+     
+     server.tcpServer.get(pubId).getCommandHandler().sendEndGame(game.getPlayers());
 
      // #ENDGAME
         
