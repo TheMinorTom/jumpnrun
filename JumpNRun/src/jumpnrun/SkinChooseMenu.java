@@ -36,12 +36,13 @@ public class SkinChooseMenu extends VBox {
         "sprites/protagonist/SpielfigurGruen.png",
         "sprites/protagonist/SpielfigurOrange.png",
         "sprites/protagonist/SpielfigurGelb.png",
-        "sprites/protagonist/SpielfigurRot.png"};
+        "sprites/protagonist/SpielfigurRot.png",
+        "sprites/protagonist/SpielfigurRoboter.png"};
     private final Rectangle2D viewPort = Protagonist.getMidViewport();
     private Button backBt, okBt;
     private Label headingLbl;
-    private ImageView blueIV, greenIV, orangeIV, yellowIV, redIV;
-    private RadioButton blueRB, greenRB, orangeRB, yellowRB, redRB;
+    private ImageView blueIV, greenIV, orangeIV, yellowIV, redIV, robotIV;
+    private RadioButton blueRB, greenRB, orangeRB, yellowRB, redRB, robotRB;
     private ToggleGroup toggle;
     private GridPane choicePane;
     private final JumpNRun game;
@@ -61,6 +62,8 @@ public class SkinChooseMenu extends VBox {
         yellowIV.setViewport(viewPort);
         redIV = new ImageView(new Image(ConfigManager.getFileStream(skinPaths[4])));
         redIV.setViewport(viewPort);
+        robotIV = new ImageView(new Image(ConfigManager.getFileStream(skinPaths[5])));
+        robotIV.setViewport(viewPort);
 
         toggle = new ToggleGroup();
 
@@ -70,7 +73,8 @@ public class SkinChooseMenu extends VBox {
         orangeRB = new RadioButton();
         yellowRB = new RadioButton();
         redRB = new RadioButton();
-        toggle.getToggles().addAll(blueRB, greenRB, orangeRB, yellowRB, redRB);
+        robotRB = new RadioButton();
+        toggle.getToggles().addAll(blueRB, greenRB, orangeRB, yellowRB, redRB, robotRB);
 
         choicePane = new GridPane();
 
@@ -84,6 +88,8 @@ public class SkinChooseMenu extends VBox {
         choicePane.add(yellowIV, 0, 3);
         choicePane.add(redRB, 1, 4);
         choicePane.add(redIV, 0, 4);
+        choicePane.add(robotRB, 1, 5);
+        choicePane.add(robotIV, 0, 5);
         choicePane.setAlignment(Pos.CENTER_LEFT);
         choicePane.setHgap(20);
 
@@ -150,6 +156,8 @@ public class SkinChooseMenu extends VBox {
             return Skin.YELLOW;
         } else if (redRB.isSelected()) {
             return Skin.RED;
+        } else if (robotRB.isSelected()) {
+            return Skin.ROBOT;
         } else {
             return null;
         }
@@ -161,12 +169,14 @@ public class SkinChooseMenu extends VBox {
         orangeRB.setText(game.language.SkinColorOrange);
         yellowRB.setText(game.language.SkinColorYellow);
         redRB.setText(game.language.SkinColorRed);
+        robotRB.setText(game.language.SkinRobot);
 
         greenRB.setFont(game.language.getFont());
         blueRB.setFont(game.language.getFont());
         orangeRB.setFont(game.language.getFont());
         yellowRB.setFont(game.language.getFont());
         redRB.setFont(game.language.getFont());
+        robotRB.setFont(game.language.getFont());
         okBt.setFont(game.language.getFont());
         backBt.setFont(game.language.getFont());
 
@@ -207,7 +217,8 @@ public class SkinChooseMenu extends VBox {
         BLUE("sprites/protagonist/SpielfigurBlau.png", Color.BLUE, "blue"),
         GREEN("sprites/protagonist/SpielfigurGruen.png", Color.GREEN, "green"),
         ORANGE("sprites/protagonist/SpielfigurOrange.png", Color.ORANGE, "orange"),
-        YELLOW("sprites/protagonist/SpielfigurGelb.png", Color.YELLOW, "yellow");
+        YELLOW("sprites/protagonist/SpielfigurGelb.png", Color.YELLOW, "yellow"),
+        ROBOT("sprites/protagonist/SpielfigurRoboter.png", null, "robot");
         public final String path;
         public final Color color;
         public final String skinName;

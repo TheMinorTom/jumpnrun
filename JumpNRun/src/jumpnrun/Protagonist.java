@@ -648,13 +648,13 @@ public class Protagonist extends ImageView implements Updatable {
         RIGHT_2(400, 0, Protagonist.getWidth(), Protagonist.getHeight()),
         RIGHT_1(450, 0, Protagonist.getWidth(), Protagonist.getHeight()),
         RIGHT_0(500, 0, Protagonist.getWidth(), Protagonist.getHeight()),
-        LEFT_JUMP(0, 102, Protagonist.getWidth(), Protagonist.getHeight()),
-        MID_JUMP(50, 102, Protagonist.getWidth(), Protagonist.getHeight()),
-        RIGHT_JUMP(100, 102, Protagonist.getWidth(), Protagonist.getHeight()),
-        LEFT_HIT(150, 102, Protagonist.getWidth(), Protagonist.getHeight()),
-        RIGHT_HIT(200, 102, Protagonist.getWidth(), Protagonist.getHeight()),
-        LEFT_SHOOT(251, 102, Protagonist.getWidth(), Protagonist.getHeight()),
-        RIGHT_SHOOT(300, 102, Protagonist.getWidth(), Protagonist.getHeight());
+        LEFT_JUMP(0, 103, Protagonist.getWidth(), Protagonist.getHeight()),
+        MID_JUMP(50, 103, Protagonist.getWidth(), Protagonist.getHeight()),
+        RIGHT_JUMP(100, 103, Protagonist.getWidth(), Protagonist.getHeight()),
+        LEFT_HIT(150, 103, Protagonist.getWidth(), Protagonist.getHeight()),
+        RIGHT_HIT(200, 103, Protagonist.getWidth(), Protagonist.getHeight()),
+        LEFT_SHOOT(251, 103, Protagonist.getWidth(), Protagonist.getHeight()),
+        RIGHT_SHOOT(300, 103, Protagonist.getWidth(), Protagonist.getHeight());
         private final double minX;
         private final double minY;
         private final double width;

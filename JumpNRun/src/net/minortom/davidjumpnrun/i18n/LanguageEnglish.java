@@ -104,6 +104,7 @@ public class LanguageEnglish extends Language{
         this.SkinColorOrange = "Orange";
         this.SkinColorYellow = "Yellow";
         this.SkinColorRed = "Red";
+        this.SkinRobot = "Robot";
         this.SkinChooseDefaultHeading = "Choose your skin!";
         this.SkinChooseOfflinePlayer1Heading = "Left Player: Choose your Skin!";
         this.SkinChooseOfflinePlayer2Heading = "Right Player: Choose your Skin!";

@@ -77,8 +77,8 @@ public class Pitchfork extends ImageView implements OnlineUpdatableObject{
     }
     
     public enum AnimationState{
-        LEFT(0,0,60,12),
-        RIGHT(61,0,60,12);
+        LEFT(0,0,60,14),
+        RIGHT(61,0,60,14);
         private Rectangle2D r;
         
         AnimationState(double x, double y, double w, double h)

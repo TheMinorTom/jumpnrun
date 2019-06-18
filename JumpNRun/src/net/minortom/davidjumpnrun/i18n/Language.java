@@ -117,6 +117,7 @@ public class Language implements Serializable {
     public transient String SkinColorOrange;
     public transient String SkinColorYellow;
     public transient String SkinColorRed;
+    public transient String SkinRobot;
     public transient String SkinChooseDefaultHeading;
     public transient String SkinChooseOfflinePlayer1Heading;
     public transient String SkinChooseOfflinePlayer2Heading;
