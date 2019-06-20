@@ -220,17 +220,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         remotePitchfork.setX(xPos);
         remotePitchfork.setY(yPos);
 
-        if (!isInited) {
-            now = System.nanoTime();
-            startTime = now;
-            oldTime = now;
-            timeElapsed = 0;
-            isInited = true;
-        }
-        now = System.nanoTime();
-        timeElapsed = now - oldTime;
-        oldTime = now;
-        timeElapsedSeconds = timeElapsed / (1000.0d * 1000.0d * 1000.0d);
+
 
         if (yPos > 5000) {
             hitten();

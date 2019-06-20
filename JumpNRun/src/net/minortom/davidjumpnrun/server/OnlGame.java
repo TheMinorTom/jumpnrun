@@ -205,6 +205,7 @@ public class OnlGame implements Runnable {
     }
 
     public void startGame() {
+       
         String limit;
         if (gamemode == JumpNRun.Gamemode.DEATHS) {
             limit = String.valueOf(respawnLimit);
@@ -303,9 +304,9 @@ public class OnlGame implements Runnable {
                 }                
                 
                 
-                if(timeElapsedSeconds > 0.2) {
+                if(timeElapsedSeconds > 0.1) {
                     System.out.println("Lagging: " + timeElapsedSeconds);
-                    timeElapsedSeconds = 0.2d;
+                    timeElapsedSeconds = 0.1;
                 }
                 
                 runtimeSeconds += timeElapsedSeconds;
@@ -373,7 +374,11 @@ public class OnlGame implements Runnable {
                         sendAllTCPDelayed(ServerCommand.OGAME_REMOVEOBJECT, new String[]{key});
                     }
                 });
-                
+                if(timeElapsedSeconds > 0.2) {
+                    System.out.println("Lagging at secound check: " + timeElapsedSeconds);
+                    timeElapsedSeconds = 0.2;
+                }
+                System.out.println("Time elapsed seconds: " + timeElapsedSeconds);
                 Thread.sleep(10);
                 
                 
