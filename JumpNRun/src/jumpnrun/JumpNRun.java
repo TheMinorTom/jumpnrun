@@ -90,7 +90,7 @@ public class JumpNRun extends Application {
     public static GUI worldEditGUI;
     private static double summonTimer, summonTime;
     private static Vector<Updatable> updatables;
-    private static Parent mainMenu, gameScene, chooseGamemodeScreen, winScreen, offlineSkinChooseScreen1, offlineSkinChooseScreen2, onlineSkinChooseCreateGame, onlineSkinChooseJoinGame, worldEditorScreen, onlineEndScreen, playOnlineScreen;
+    private static Parent mainMenu, gameScene, chooseGamemodeScreen, winScreen, offlineSkinChooseScreen1, offlineSkinChooseScreen2, onlineSkinChooseCreateGame, onlineSkinChooseJoinGameLoggedIn, onlineSkinChooseJoinGameNotLoggedIn, worldEditorScreen, onlineEndScreen, playOnlineScreen;
     private static CreditsScreen creditsScreen;
     private Gamemode currGamemode;
     private static int deathLimit;
@@ -123,6 +123,9 @@ public class JumpNRun extends Application {
 
         // new DatabaseManager();
         // DB STUFF END
+
+        
+        
         primStage = primaryStage;
         try {
             game = this;
@@ -179,7 +182,8 @@ public class JumpNRun extends Application {
             offlineSkinChooseScreen1 = new SkinChooseMenu(this, SkinChooseMenu.SkinChooseMode.OFFLINE_PLAYER_1);
             offlineSkinChooseScreen2 = new SkinChooseMenu(this, SkinChooseMenu.SkinChooseMode.OFFLINE_PLAYER_2);
             onlineSkinChooseCreateGame = new SkinChooseMenu(this, SkinChooseMenu.SkinChooseMode.ONLINE_CREATE_GAME);
-            onlineSkinChooseJoinGame = new SkinChooseMenu(this, SkinChooseMenu.SkinChooseMode.ONLINE_JOIN_GAME);
+            onlineSkinChooseJoinGameLoggedIn = new SkinChooseMenu(this, SkinChooseMenu.SkinChooseMode.ONLINE_JOIN_GAME_LOGGED_IN);
+            onlineSkinChooseJoinGameNotLoggedIn = new SkinChooseMenu(this, SkinChooseMenu.SkinChooseMode.ONLINE_JOIN_GAME_NOT_LOGGED_IN);
             creditsScreen = new CreditsScreen(this);
             onlineEndScreen = new OnlineEndScreen(this);
             playOnlineScreen = new PlayOnlineScreen(this);
@@ -799,9 +803,14 @@ public class JumpNRun extends Application {
         ((SkinChooseMenu) onlineSkinChooseCreateGame).updateStrings();
     }
 
-    public void openOnlineSkinChooseJoinGameMenu() {
-        scene.setRoot(onlineSkinChooseJoinGame);
-        ((SkinChooseMenu) onlineSkinChooseJoinGame).updateStrings();
+    public void openOnlineSkinChooseJoinGameMenuLoggedIn() {
+        scene.setRoot(onlineSkinChooseJoinGameLoggedIn);
+        ((SkinChooseMenu) onlineSkinChooseJoinGameLoggedIn).updateStrings();
+    }
+    
+    public void openOnlineSkinChooseJoinGameNotMenuLoggedIn() {
+        scene.setRoot(onlineSkinChooseJoinGameNotLoggedIn);
+        ((SkinChooseMenu) onlineSkinChooseJoinGameNotLoggedIn).updateStrings();
     }
 
     // The following function is licensed under the MIT License. You should have already received a copy located at ../net/minortom/LICENSE.txt

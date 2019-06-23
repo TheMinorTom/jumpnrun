@@ -48,10 +48,7 @@ public class ConfigManager {
         } catch (Exception i) {
             if (!i.getMessage().contains("o such file")) {
                 i.printStackTrace();
-                StringWriter sw = new StringWriter();
-                PrintWriter pw = new PrintWriter(sw);
-                i.printStackTrace(pw);
-                String sStackTrace = sw.toString();
+
                 //error(game.language.CfgManErrorLoadTitle, ""
                 //        + game.language.CfgManErrorLoadText + sStackTrace);
             }
@@ -111,7 +108,19 @@ public class ConfigManager {
 
     public static String getStorageLocation() {
         if (game == null || game.config == null || game.config.customPath.isEmpty()) {
-            return getAppdataLocation();
+            String appdataSource = getAppdataLocation();
+            try {
+                new FileInputStream(appdataSource + "sprites/blocks/Dirt.bmp");
+            } catch (Exception e) {
+                appdataSource = System.getProperty("user.dir") + "/appdata/";
+                if ((game != null)) {
+                    info("Appdata location", "Local appdata used: " + appdataSource);
+                    if (game.config != null) {
+                        game.config.customPath = appdataSource;
+                    }
+                }
+            }
+            return appdataSource;
         } else {
             return game.config.customPath;
         }
@@ -135,15 +144,15 @@ public class ConfigManager {
     }
 
     public static InputStream getFileStream(String spezUri) {
-        if ((game == null)&&(!(Server.server==null))) {
+        if ((game == null) && (!(Server.server == null))) {
             try {
                 InputStream in = new FileInputStream(spezUri);
                 return in;
             } catch (FileNotFoundException e) {
                 System.err.println("Invalid Storage Location");
-               throw new OperationFailedException();
+                throw new OperationFailedException();
             }
-        } else if ((!(game == null))&&((Server.server==null))) {
+        } else if ((!(game == null)) && ((Server.server == null))) {
             String appdataUri = game.config.customPath;
             if (appdataUri.isEmpty()) {
                 appdataUri = JumpNRun.sourcePath;
@@ -165,7 +174,7 @@ public class ConfigManager {
                 } catch (FileNotFoundException ex) {
                     return null;
                 }
-                
+
                 return in;
             }
         } else {
@@ -178,7 +187,7 @@ public class ConfigManager {
             InputStream in = new FileInputStream(uri);
             return in;
         } catch (FileNotFoundException e) {
-            return null; 
+            return null;
         }
     }
 }

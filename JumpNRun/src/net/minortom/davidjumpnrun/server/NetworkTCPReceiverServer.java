@@ -36,45 +36,54 @@ public class NetworkTCPReceiverServer extends Thread {
 
                     switch (command) {
                         case AUTH_REQ:
-                            System.out.println("authreqhere");
-                            tcpServ.userId = packageContent[2];
-                            tcpServ.userToken = packageContent[3];
-                            // Get user name
-                            URL postUrl = new URL("https://v1.api.minortom.net/jnr/getusername.php?user=" + tcpServ.userId);
-                            HttpURLConnection con = (HttpURLConnection) postUrl.openConnection();
-                            con.setRequestMethod("POST");
-                            con.setRequestProperty("User-Agent", "JumpNRun Game v1.0 by MinorTom");
-                            con.setDoOutput(true);
-                            OutputStream os = con.getOutputStream();
-                            os.write(("userId=" + tcpServ.userId + "&userToken=" + tcpServ.userToken).getBytes());
-                            os.flush();
-                            os.close();
-                            int responseCode = con.getResponseCode();
-                            if (responseCode == HttpURLConnection.HTTP_OK) { //success
-                                BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                                String inputLine;
-                                StringBuffer response = new StringBuffer();
+                            if (Integer.parseInt(packageContent[2]) > 0) {
+                                System.out.println("authreqhere");
+                                tcpServ.userId = packageContent[2];
+                                tcpServ.userToken = packageContent[3];
+                                // Get user name
+                                URL postUrl = new URL("https://v1.api.minortom.net/jnr/getusername.php?user=" + tcpServ.userId);
+                                HttpURLConnection con = (HttpURLConnection) postUrl.openConnection();
+                                con.setRequestMethod("POST");
+                                con.setRequestProperty("User-Agent", "JumpNRun Game v1.0 by MinorTom");
+                                con.setDoOutput(true);
+                                OutputStream os = con.getOutputStream();
+                                os.write(("userId=" + tcpServ.userId + "&userToken=" + tcpServ.userToken).getBytes());
+                                os.flush();
+                                os.close();
+                                int responseCode = con.getResponseCode();
+                                if (responseCode == HttpURLConnection.HTTP_OK) { //success
+                                    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                                    String inputLine;
+                                    StringBuffer response = new StringBuffer();
 
-                                while ((inputLine = in.readLine()) != null) {
-                                    response.append(inputLine);
+                                    while ((inputLine = in.readLine()) != null) {
+                                        response.append(inputLine);
+                                    }
+                                    in.close();
+
+                                    // print result
+                                    tcpServ.userName = response.toString();
+                                } else {
+                                    System.out.println("POST request not worked");
+                                    tcpServ.userName = null;
                                 }
-                                in.close();
-
-                                // print result
-                                tcpServ.userName = response.toString();
+                                if (tcpServ.userName == null || tcpServ.userName.equals("") || tcpServ.userName.length() <= 1) {
+                                    tcpServ.getCommandHandler().sendCommand(ServerCommand.AUTH_WRONGCREDS, new String[]{});
+                                    System.out.println("DID NOT AUTHENTHICATE " + tcpServ.userId + " " + tcpServ.userName);
+                                    end(null, null);
+                                } else {
+                                    tcpServ.getCommandHandler().sendCommand(ServerCommand.AUTH_OK, new String[]{tcpServ.pubId, tcpServ.userName});
+                                    System.out.println("AUTHENTHICATED " + tcpServ.userName);
+                                }
+                                break;
                             } else {
-                                System.out.println("POST request not worked");
-                                tcpServ.userName = null;
-                            }
-                            if (tcpServ.userName == null || tcpServ.userName.equals("") || tcpServ.userName.length() <= 1) {
-                                tcpServ.getCommandHandler().sendCommand(ServerCommand.AUTH_WRONGCREDS, new String[]{});
-                                System.out.println("DID NOT AUTHENTHICATE " + tcpServ.userId + " " + tcpServ.userName);
-                                end(null, null);
-                            } else {
+                                tcpServ.userId = packageContent[2];
+                                tcpServ.userToken = "-1";
+                                tcpServ.userName = packageContent[3];
+                                
                                 tcpServ.getCommandHandler().sendCommand(ServerCommand.AUTH_OK, new String[]{tcpServ.pubId, tcpServ.userName});
-                                System.out.println("AUTHENTHICATED " + tcpServ.userName);
+                                    System.out.println("NOT LOGGED IN PLAYER " + tcpServ.userName);
                             }
-                            break;
                         case AUTH_LOGOUT:
                             String playerPubId = packageContent[2];
                             String gameName = null;
@@ -152,7 +161,6 @@ public class NetworkTCPReceiverServer extends Thread {
             int temp = 0;
             game.checkEndGame();
         }
-        
 
     }
 

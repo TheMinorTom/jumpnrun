@@ -66,6 +66,7 @@ public class Language implements Serializable {
     public transient String LoginScreenErrorInvalidCharTitle;
     public transient String LoginScreenErrorInvalidCharText;
     public transient String LoginScreenOpenInWebBt;
+    public transient String LoginScreenHeading;
     
     // Network Play Screen
     public transient String NetworManagerLoginBt;
@@ -82,8 +83,10 @@ public class Language implements Serializable {
     // Join Game Screen
     public transient String JoinGNameLabel;
     public transient String JoinGOkBt;
-    
     public transient String GSkinBt;
+    public transient String PlayerNameLabel;
+    public transient String JoinGameServerName;
+    
     
     // Choose Game Mode Menu
     public transient String ChoGmEndlessBt;

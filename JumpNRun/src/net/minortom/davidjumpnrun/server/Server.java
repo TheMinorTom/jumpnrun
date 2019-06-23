@@ -16,7 +16,7 @@ public class Server {
 
     public static String storageLocation;
     public static Server server;
-    
+
     public ServerMysqlConnection dbConn;
 
     public final String infoSeperator = NetworkManager.infoSeperator;
@@ -30,6 +30,7 @@ public class Server {
 
     public HashMap<String, TCPServer> tcpServer;
     public int tcpPort;
+    public boolean isDatabaseBlocked;
 
     public Server(String[] args) {
         /* try{
@@ -42,18 +43,28 @@ public class Server {
         System.out.println("This is newest lool ----------------------------------------------------------------------------------");
         if (false) {
             storageLocation = "H:\\Eigene Dateien\\Informatik1819\\meine_programme\\JumpNRun\\jumpnrun-master\\jumpnrun-master\\JumpNRun\\appdata\\";
-        }
-        else {
+        } else {
             storageLocation = ConfigManager.getStorageLocation();
         }
+
+
+
         Server.server = this;
         System.out.println("Server Hello World");
+
+  
+            Scanner in = new Scanner(System.in);
+            System.out.println("Please enter the DB Connection String");
+            String dbString = in.nextLine();
+            String[] dbCreds = dbString.split("!");
+            try {
+            dbConn = new ServerMysqlConnection(dbCreds[0], dbCreds[1], dbCreds[2], dbCreds[3]);
+            isDatabaseBlocked = false;
+            } catch(Exception e) {
+                isDatabaseBlocked = true;
+                System.err.println("No database-connection");
+            }
         
-        Scanner in = new Scanner(System.in);
-        System.out.println("Please enter the DB Connection String");
-        String dbString = in.nextLine();
-        String[] dbCreds = dbString.split("!");
-        dbConn = new ServerMysqlConnection(dbCreds[0], dbCreds[1], dbCreds[2], dbCreds[3]);
         System.out.println("Now starting");
         tcpPort = 26656;
         tcpServer = new HashMap<>();

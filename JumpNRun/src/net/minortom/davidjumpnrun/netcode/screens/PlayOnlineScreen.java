@@ -40,7 +40,7 @@ public class PlayOnlineScreen extends VBox {
 
         playWithoutLoginBt = new Button();
         playWithoutLoginBt.setOnAction((ActionEvent e) -> {
-
+            game.networkManager.openJoinGameNotLoggedInScreen();
         });
 
         playAs = new Button();

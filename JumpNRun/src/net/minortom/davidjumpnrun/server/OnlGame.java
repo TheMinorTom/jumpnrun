@@ -143,7 +143,11 @@ public class OnlGame implements Runnable {
         String userId = server.tcpServer.get(pubId).userId;
         RemotePlayer addPlayer;
         try {
-            addPlayer = new RemotePlayer(server, this, pubId, addObjectId, skin, name, players.size(), playersMax, userId, server.dbConn.getScore(userId));
+            if (!server.isDatabaseBlocked) {
+                addPlayer = new RemotePlayer(server, this, pubId, addObjectId, skin, name, players.size(), playersMax, userId, server.dbConn.getScore(userId));
+            } else {
+                addPlayer = new RemotePlayer(server, this, pubId, addObjectId, skin, name, players.size(), playersMax, userId, 0);
+            }
         } catch (SQLException ex) {
             addPlayer = new RemotePlayer(server, this, pubId, addObjectId, skin, name, players.size(), playersMax, userId, 0);
         }
@@ -205,7 +209,7 @@ public class OnlGame implements Runnable {
     }
 
     public void startGame() {
-       
+
         String limit;
         if (gamemode == JumpNRun.Gamemode.DEATHS) {
             limit = String.valueOf(respawnLimit);
@@ -292,23 +296,20 @@ public class OnlGame implements Runnable {
                 timeElapsed = now - oldTime;
                 oldTime = now;
                 timeElapsedSeconds = timeElapsed / (1000.0d * 1000.0d * 1000.0d);
-                
-                
+
                 fpsCounter++;
                 fpsTimer += timeElapsedSeconds;
-                if(fpsTimer > 3)
-                {
-                    System.out.println("--------------------------------------------------------\nServerfps :" + ((int)(fpsCounter/fpsTimer)) + "\n--------------------------------------------------------");
+                if (fpsTimer > 3) {
+                    System.out.println("--------------------------------------------------------\nServerfps :" + ((int) (fpsCounter / fpsTimer)) + "\n--------------------------------------------------------");
                     fpsCounter = 0;
                     fpsTimer = 0;
-                }                
-                
-                
-                if(timeElapsedSeconds > 0.1) {
+                }
+
+                if (timeElapsedSeconds > 0.1) {
                     System.out.println("Lagging: " + timeElapsedSeconds);
                     timeElapsedSeconds = 0.1;
                 }
-                
+
                 runtimeSeconds += timeElapsedSeconds;
                 /*
                  players.forEach((id, p) -> {
@@ -374,14 +375,13 @@ public class OnlGame implements Runnable {
                         sendAllTCPDelayed(ServerCommand.OGAME_REMOVEOBJECT, new String[]{key});
                     }
                 });
-                if(timeElapsedSeconds > 0.2) {
+                if (timeElapsedSeconds > 0.2) {
                     System.out.println("Lagging at secound check: " + timeElapsedSeconds);
                     timeElapsedSeconds = 0.2;
                 }
                 System.out.println("Time elapsed seconds: " + timeElapsedSeconds);
                 Thread.sleep(10);
-                
-                
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -487,7 +487,7 @@ public class OnlGame implements Runnable {
     }
 
     private void endGame() {
-        System.out.println("Endgame: "+gameName);
+        System.out.println("Endgame: " + gameName);
         ended = true;
         players = sortPlayers(players);
         int playerAmount = players.size();
@@ -499,7 +499,9 @@ public class OnlGame implements Runnable {
                 if (Integer.parseInt(p.getPlacement()) == 1) {
                     winsAdd = 1;
                 }
-                server.dbConn.updateStats(p.userId, p.getKills(), p.getDeaths(), winsAdd, 1, ScoreEngine.calculateXP(p.getKills(), p.getDeaths(), Integer.parseInt(p.getPlacement()), playerAmount), p.getCoinsCollected(), ScoreEngine.calculateScore(Integer.parseInt(p.getPlacement()), playerAmount, p.userId));
+                if (!server.isDatabaseBlocked) {
+                    server.dbConn.updateStats(p.userId, p.getKills(), p.getDeaths(), winsAdd, 1, ScoreEngine.calculateXP(p.getKills(), p.getDeaths(), Integer.parseInt(p.getPlacement()), playerAmount), p.getCoinsCollected(), ScoreEngine.calculateScore(Integer.parseInt(p.getPlacement()), playerAmount, p.userId));
+                }
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }

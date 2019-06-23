@@ -34,7 +34,7 @@ public class LoginScreen extends VBox {
 
     private static JumpNRun game;
     private Button backBt;
-    private Label connectingLabel;
+    private Label connectingLabel, headingLbl;
     private WebView loginView;
     private Button openInWebBt;
 
@@ -71,6 +71,7 @@ public class LoginScreen extends VBox {
         });
 
         connectingLabel = new Label("");
+        headingLbl = new Label("ERR");
 
         backBt = new Button("ERR");
         backBt.setOnAction((ActionEvent e) -> {
@@ -84,7 +85,7 @@ public class LoginScreen extends VBox {
         setPadding(new Insets(0, 50, 0, 50));
         setFillWidth(false);
 
-        getChildren().addAll(loginView, new HBox(backBt, openInWebBt), connectingLabel);
+        getChildren().addAll(headingLbl, loginView, new HBox(backBt, openInWebBt), connectingLabel);
     }
 
     private void handleInput(String data) {
@@ -131,7 +132,8 @@ public class LoginScreen extends VBox {
         connectingLabel.setFont(defaultFont);
         backBt.setText(game.language.backBt);
         backBt.setFont(defaultFont);
-
+        headingLbl.setFont(game.language.getHeadingFont());
+        headingLbl.setText(game.language.NetworManagerLoginBt);
         // setSpacing(game.language.getFontSize());
         if (game.config.networkLoggedIn) {
             loginView.getEngine().load("https://v1.api.minortom.net/sso/logout.php?noredir=1");

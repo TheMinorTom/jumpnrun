@@ -42,7 +42,7 @@ public class NetworkManager extends VBox {
     JumpNRun game;
     
     LoginScreen loginScreen;
-    public JoinGameScreen joinGameScreen;
+    public JoinGameScreen joinGameScreenLoggedIn, joinGameScreenNotLoggedIn;
     public CreateGameScreen createGameScreen;
     WaitScreen waitScreen;
     public ChooseMapScreen mapSelectionScreen;
@@ -59,7 +59,8 @@ public class NetworkManager extends VBox {
         game = gamearg;
         
         loginScreen = new LoginScreen(game);
-        joinGameScreen = new JoinGameScreen(game);
+        joinGameScreenLoggedIn = new JoinGameScreen(game, true);
+        joinGameScreenNotLoggedIn = new JoinGameScreen(game, false);
         createGameScreen = new CreateGameScreen(game);
         waitScreen = new WaitScreen(game);
         mapSelectionScreen = new ChooseMapScreen(game);
@@ -76,7 +77,7 @@ public class NetworkManager extends VBox {
         
         joinGameBt = new Button("ERR");
         joinGameBt.setOnAction((ActionEvent e) -> {
-            this.openJoinGameScreen();
+            this.openJoinGameLoggedInScreen();
         });
         joinGameBt.setDisable(true);
         
@@ -153,9 +154,14 @@ public class NetworkManager extends VBox {
         waitScreen.updateStrings();
     }
     
-    public void openJoinGameScreen(){
-        JumpNRun.scene.setRoot(joinGameScreen);
-        joinGameScreen.updateStrings();
+    public void openJoinGameLoggedInScreen(){
+        JumpNRun.scene.setRoot(joinGameScreenLoggedIn);
+        joinGameScreenLoggedIn.updateStrings();
+    }
+    
+    public void openJoinGameNotLoggedInScreen(){
+        JumpNRun.scene.setRoot(joinGameScreenNotLoggedIn);
+        joinGameScreenNotLoggedIn.updateStrings();
     }
     
     public void openCreateGameScreen(){

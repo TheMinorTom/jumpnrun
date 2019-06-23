@@ -55,6 +55,7 @@ public class LanguageEnglish extends Language{
         this.LoginScreenErrorInvalidCharTitle = "Invalid character entered";
         this.LoginScreenErrorInvalidCharText = "Invalid character entered into one or more of the input fields. Try removing all exclamation marks.";
         this.LoginScreenOpenInWebBt = "Open in Webbrowser";
+        this.LoginScreenHeading = "Login";
         
         // Network Play Screen
         this.NetworManagerLoginBt = "Log in";
@@ -71,8 +72,9 @@ public class LanguageEnglish extends Language{
         // Join Game Screen
         this.JoinGNameLabel = "Game Name";
         this.JoinGOkBt = "Go!";
-        
         this.GSkinBt = "Choose a Skin";
+        this.PlayerNameLabel = "Choose a nickname you want to temporary play with:";
+        this.JoinGameServerName = "Serveradress:";
         
         // Choose Game Mode Menu
         this.ChoGmEndlessBt = "Endless";
