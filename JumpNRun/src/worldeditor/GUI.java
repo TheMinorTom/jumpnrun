@@ -161,16 +161,21 @@ public class GUI extends Group {
         blockSizeTextField = new TextField(Double.toString(blockSize));
 
         blockSizeTextField.setOnAction((ActionEvent) -> {
-            try {
-                blockSize = Double.parseDouble(blockSizeTextField.getText());
-                drawWorld();
-                r.setWidth(blockSize);
-                r.setHeight(blockSize);
-            } catch (NumberFormatException e) {
-                blockSizeTextField.setText("Bitte nur Zahlen!");
+            if (blockSizeTextField.getText().toLowerCase().equals("strunz")) {
+                blockChose.unlockStrunz();
+                blockSizeTextField.setText("60.0");
+            } else {
+                try {
+                    blockSize = Double.parseDouble(blockSizeTextField.getText());
+                    drawWorld();
+                    r.setWidth(blockSize);
+                    r.setHeight(blockSize);
+                } catch (NumberFormatException e) {
+                    blockSizeTextField.setText("Bitte nur Zahlen!");
 
-                blockSizeTextField.setText(game.language.WorldEditErrOnlyNumbers);
+                    blockSizeTextField.setText(game.language.WorldEditErrOnlyNumbers);
 
+                }
             }
             requestFocus();
         });
@@ -334,15 +339,13 @@ public class GUI extends Group {
         for (int i = 0; i < worldVector.size(); i++) {
             for (int j = 0; j < worldVector.get(i).size(); j++) {
                 currBlock = worldVector.get(i).get(j);
-                
+
                 currBlock.setX((i * blockSize) + xScroll);
                 currBlock.setY((j * blockSize) + yScroll);
-                
-                
-                
+
             }
         }
-        
+
     }
 
     public void refreshPositions() {
@@ -379,6 +382,7 @@ public class GUI extends Group {
         }
         return returnWorld;
     }
+
     public static Group drawWorldOnlineClient(Vector<Vector<Block>> worldVec, double blockSize) {
         Group returnWorld = new Group();
         for (int i = 0; i < worldVec.size(); i++) {

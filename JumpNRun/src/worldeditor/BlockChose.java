@@ -20,21 +20,32 @@ public class BlockChose extends ContextMenu {
     BlockChose() {
         super();
         for (int i = 0; i < WorldEditor.blocks.length; i++) {
-            MenuItem m = new MenuItem();
-
             Block block = Block.createBlock(WorldEditor.blocks[i]);
-            ImageView imageView = new ImageView(block.getImage());
-            imageView.setFitHeight(30);
-            imageView.setFitWidth(30);
-            m.setGraphic(imageView);
-            m.setText(block.getName());
-            m.setOnAction((ActionEvent e) -> {
-                GUI.setSelectedBlock(block);
-            });
-
-            getItems().add(m);
+            addItem(block);
 
         }
 
+    }
+    public void unlockStrunz() {
+        for (int i = 0; i < WorldEditor.strunz.length; i++) {
+            Block block = Block.createBlock(WorldEditor.strunz[i]);
+            addItem(block);
+
+        }
+    }
+
+    public void addItem(Block block) {
+        MenuItem m = new MenuItem();
+
+        ImageView imageView = new ImageView(block.getImage());
+        imageView.setFitHeight(30);
+        imageView.setFitWidth(30);
+        m.setGraphic(imageView);
+        m.setText(block.getName());
+        m.setOnAction((ActionEvent e) -> {
+            GUI.setSelectedBlock(block);
+        });
+
+        getItems().add(m);
     }
 }

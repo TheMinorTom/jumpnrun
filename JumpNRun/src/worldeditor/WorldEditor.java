@@ -19,7 +19,7 @@ public class WorldEditor {
 
     public static final String configFolderName = "davidjumpnrun";
     public static final String blocksPath = "sprites/blocks/";
-    public static Block[] blocks;
+    public static Block[] blocks, strunz;
     FileWriter output;
 
     public static void setBlocks(Block[] b) {
@@ -36,6 +36,7 @@ public class WorldEditor {
             new Block("WATER_UP", blocksPath, "WaterUp.png", false),
             new Block("WATER", blocksPath, "Water.bmp", false),
             new Block("GRASS", blocksPath, "Grass.bmp", true),
+            new Block("GRASS_NONSOLID", blocksPath, "Grass.bmp", false),
             new Block("DIRT_SOLID", blocksPath, "Dirt.bmp", true),
             new Block("DIRT_NONSOLID", blocksPath, "Dirt.bmp", false),
             new Block("STONE_SOLID", blocksPath, "Stone.bmp", true),
@@ -48,9 +49,28 @@ public class WorldEditor {
             new Block("SAND_NONSOLID", blocksPath, "Sand.bmp", false),
             new Block("MAGMA_ROCK_SOLID", blocksPath, "Magmarock.bmp", true),
             new Block("MAGMA_ROCK_NONSOLID", blocksPath, "Magmarock.bmp", false),
-            new Block("SNOW_SOLID", blocksPath, "Snow.bmp", true),
-            new Block("SNOW_ROCK_NONSOLID", blocksPath, "Snow.bmp", false),
+            new Block("BRICKS_SOLID", blocksPath, "Bricks.bmp", true),
+            new Block("BRICKS_NONSOLID", blocksPath, "Bricks.bmp", false),
+            new Block("ICE_SOLID", blocksPath, "Ice.bmp", true),
+            new Block("ICE_NONSOLID", blocksPath, "Ice.bmp", false),
+            new Block("RED_SOLID", blocksPath, "Red.png", true),
+            new Block("RED_NONSOLID", blocksPath, "Red.png", false),
+            new Block("BLUE_SOLID", blocksPath, "Blue.png", true),
+            new Block("Blue_NONSOLID", blocksPath, "Blue.png", false),
+            new Block("YELLOW_SOLID", blocksPath, "Yellow.png", true),
+            new Block("YELLOW_NONSOLID", blocksPath, "Yellow.png", false),
+            new Block("GREEN_SOLID", blocksPath, "Green.png", true),
+            new Block("GREEN_NONSOLID", blocksPath, "Green.png", false),
+            new Block("CHOCOLATE_SOLID", blocksPath, "Chocolate.png", true),
+            new Block("CHOCOLATE_NONSOLID", blocksPath, "Chocolate.png", false),
+       };
+        
+        strunz = new Block[]{
+            new Block("STRUNZ_SOLID", blocksPath, "Strunz.bmp", true),
+            new Block("STRUNZ_NONSOLID", blocksPath, "Strunz.bmp", false),
        };
     }
+    
+ 
 
 }
