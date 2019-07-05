@@ -47,24 +47,25 @@ public class Server {
             storageLocation = ConfigManager.getStorageLocation();
         }
 
-
-
         Server.server = this;
         System.out.println("Server Hello World");
 
-  
-            Scanner in = new Scanner(System.in);
-            System.out.println("Please enter the DB Connection String");
-            String dbString = in.nextLine();
-            String[] dbCreds = dbString.split("!");
-            try {
+        Scanner in = new Scanner(System.in);
+        System.out.println("Please enter the DB Connection String");
+        String dbString = in.nextLine();
+        String[] dbCreds = dbString.split("!");
+        try {
+            if (true) {
+                int i = 1 / 0;
+            }
             dbConn = new ServerMysqlConnection(dbCreds[0], dbCreds[1], dbCreds[2], dbCreds[3]);
             isDatabaseBlocked = false;
-            } catch(Exception e) {
-                isDatabaseBlocked = true;
-                System.err.println("No database-connection");
-            }
-        
+        } catch (Exception e) {
+            isDatabaseBlocked = true;
+            e.printStackTrace();
+            System.err.println("No database-connection");
+        }
+
         System.out.println("Now starting");
         tcpPort = 26656;
         tcpServer = new HashMap<>();

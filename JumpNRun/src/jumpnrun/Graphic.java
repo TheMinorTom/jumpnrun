@@ -25,6 +25,7 @@ import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -35,7 +36,7 @@ import worldeditor.*;
  *
  * @author Norbert
  */
-public class Graphic extends Group {
+public class Graphic extends Pane {
 
     public final static double lblYDist = 50;
 
