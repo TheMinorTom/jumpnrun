@@ -17,6 +17,8 @@ import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -369,14 +371,14 @@ public class GUI extends Group {
 
     public static Group drawWorld(Vector<Vector<Block>> worldVec, double blockSize) {
         Group returnWorld = new Group();
+        Canvas canvas = new Canvas();
+        returnWorld.getChildren().add(canvas);
+        GraphicsContext gc = canvas.getGraphicsContext2D();
         for (int i = 0; i < worldVec.size(); i++) {
             for (int j = 0; j < worldVec.get(i).size(); j++) {
                 if (worldVec.get(i).get(j) != null) {
                     Block b = worldVec.get(i).get(j);
-                    b.setX(i * blockSize);
-                    b.setY(j * blockSize);
-                    returnWorld.getChildren().add(b);
-
+                    gc.drawImage(b.getImage(), i * blockSize, j * blockSize);
                 }
             }
         }

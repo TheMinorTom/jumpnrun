@@ -135,10 +135,10 @@ public class Graphic extends Pane {
             updateScrolling();
 
         }
-
-        for (int i = (int) (xScroll / blockSize) - 1; (i < worldVector.size()) && (i <= (int) ((xScroll + JumpNRun.getWidth()) / blockSize)); i++) {
+        /*
+        for (int i = (int) (xScroll / blockSize) - 2; (i < worldVector.size()) && (i <= (int) ((xScroll + JumpNRun.getWidth()) / blockSize)+1); i++) {
             if ((i >= 0)) {
-                for (int j = (int) (yScroll / blockSize) - 1; (j < worldVector.get(i).size()) && (j <= (int) ((yScroll + JumpNRun.getHeight()) / blockSize)); j++) {
+                for (int j = (int) (yScroll / blockSize) - 2; (j < worldVector.get(i).size()) && (j <= (int) ((yScroll + JumpNRun.getHeight()) / blockSize)+1); j++) {
                     if (j >= 0) {
                         block = worldVector.get(i).get(j);
                         if (block != null) {
@@ -150,6 +150,8 @@ public class Graphic extends Pane {
                 }
             }
         }
+        */
+        //worldGroup.relocate(xScroll*(-1), yScroll*(-1));
         /*
          worldGroup.setLayoutX(xScroll * (-1));
          worldGroup.setLayoutY(yScroll * (-1));
@@ -159,21 +161,26 @@ public class Graphic extends Pane {
     public void updateWholeWorld() {
 
         Block block;
-        double xScroll = JumpNRun.game.getXScroll() * (-1);
-        double yScroll = JumpNRun.game.getYScroll() * (-1);
+        double xScroll = JumpNRun.game.getXScroll();
+        double yScroll = JumpNRun.game.getYScroll();
+        /*
         for (int i = 0; i < worldVector.size(); i++) {
             for (int j = 0; j < worldVector.get(i).size(); j++) {
                 block = worldVector.get(i).get(j);
                 if (block != null) {
                     // block.relocate((blockSize * i) - xScroll, (blockSize * j) - yScroll);
-                    block.setTranslateX(-1 * xScroll);
-                    block.setTranslateY(-1 * yScroll);
+                    block.setTranslateX(xScroll);
+                    block.setTranslateY(yScroll);
 
                 }
             }
         }
 
         updateScrolling();
+                */
+        //worldGroup.relocate(xScroll, yScroll);
+        worldGroup.setTranslateX(xScroll);
+        worldGroup.setTranslateY(yScroll);
     }
 
     public Graphic(Vector<Vector<Block>> worldVec) {
