@@ -45,7 +45,8 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
     public int index; //Number >= 0
     private int animationStateAsInt;
 
-    private long startTime, now, oldTime, timeElapsed;
+    private long startTime, now, oldTime;
+    double timeElapsed;
     private double timeElapsedSeconds;
 
     private boolean intersectsPlayer = false;
