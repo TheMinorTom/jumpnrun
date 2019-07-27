@@ -95,6 +95,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
 
     private ObservableList<String[]> objectsUpdateArgs;
     
+    double lastX, lastY, posChangeTimer;
 
     public RemotePlayer(Server server, OnlGame game, String pubId, String objectId, String skin, String name, int index, int maxPlayer, String userId, int score) {
         super(index, (game.worldWidth / (maxPlayer + 1)) * (index + 1), OnlGame.spawnY);
@@ -150,6 +151,9 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         isUp = false;
         isDown = false;
         coinsCollected = 0;
+        lastX = 0;
+        lastY = 0;
+        posChangeTimer = 0;
 
     }
 
@@ -202,11 +206,18 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         oldTime = now;
      while (!endGame) {
          now = System.nanoTime();
-         timeElapsed = now - oldTime;
+         timeElapsed = (now - oldTime) / (1000*1000*1000);
          oldTime = now;
-         System.out.println("Time Elapsed (protUpdate): " + (timeElapsed / (1000*1000*1000)));
+         System.out.println("Time Elapsed (protUpdate): " + (timeElapsed));
             
      updateClient();
+     posChangeTimer += timeElapsed;
+     if(lastX != game.getOnlineGameObjects().get(objectId).getXPos() || lastY != game.getOnlineGameObjects().get(objectId).getYPos()) {
+         lastX = game.getOnlineGameObjects().get(objectId).getXPos();
+         lastY = game.getOnlineGameObjects().get(objectId).getYPos();
+         System.out.println("PositionChange: " + posChangeTimer);
+         posChangeTimer = 0;
+     }
          try {
              Thread.sleep(10);
          } catch (InterruptedException ex) {
