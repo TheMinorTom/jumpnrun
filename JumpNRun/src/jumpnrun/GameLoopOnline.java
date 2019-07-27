@@ -24,6 +24,7 @@ public class GameLoopOnline extends AnimationTimer {
     private long oldTime;
     protected double runTime;
     private boolean isInited;
+    private double lastScrollX, lastScrollY;
 
     protected JumpNRun game;
 
@@ -44,6 +45,8 @@ public class GameLoopOnline extends AnimationTimer {
         game = JumpNRun.game;
         isInited = false;
         updateWohleWorldTimer = 0;
+        lastScrollX = 0;
+        lastScrollY = 0;
 
     }
 
@@ -58,11 +61,15 @@ public class GameLoopOnline extends AnimationTimer {
             oldTime = now;
             timeElapsedSecond = timeElapsed / (1000.0d * 1000.0d * 1000.0d);
             updateWohleWorldTimer += timeElapsed;
-            if(updateWohleWorldTimer > 0.5) {
-                JumpNRun.getGraphic().updateWholeWorld();
-                updateWohleWorldTimer = 0;
-            }
-            game.updateScrolling();
+            /*
+             if(updateWohleWorldTimer > 0.5) {
+             JumpNRun.getGraphic().updateWholeWorld();
+             updateWohleWorldTimer = 0;
+             }
+             */
+            
+            JumpNRun.getGraphic().updateScrolling();
+
             updatableObjects.forEach((o) -> {
                 o.updateGraphic(game.getXScroll(), game.getYScroll());
             });
@@ -91,6 +98,13 @@ public class GameLoopOnline extends AnimationTimer {
             }
             JumpNRun.getGraphic().addGraphicFPS();
             JumpNRun.getGraphic().updateFPS(timeElapsedSecond);
+            if (lastScrollX != game.getXScroll() || lastScrollY != game.getYScroll()) {
+                JumpNRun.getGraphic().addScrollDelay(true);
+                lastScrollX = game.getXScroll();
+                lastScrollY = game.getYScroll();
+            } else {
+                JumpNRun.getGraphic().addScrollDelay(false);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

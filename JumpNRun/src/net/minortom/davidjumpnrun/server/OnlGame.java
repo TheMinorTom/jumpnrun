@@ -376,10 +376,10 @@ public class OnlGame implements Runnable {
                     }
                 });
                 if (timeElapsedSeconds > 0.2) {
-                    System.out.println("Lagging at secound check: " + timeElapsedSeconds);
+                    System.out.println("Lagging at second check: " + timeElapsedSeconds);
                     timeElapsedSeconds = 0.2;
                 }
-                System.out.println("Time elapsed seconds: " + timeElapsedSeconds);
+                //System.out.println("Time elapsed seconds: " + timeElapsedSeconds);
                 Thread.sleep(10);
 
             } catch (Exception e) {

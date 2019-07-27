@@ -378,7 +378,9 @@ public class GUI extends Group {
             for (int j = 0; j < worldVec.get(i).size(); j++) {
                 if (worldVec.get(i).get(j) != null) {
                     Block b = worldVec.get(i).get(j);
-                    gc.drawImage(b.getImage(), i * blockSize, j * blockSize);
+                    if (b.getImage() != null) {
+                        gc.drawImage(b.getImage(), i * blockSize, j * blockSize);
+                    }
                 }
             }
         }

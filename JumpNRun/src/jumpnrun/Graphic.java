@@ -45,7 +45,7 @@ public class Graphic extends Pane {
 
     private static Vector<Vector<Block>> worldVector;
     private static Group worldGroup;
-    private static Label leftLbl, rightLbl, timeLabel, serverFPS, graphicFPS;
+    private static Label leftLbl, rightLbl, timeLabel, serverFPS, graphicFPS, averageScrollDelay, scrollChangedRatio;
     private static int deaths1, deaths2, respawnsLeft1, respawnsLeft2;
     private static double blockSize;
     private static Protagonist protagonist1, protagonist2;
@@ -58,7 +58,9 @@ public class Graphic extends Pane {
 
     private boolean onlineScrollingInited = false;
 
-    private int serverFPSCounter, graphicFPSCounter;
+    private int serverFPSCounter, graphicFPSCounter, scrollDelayCounter, scrollDelayChangedCounter, scrollDelayNotChangedCounter;
+    private double scrollDelayAll;
+    private long lastScrollUpdate;
 
     private double fpsTimer;
 
@@ -126,31 +128,23 @@ public class Graphic extends Pane {
     }
 
     public void updateScrolling() {
-        double xScroll = JumpNRun.game.getXScroll() * (-1);
-        double yScroll = JumpNRun.game.getYScroll() * (-1);
-
-        Block block;
-        if ((!onlineScrollingInited) && (xScroll != 0)) {
-            onlineScrollingInited = true;
-            updateScrolling();
-
-        }
+        updateWholeWorld();
         /*
-        for (int i = (int) (xScroll / blockSize) - 2; (i < worldVector.size()) && (i <= (int) ((xScroll + JumpNRun.getWidth()) / blockSize)+1); i++) {
-            if ((i >= 0)) {
-                for (int j = (int) (yScroll / blockSize) - 2; (j < worldVector.get(i).size()) && (j <= (int) ((yScroll + JumpNRun.getHeight()) / blockSize)+1); j++) {
-                    if (j >= 0) {
-                        block = worldVector.get(i).get(j);
-                        if (block != null) {
-                            // block.relocate((blockSize * i) - xScroll, (blockSize * j) - yScroll);
-                            block.setTranslateX(-1 * xScroll);
-                            block.setTranslateY(-1 * yScroll);
-                        }
-                    }
-                }
-            }
-        }
-        */
+         for (int i = (int) (xScroll / blockSize) - 2; (i < worldVector.size()) && (i <= (int) ((xScroll + JumpNRun.getWidth()) / blockSize)+1); i++) {
+         if ((i >= 0)) {
+         for (int j = (int) (yScroll / blockSize) - 2; (j < worldVector.get(i).size()) && (j <= (int) ((yScroll + JumpNRun.getHeight()) / blockSize)+1); j++) {
+         if (j >= 0) {
+         block = worldVector.get(i).get(j);
+         if (block != null) {
+         // block.relocate((blockSize * i) - xScroll, (blockSize * j) - yScroll);
+         block.setTranslateX(-1 * xScroll);
+         block.setTranslateY(-1 * yScroll);
+         }
+         }
+         }
+         }
+         }
+         */
         //worldGroup.relocate(xScroll*(-1), yScroll*(-1));
         /*
          worldGroup.setLayoutX(xScroll * (-1));
@@ -161,26 +155,18 @@ public class Graphic extends Pane {
     public void updateWholeWorld() {
 
         Block block;
-        double xScroll = JumpNRun.game.getXScroll();
-        double yScroll = JumpNRun.game.getYScroll();
-        /*
+        double xScroll = JumpNRun.game.getXScroll() * (-1);
+        double yScroll = JumpNRun.game.getYScroll() * (-1);
+
         for (int i = 0; i < worldVector.size(); i++) {
             for (int j = 0; j < worldVector.get(i).size(); j++) {
                 block = worldVector.get(i).get(j);
                 if (block != null) {
-                    // block.relocate((blockSize * i) - xScroll, (blockSize * j) - yScroll);
-                    block.setTranslateX(xScroll);
-                    block.setTranslateY(yScroll);
-
+                    block.relocate((blockSize * i) - xScroll, (blockSize * j) - yScroll);
                 }
             }
         }
 
-        updateScrolling();
-                */
-        //worldGroup.relocate(xScroll, yScroll);
-        worldGroup.setTranslateX(xScroll);
-        worldGroup.setTranslateY(yScroll);
     }
 
     public Graphic(Vector<Vector<Block>> worldVec) {
@@ -190,7 +176,9 @@ public class Graphic extends Pane {
         worldGroup = GUI.drawWorldOnlineClient(worldVec, worldVec.get(0).get(0).getFitWidth());
         graphicFPS = new Label("Graphic(FPS): 0");
         serverFPS = new Label("Server(FPS): 0");
-        HBox fpsBox = new HBox(graphicFPS, serverFPS);
+        averageScrollDelay = new Label("Average scroll delay: 0");
+        scrollChangedRatio = new Label("Percentage of frames scroll changed: 0%");
+        HBox fpsBox = new HBox(graphicFPS, serverFPS, averageScrollDelay, scrollChangedRatio);
         fpsBox.setLayoutY(300);
         fpsBox.setSpacing(50);
         getChildren().addAll(worldGroup, fpsBox);
@@ -198,6 +186,11 @@ public class Graphic extends Pane {
         serverFPSCounter = 0;
         graphicFPSCounter = 0;
         fpsTimer = 0;
+        scrollDelayCounter = 0;
+        scrollDelayAll = 0;
+        lastScrollUpdate = 0;
+        scrollDelayChangedCounter = 1;
+        scrollDelayNotChangedCounter = 0;
 
     }
 
@@ -437,14 +430,37 @@ public class Graphic extends Pane {
         graphicFPSCounter++;
     }
 
+    public void addScrollDelay(boolean changed) {
+        if (changed) {
+            long now = System.nanoTime();
+            if (lastScrollUpdate == 0) {
+                lastScrollUpdate = now;
+            } else {
+                scrollDelayAll = (now - lastScrollUpdate) / (1000 * 1000);
+                lastScrollUpdate = now;
+                scrollDelayCounter++;
+                scrollDelayChangedCounter++;
+            }
+            
+        } else {
+            scrollDelayNotChangedCounter++;
+
+        }
+    }
+
     public void updateFPS(double timeElapsedSeconds) {
         fpsTimer += timeElapsedSeconds;
         serverFPS.setText("Server(FPS): " + ((int) (serverFPSCounter / fpsTimer)));
-        // graphicFPS.setText("Graphic(FPS): " + ((int) (graphicFPSCounter / fpsTimer)));
-        if (fpsTimer > 5) {
+        graphicFPS.setText("Graphic(FPS): " + ((int) (graphicFPSCounter / fpsTimer)));
+        averageScrollDelay.setText("Last scroll delay: " + (scrollDelayAll));
+        scrollChangedRatio.setText("Percentage of frames scroll changed: " + (100 * scrollDelayChangedCounter / (scrollDelayChangedCounter+scrollDelayNotChangedCounter)) + "%");
+        if (fpsTimer > 2) {
             fpsTimer = 0;
             serverFPSCounter = 0;
             graphicFPSCounter = 0;
+            scrollDelayCounter = 0;
+            scrollDelayChangedCounter = 1;
+            scrollDelayNotChangedCounter = 1;
         }
     }
 

@@ -24,6 +24,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import static javafx.scene.input.KeyCode.*;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
@@ -123,9 +124,6 @@ public class JumpNRun extends Application {
 
         // new DatabaseManager();
         // DB STUFF END
-
-        
-        
         primStage = primaryStage;
         try {
             game = this;
@@ -354,9 +352,15 @@ public class JumpNRun extends Application {
     }
 
     public void updateScrolling() {
-        xScroll = -1 * (localProt.getXPos() - primStage.getWidth() / 2);
-        yScroll = -1 * (localProt.getYPos() - primStage.getHeight() / 4);
-        graphic.updateScrolling();
+        /*
+         if (xScroll != (-1 * (localProt.getXPos() - primStage.getWidth() / 2)) || yScroll != (-1 * (localProt.getYPos() - primStage.getHeight() / 4))) {
+         xScroll = -1 * (localProt.getXPos() - primStage.getWidth() / 2);
+         yScroll = -1 * (localProt.getYPos() - primStage.getHeight() / 4);
+         getGraphic().addServerFPS();
+         } else {
+
+         }
+         */
 
     }
 
@@ -365,6 +369,7 @@ public class JumpNRun extends Application {
         GameObjectType objectType = GameObjectType.values()[Integer.parseInt(objectTypeAsIntAsString)];
         double xPos = Double.parseDouble(xPosString);
         double yPos = Double.parseDouble(yPosString);
+
         int animationStateAsInt = Integer.parseInt(animationStateAsIntAsString);
         boolean alreadyExists = onlineGameObjects.containsKey(objectId);
         if (alreadyExists) {
@@ -373,6 +378,13 @@ public class JumpNRun extends Application {
                 currNode.setVisible(false);
             } else {
                 currNode.setVisible(true);
+            }
+        }
+        if (alreadyExists) {
+            if (onlineGameObjects.get(objectId).equals(localProt)) {
+                if (localProt.getXPos() < xPos) {
+                    getGraphic().addServerFPS();
+                }
             }
         }
         if (animationStateAsInt >= 0) {
@@ -593,10 +605,12 @@ public class JumpNRun extends Application {
     public void updateOnlineObjects(String message) {
         String[] differentObjectsArr = message.split("\\" + NetworkManager.differentObjectsSeperator);
         String[] currArgs = null;
+
         for (String currObject : differentObjectsArr) {
             currArgs = currObject.split("\\" + NetworkManager.subArgsSeperator);
             updateOnlineObject(currArgs[0], currArgs[1], currArgs[2], currArgs[3], currArgs[4]);
         }
+        updateScrolling();
     }
 
     public void endOnlineGame(String message) {
@@ -807,7 +821,7 @@ public class JumpNRun extends Application {
         scene.setRoot(onlineSkinChooseJoinGameLoggedIn);
         ((SkinChooseMenu) onlineSkinChooseJoinGameLoggedIn).updateStrings();
     }
-    
+
     public void openOnlineSkinChooseJoinGameNotMenuLoggedIn() {
         scene.setRoot(onlineSkinChooseJoinGameNotLoggedIn);
         ((SkinChooseMenu) onlineSkinChooseJoinGameNotLoggedIn).updateStrings();
@@ -962,9 +976,9 @@ public class JumpNRun extends Application {
     public Vector<PowerupCollect> getPowerupCollects() {
         return powerupCollects;
     }
-    
+
     public void openPlayOnlineScreen() {
-        ((PlayOnlineScreen)playOnlineScreen).updateStrings();
+        ((PlayOnlineScreen) playOnlineScreen).updateStrings();
         scene.setRoot(playOnlineScreen);
     }
 

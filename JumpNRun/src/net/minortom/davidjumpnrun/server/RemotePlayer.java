@@ -94,6 +94,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
     private boolean spawnprotectionStarted = false;
 
     private ObservableList<String[]> objectsUpdateArgs;
+    
 
     public RemotePlayer(Server server, OnlGame game, String pubId, String objectId, String skin, String name, int index, int maxPlayer, String userId, int score) {
         super(index, (game.worldWidth / (maxPlayer + 1)) * (index + 1), OnlGame.spawnY);
@@ -197,9 +198,13 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
     
      @Override
      public void run() {
-        
-
+        now = System.nanoTime();
+        oldTime = now;
      while (!endGame) {
+         now = System.nanoTime();
+         timeElapsed = now - oldTime;
+         oldTime = now;
+         System.out.println("Time Elapsed (protUpdate): " + (timeElapsed / (1000*1000*1000)));
             
      updateClient();
          try {
