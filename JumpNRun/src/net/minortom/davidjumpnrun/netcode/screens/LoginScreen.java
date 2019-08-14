@@ -48,6 +48,7 @@ public class LoginScreen extends VBox {
                 handleInput(ev.getData());
             }
         });
+        loginView.getEngine().setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3191.0 Safari/537.36");
 
         openInWebBt = new Button();
         openInWebBt.setOnAction((ActionEvent e) -> {
