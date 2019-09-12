@@ -17,6 +17,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -32,6 +33,7 @@ import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -380,13 +382,7 @@ public class JumpNRun extends Application {
                 currNode.setVisible(true);
             }
         }
-        if (alreadyExists) {
-            if (onlineGameObjects.get(objectId).equals(localProt)) {
-                if (localProt.getXPos() < xPos) {
-                    getGraphic().addServerFPS();
-                }
-            }
-        }
+
         if (animationStateAsInt >= 0) {
             switch (objectType) {
                 case PROTAGONIST:
@@ -603,14 +599,17 @@ public class JumpNRun extends Application {
     }
 
     public void updateOnlineObjects(String message) {
-        String[] differentObjectsArr = message.split("\\" + NetworkManager.differentObjectsSeperator);
-        String[] currArgs = null;
+        synchronized (this) {
+            String[] differentObjectsArr = message.split("\\" + NetworkManager.differentObjectsSeperator);
+            String[] currArgs = null;
 
-        for (String currObject : differentObjectsArr) {
-            currArgs = currObject.split("\\" + NetworkManager.subArgsSeperator);
-            updateOnlineObject(currArgs[0], currArgs[1], currArgs[2], currArgs[3], currArgs[4]);
+            for (String currObject : differentObjectsArr) {
+                currArgs = currObject.split("\\" + NetworkManager.subArgsSeperator);
+                updateOnlineObject(currArgs[0], currArgs[1], currArgs[2], currArgs[3], currArgs[4]);
+            }
+            updateScrolling();
+            notify();
         }
-        updateScrolling();
     }
 
     public void endOnlineGame(String message) {
@@ -980,6 +979,10 @@ public class JumpNRun extends Application {
     public void openPlayOnlineScreen() {
         ((PlayOnlineScreen) playOnlineScreen).updateStrings();
         scene.setRoot(playOnlineScreen);
+    }
+    
+    public ProtagonistOnlineClient getLocalProt() {
+        return localProt;
     }
 
 }

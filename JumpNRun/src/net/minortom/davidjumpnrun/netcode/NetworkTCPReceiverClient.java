@@ -7,6 +7,7 @@ package net.minortom.davidjumpnrun.netcode;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import jumpnrun.GameLoopOnline;
 import jumpnrun.Graphic;
 import jumpnrun.JumpNRun;
 import net.minortom.davidjumpnrun.configstore.ConfigManager;
@@ -22,9 +23,12 @@ public class NetworkTCPReceiverClient extends Thread {
     @Override
     public void run() {
         String line;
+        GameLoopOnline gameLoopOnline;
         try {
+            String oldLine = "";
             while ((line = game.networkManager.serverConnection.in.readLine()) != null) {
                 try {
+
                     String[] packageContent = line.split(NetworkManager.infoSeperator);
                     if (!packageContent[0].equals(NetworkManager.keyword)) {
                         System.err.println("Invalid package received: " + line);
@@ -111,8 +115,8 @@ public class NetworkTCPReceiverClient extends Thread {
                         case OGAME_UPDATEOBJECT:
                             game.updateOnlineObject(packageContent[2], packageContent[3], packageContent[4], packageContent[5], packageContent[6]);
                             break;
-                        case OGAME_UPDATEOBJECTS:
-                            game.updateOnlineObjects(packageContent[2]);
+                        case OGAME_UPDATEOBJECTS:          
+                                GameLoopOnline.getGameLoopOnline().setCurrentUpdateString(packageContent[2]);
                             break;
                         case OGAME_START:
                             JumpNRun.getGraphic().drawOnlineOverlay();
@@ -136,6 +140,7 @@ public class NetworkTCPReceiverClient extends Thread {
                     System.err.println(line);
                 }
                 //System.err.println(line);
+
             }
         } catch (IOException ex) {
             game.networkManager.serverConnection.currentConnState = ServerConnection.ConnState.ERROR_INTERNAL;

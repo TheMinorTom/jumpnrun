@@ -6,13 +6,20 @@
 package jumpnrun;
 
 import java.io.File;
+import java.util.concurrent.atomic.AtomicInteger;
+import javafx.application.Platform;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import jumpnrun.Protagonist.CostumeViewport;
@@ -35,7 +42,7 @@ public class ProtagonistOnlineClient extends ImageView implements OnlineUpdatabl
     private double spawnX, spawnY;
     private Label respawnTimerLabel;
     private String spritePath;
-    private double xPos, yPos;
+    private DoubleProperty xPos, yPos;
     private int indexId;
     private KeyCode[] protControlls;
     private Rectangle2D currViewport;
@@ -44,8 +51,9 @@ public class ProtagonistOnlineClient extends ImageView implements OnlineUpdatabl
         protControlls = new KeyCode[]{left, right, jump, hit, shoot, use, down};
         spawnY = y;
         spawnX = x;
-        yPos = y;
-        xPos = x;
+        yPos = new SimpleDoubleProperty(y);
+        xPos = new SimpleDoubleProperty(x);
+
         this.pubId = pubId;
         this.userId = userId;
         nameLbl = new Label(name);
@@ -78,9 +86,15 @@ public class ProtagonistOnlineClient extends ImageView implements OnlineUpdatabl
 
     @Override
     public void updatePos(double x, double y, int viewPort) {
+        if (xPos.get() != x || yPos.get() != y) {
+            Platform.runLater(() -> {
+                //JumpNRun.getGraphic().getChildren().add(new Circle(xPos.get(), yPos.get(), 1, Color.GREEN));
+                // JumpNRun.getGraphic().addServerFPS();
 
-        xPos = x;
-        yPos = y;
+            });
+        }
+        xPos.set(x);
+        yPos.set(y);
         if (viewPort >= 0) {
             currViewport = CostumeViewport.values()[viewPort].getRect();
         } else {
@@ -91,11 +105,19 @@ public class ProtagonistOnlineClient extends ImageView implements OnlineUpdatabl
 
     @Override
     public void updateGraphic(double xScroll, double yScroll) {
-        setX(xPos + xScroll);
-        setY(yPos + yScroll);
+        if ((getX() != xPos.get()) || (getY() != yPos.get())) {
+            //JumpNRun.getGraphic().getChildren().add(new Circle(xPos.get(), yPos.get(), 1, Color.RED));
+            //JumpNRun.getGraphic().addGraphicFPS();
+        }
+
+        setX(xPos.get());
+        setY(yPos.get());
+        
+
         setViewport(currViewport);
         nameLbl.setLayoutX((getX() + width / 2) - (nameLbl.getWidth() / 2));
         nameLbl.setLayoutY(getY() - 40);
+
     }
 
     public Label getNameLabel() {
@@ -107,10 +129,10 @@ public class ProtagonistOnlineClient extends ImageView implements OnlineUpdatabl
     }
 
     public double getXPos() {
-        return xPos;
+        return xPos.get();
     }
 
     public double getYPos() {
-        return yPos;
+        return yPos.get();
     }
 }

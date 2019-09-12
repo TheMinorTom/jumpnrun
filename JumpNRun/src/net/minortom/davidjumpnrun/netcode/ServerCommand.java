@@ -45,5 +45,6 @@ public enum ServerCommand {
     OGAME_REMOVEOBJECT, //server          objectId
     OGAME_UPDATE_RESPAWNTIMER, //server   time
     OGAME_ENDGAME,      //server          List of players+args seperated by updateObjectsSeperator; args: placement, name, deaths, kills
+    OGAME_NEXTFRAME;    //client          pubID; gameName
 
 }
