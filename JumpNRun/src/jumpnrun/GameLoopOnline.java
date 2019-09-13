@@ -94,8 +94,8 @@ public class GameLoopOnline extends AnimationTimer {
                  condition.await();
                  afterWait = getTimeInMillis();
                  */
-                game.networkManager.serverConnection.getCommandHandler().sendCommand(ServerCommand.OGAME_NEXTFRAME, new String[]{game.getLocalProt().pubId, game.gameName});
-                this.wait();    //Waiting for new update String
+                //game.networkManager.serverConnection.getCommandHandler().sendCommand(ServerCommand.OGAME_NEXTFRAME, new String[]{game.getLocalProt().pubId, game.gameName});
+                //this.wait();    //Waiting for new update String
                 if (currentObjectUpdateString != newObjectUpdateString) {
                     JumpNRun.getGraphic().addGraphicFPS();
                 }
@@ -178,7 +178,7 @@ public class GameLoopOnline extends AnimationTimer {
             }
 
             newObjectUpdateString = s;
-            this.notify();
+            //this.notify();
 
         }
     }

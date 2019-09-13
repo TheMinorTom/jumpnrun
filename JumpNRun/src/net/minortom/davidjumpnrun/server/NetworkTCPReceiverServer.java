@@ -133,12 +133,7 @@ public class NetworkTCPReceiverServer extends Thread {
                         case OGAME_KEYRELEASE:
                             server.games.get(packageContent[3]).getPlayers().get(packageContent[2]).handleKeyRelease(packageContent[4]);
                             break;
-                        case OGAME_NEXTFRAME:
-                            synchronized(this) {
-                                server.games.get(packageContent[3]).getPlayers().get(packageContent[2]).notify();
-                            }
-                            
-                            break;
+
                     }
 
                 } catch (Exception e) {
