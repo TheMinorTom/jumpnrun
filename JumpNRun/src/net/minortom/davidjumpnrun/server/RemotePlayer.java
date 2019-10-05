@@ -212,9 +212,8 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
             while (!endGame) {
                 now = System.nanoTime();
                 nowInMillis = now / ((1000)*(1000));
-                timeElapsed = (now - oldTime) / (1000 * 1000 * 1000);
+                timeElapsed = ((double)(now - oldTime)) / (1000.0d * 1000.0d * 1000.0d);
                 oldTime = now;
-                System.out.println("Time Elapsed (protUpdate): " + (timeElapsed));
 
                 updateClient();
                 posChangeTimer += timeElapsed;
@@ -224,12 +223,14 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
                     System.out.println("PositionChange: " + posChangeTimer);
                     posChangeTimer = 0;
                 }
-                if(framesAlready > serverFPS) {
+                if(framesAlready == serverFPS) {
                     framesAlready = 0;
                 }
                 framesAlready++;
                 try {
-                    Thread.sleep((long)((((Math.floor(nowInMillis/1000)+1)*1000)-nowInMillis)/((serverFPS-framesAlready)+1)));
+                    long timeout = (long)((((Math.floor(nowInMillis/1000)+1)*1000)-nowInMillis)/((serverFPS-framesAlready)+1));
+                    // System.out.println("Timeout:" + timeout + "    =      (long)((((Math.floor(" + nowInMillis + "/1000)+1)*1000)-" + nowInMillis + ")/((" + serverFPS + "-" + framesAlready + ")+1))" + "              =               (long)(" + (((Math.floor(nowInMillis/1000)+1)*1000)-nowInMillis) + " / " + ((serverFPS-framesAlready)+1));
+                    Thread.sleep(timeout);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
