@@ -169,15 +169,18 @@ public class GameLoopOnline extends AnimationTimer {
             }
 
             notifyCounter++;
-            JumpNRun.getGraphic().addServerFPS();
+            
             int now = getTimeInMillis();
             allNotifyTime += (now - lastNotify);
             lastNotify = now;
             if (getTimeInMillis() % 50 == 0) {
                 System.out.println("Average notify time: " + (int) (((double) allNotifyTime) / ((double) notifyCounter)));
             }
-
-            newObjectUpdateString = s;
+            if (!s.equals(newObjectUpdateString)) {
+                JumpNRun.getGraphic().addServerFPS();
+                newObjectUpdateString = s;
+            }
+            //newObjectUpdateString = s;
             //this.notify();
 
         }

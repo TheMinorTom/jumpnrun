@@ -292,19 +292,13 @@ public class OnlGame implements Runnable {
         isStarted = true;
         while (!ended) {
             try {
+                System.out.println("UPDATE");
                 now = System.nanoTime();
                 timeElapsed = now - oldTime;
                 oldTime = now;
                 timeElapsedSeconds = timeElapsed / (1000.0d * 1000.0d * 1000.0d);
 
-                fpsCounter++;
-                fpsTimer += timeElapsedSeconds;
-                if (fpsTimer > 3) {
-                    System.out.println("--------------------------------------------------------\nServerfps :" + ((int) (fpsCounter / fpsTimer)) + "\n--------------------------------------------------------");
-                    fpsCounter = 0;
-                    fpsTimer = 0;
-                }
-
+               
                 if (timeElapsedSeconds > 0.1) {
                     System.out.println("Lagging: " + timeElapsedSeconds);
                     timeElapsedSeconds = 0.1;
@@ -380,7 +374,11 @@ public class OnlGame implements Runnable {
                     timeElapsedSeconds = 0.2;
                 }
                 //System.out.println("Time elapsed seconds: " + timeElapsedSeconds);
-                Thread.sleep(10);
+                try {
+                Thread.sleep(5);
+                } catch (InterruptedException e) {
+                    
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -401,8 +399,8 @@ public class OnlGame implements Runnable {
     public void summonPowerup() {
         boolean isSummoned = false;
         while (!isSummoned) {
-            int xIndex = (int) (System.nanoTime() % (worldVector.size() - 2));
-            int yIndex = (int) (System.nanoTime() % (worldVector.get(0).size() - 2));
+            int xIndex = (int) (Math.random() * (worldVector.size() - 2));
+            int yIndex = (int) (Math.random() * (worldVector.get(0).size() - 2));
             Block currBlock = worldVector.get(xIndex + 1).get(yIndex + 1);
             if (!currBlock.getIsSolid()) {
                 Block blockUnder = worldVector.get(xIndex + 1).get(yIndex + 2);

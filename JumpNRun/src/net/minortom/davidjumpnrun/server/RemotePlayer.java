@@ -99,6 +99,8 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
     double lastX, lastY, posChangeTimer;
     
     public static double serverFPS = 60;
+    
+    public ObservableList<String[]> oldArgs;
 
     public RemotePlayer(Server server, OnlGame game, String pubId, String objectId, String skin, String name, int index, int maxPlayer, String userId, int score) {
         super(index, (game.worldWidth / (maxPlayer + 1)) * (index + 1), OnlGame.spawnY);
@@ -157,6 +159,8 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         lastX = 0;
         lastY = 0;
         posChangeTimer = 0;
+        
+        oldArgs = FXCollections.observableArrayList();
 
     }
 
@@ -188,8 +192,10 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
                 needsToUpdatePowerup = false;
                 objectsUpdateArgs.add(new String[]{currentPowerup.getObjectId(), String.valueOf(currentPowerup.getObjectTypeAsInt()), "0", "0", String.valueOf(currentPowerup.getAnimationState())});
             }
+
             server.tcpServer.get(pubId).getCommandHandler().sendUpdateCommand(objectsUpdateArgs);
 
+            
             if (serverCommandsToSend.size() > 0) {
                 for (int i = 0; i < serverCommandsToSend.size(); i++) {
                     server.tcpServer.get(pubId).getCommandHandler().sendCommand(serverCommandsToSend.get(i), argsToSend.get(i));
@@ -206,8 +212,7 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
     public void run() {
         now = System.nanoTime();
         oldTime = now;
-        synchronized (server.tcpServer.get(pubId)) {
-            int framesAlready = 0;
+
             double nowInMillis;
             while (!endGame) {
                 now = System.nanoTime();
@@ -217,23 +222,21 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
 
                 updateClient();
                 posChangeTimer += timeElapsed;
-                if (lastX != game.getOnlineGameObjects().get(objectId).getXPos() || lastY != game.getOnlineGameObjects().get(objectId).getYPos()) {
+                if (lastX == game.getOnlineGameObjects().get(objectId).getXPos() || lastY == game.getOnlineGameObjects().get(objectId).getYPos()) {
                     lastX = game.getOnlineGameObjects().get(objectId).getXPos();
                     lastY = game.getOnlineGameObjects().get(objectId).getYPos();
-                    System.out.println("PositionChange: " + posChangeTimer);
+                    System.out.println("No positionChange: " + " at: " + System.currentTimeMillis());
                     posChangeTimer = 0;
                 }
-                if(framesAlready == serverFPS) {
-                    framesAlready = 0;
-                }
-                framesAlready++;
-                try {
-                    long timeout = (long)((((Math.floor(nowInMillis/1000)+1)*1000)-nowInMillis)/((serverFPS-framesAlready)+1));
+
+
                     // System.out.println("Timeout:" + timeout + "    =      (long)((((Math.floor(" + nowInMillis + "/1000)+1)*1000)-" + nowInMillis + ")/((" + serverFPS + "-" + framesAlready + ")+1))" + "              =               (long)(" + (((Math.floor(nowInMillis/1000)+1)*1000)-nowInMillis) + " / " + ((serverFPS-framesAlready)+1));
-                    Thread.sleep(timeout);
+                    //Thread.sleep(timeout);
+                try {
+                    Thread.sleep(16);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                }
+                
             }
         }
 
@@ -243,6 +246,8 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
     }
 
     public void update(double timeElapsedSeconds) {
+        
+        
 
         remotePitchfork.setX(xPos);
         remotePitchfork.setY(yPos);
