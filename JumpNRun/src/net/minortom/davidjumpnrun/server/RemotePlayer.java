@@ -194,7 +194,6 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
             }
 
             server.tcpServer.get(pubId).getCommandHandler().sendUpdateCommand(objectsUpdateArgs);
-            System.out.println("Update sent");
 
             
             if (serverCommandsToSend.size() > 0) {
@@ -223,14 +222,6 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
                 oldTime = now;
 
                 updateClient();
-                posChangeTimer += timeElapsed;
-                if (lastX == game.getOnlineGameObjects().get(objectId).getXPos() || lastY == game.getOnlineGameObjects().get(objectId).getYPos()) {
-                    lastX = game.getOnlineGameObjects().get(objectId).getXPos();
-                    lastY = game.getOnlineGameObjects().get(objectId).getYPos();
-                    System.out.println("No positionChange: " + " at: " + System.currentTimeMillis());
-                    posChangeTimer = 0;
-                }
-
 
                     // System.out.println("Timeout:" + timeout + "    =      (long)((((Math.floor(" + nowInMillis + "/1000)+1)*1000)-" + nowInMillis + ")/((" + serverFPS + "-" + framesAlready + ")+1))" + "              =               (long)(" + (((Math.floor(nowInMillis/1000)+1)*1000)-nowInMillis) + " / " + ((serverFPS-framesAlready)+1));
                     //Thread.sleep(timeout);
