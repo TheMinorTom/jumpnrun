@@ -194,11 +194,13 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
             }
 
             server.tcpServer.get(pubId).getCommandHandler().sendUpdateCommand(objectsUpdateArgs);
+            System.out.println("Update sent");
 
             
             if (serverCommandsToSend.size() > 0) {
                 for (int i = 0; i < serverCommandsToSend.size(); i++) {
                     server.tcpServer.get(pubId).getCommandHandler().sendCommand(serverCommandsToSend.get(i), argsToSend.get(i));
+                    
                 }
                 serverCommandsToSend.clear();
                 argsToSend.clear();
