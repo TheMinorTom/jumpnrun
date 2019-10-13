@@ -87,15 +87,6 @@ public class GameLoopOnline extends AnimationTimer {
         updateWohleWorldTimer += timeElapsed;
         synchronized (this) {
             try {
-                /*
-                 lock.lock();
-
-                 beforeWait = getTimeInMillis();
-                 condition.await();
-                 afterWait = getTimeInMillis();
-                 */
-                //game.networkManager.serverConnection.getCommandHandler().sendCommand(ServerCommand.OGAME_NEXTFRAME, new String[]{game.getLocalProt().pubId, game.gameName});
-                //this.wait();    //Waiting for new update String
                 if (currentObjectUpdateString != newObjectUpdateString) {
                     JumpNRun.getGraphic().addGraphicFPS();
                 }
@@ -144,11 +135,6 @@ public class GameLoopOnline extends AnimationTimer {
                 } else {
                     JumpNRun.getGraphic().addScrollDelay(false);
                 }
-                waitCounter++;
-                allWaitTime += (afterWait - beforeWait);
-                if (getTimeInMillis() % 50 == 0) {
-                    System.out.println("Average wait time: " + ((double) allWaitTime) / ((double) waitCounter));
-                }
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -163,25 +149,10 @@ public class GameLoopOnline extends AnimationTimer {
     }
 
     public void setCurrentUpdateString(String s) {
-        synchronized (this) {
-            if (lastNotify == 0) {
-                lastNotify = getTimeInMillis();
-            }
 
-            notifyCounter++;
-            
-            int now = getTimeInMillis();
-            allNotifyTime += (now - lastNotify);
-            lastNotify = now;
-            if (getTimeInMillis() % 50 == 0) {
-                System.out.println("Average notify time: " + (int) (((double) allNotifyTime) / ((double) notifyCounter)));
-            }
-            if (!s.equals(newObjectUpdateString)) {
-                JumpNRun.getGraphic().addServerFPS();
-                newObjectUpdateString = s;
-            }
-            //newObjectUpdateString = s;
-            //this.notify();
+        if (!s.equals(newObjectUpdateString)) {
+            JumpNRun.getGraphic().addServerFPS();
+            newObjectUpdateString = s;
 
         }
     }

@@ -88,8 +88,6 @@ public class ProtagonistOnlineClient extends ImageView implements OnlineUpdatabl
     public void updatePos(double x, double y, int viewPort) {
         if (xPos.get() != x || yPos.get() != y) {
             Platform.runLater(() -> {
-                //JumpNRun.getGraphic().getChildren().add(new Circle(xPos.get(), yPos.get(), 1, Color.GREEN));
-                // JumpNRun.getGraphic().addServerFPS();
 
             });
         }
@@ -106,12 +104,10 @@ public class ProtagonistOnlineClient extends ImageView implements OnlineUpdatabl
     @Override
     public void updateGraphic(double xScroll, double yScroll) {
         if ((getX() != xPos.get()) || (getY() != yPos.get())) {
-            //JumpNRun.getGraphic().getChildren().add(new Circle(xPos.get(), yPos.get(), 1, Color.RED));
-            //JumpNRun.getGraphic().addGraphicFPS();
         }
 
-        setX(xPos.get());
-        setY(yPos.get());
+        setX(xPos.get()+xScroll);
+        setY(yPos.get()+yScroll);
         
 
         setViewport(currViewport);

@@ -872,8 +872,8 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
         return trucks;
     }
 
-    public double getXSpd() {
-        return xSpeed;
+    public double getTotXSpd() {
+        return xSpeed * spdFactor;
     }
 
     public double getYSpd() {

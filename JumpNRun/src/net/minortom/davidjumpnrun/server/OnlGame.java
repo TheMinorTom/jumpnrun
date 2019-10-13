@@ -292,7 +292,6 @@ public class OnlGame implements Runnable {
         isStarted = true;
         while (!ended) {
             try {
-                System.out.println("UPDATE");
                 now = System.nanoTime();
                 timeElapsed = now - oldTime;
                 oldTime = now;
@@ -443,9 +442,9 @@ public class OnlGame implements Runnable {
     public void generateShoot(RemotePlayer p) {
         RemoteUpdatableObject shoot;
         if (p.isFacingLeft()) {
-            shoot = new RemoteUpdatableObject(nextObjectId(), Shoot.AnimationState.LEFT.getRect(), GameObjectType.SHOOT, p.getRemoteGun().getX() + 40, p.getRemoteGun().getY(), -1000 + p.getXSpd(), p.getXSpd(), 0, 200, this, p, Shoot.AnimationState.RIGHT.ordinal());
+            shoot = new RemoteUpdatableObject(nextObjectId(), Shoot.AnimationState.LEFT.getRect(), GameObjectType.SHOOT, p.getRemoteGun().getX() + 40, p.getRemoteGun().getY(), -1000 + p.getTotXSpd(), p.getTotXSpd(), 0, 200, this, p, Shoot.AnimationState.RIGHT.ordinal());
         } else {
-            shoot = new RemoteUpdatableObject(nextObjectId(), Shoot.AnimationState.LEFT.getRect(), GameObjectType.SHOOT, p.getRemoteGun().getX() + 40, p.getRemoteGun().getY(), 1000 + p.getXSpd(), p.getXSpd(), 0, 200, this, p, Shoot.AnimationState.RIGHT.ordinal());
+            shoot = new RemoteUpdatableObject(nextObjectId(), Shoot.AnimationState.LEFT.getRect(), GameObjectType.SHOOT, p.getRemoteGun().getX() + 40, p.getRemoteGun().getY(), 1000 + p.getTotXSpd(), p.getTotXSpd(), 0, 200, this, p, Shoot.AnimationState.RIGHT.ordinal());
         }
         addShoot(shoot);
     }
@@ -453,9 +452,9 @@ public class OnlGame implements Runnable {
     public void generateMachinePistolShoot(RemotePlayer p) {
         RemoteUpdatableObject shoot;
         if (p.isFacingLeft()) {
-            shoot = new RemoteUpdatableObject(nextObjectId(), Shoot.AnimationState.LEFT.getRect(), GameObjectType.SHOOT, p.getRemoteGun().getX() + 40, p.getRemoteGun().getY(), -500 + p.getXSpd(), p.getXSpd(), 0, 150, this, p, Shoot.AnimationState.RIGHT.ordinal());
+            shoot = new RemoteUpdatableObject(nextObjectId(), Shoot.AnimationState.LEFT.getRect(), GameObjectType.SHOOT, p.getRemoteGun().getX() + 40, p.getRemoteGun().getY(), -500 + p.getTotXSpd(), p.getTotXSpd(), 0, 150, this, p, Shoot.AnimationState.RIGHT.ordinal());
         } else {
-            shoot = new RemoteUpdatableObject(nextObjectId(), Shoot.AnimationState.LEFT.getRect(), GameObjectType.SHOOT, p.getRemoteGun().getX() + 40, p.getRemoteGun().getY(), 500 + p.getXSpd(), p.getXSpd(), 0, 150, this, p, Shoot.AnimationState.RIGHT.ordinal());
+            shoot = new RemoteUpdatableObject(nextObjectId(), Shoot.AnimationState.LEFT.getRect(), GameObjectType.SHOOT, p.getRemoteGun().getX() + 40, p.getRemoteGun().getY(), 500 + p.getTotXSpd(), p.getTotXSpd(), 0, 150, this, p, Shoot.AnimationState.RIGHT.ordinal());
         }
         addShoot(shoot);
     }

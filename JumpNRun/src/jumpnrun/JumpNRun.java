@@ -354,15 +354,13 @@ public class JumpNRun extends Application {
     }
 
     public void updateScrolling() {
-        /*
-         if (xScroll != (-1 * (localProt.getXPos() - primStage.getWidth() / 2)) || yScroll != (-1 * (localProt.getYPos() - primStage.getHeight() / 4))) {
-         xScroll = -1 * (localProt.getXPos() - primStage.getWidth() / 2);
-         yScroll = -1 * (localProt.getYPos() - primStage.getHeight() / 4);
-         getGraphic().addServerFPS();
-         } else {
 
-         }
-         */
+        if (xScroll != (-1 * (localProt.getXPos() - primStage.getWidth() / 2)) || yScroll != (-1 * (localProt.getYPos() - primStage.getHeight() / 4))) {
+            xScroll = -1 * (localProt.getXPos() - primStage.getWidth() / 2);
+            yScroll = -1 * (localProt.getYPos() - primStage.getHeight() / 4);
+        } else {
+
+        }
 
     }
 
@@ -980,7 +978,7 @@ public class JumpNRun extends Application {
         ((PlayOnlineScreen) playOnlineScreen).updateStrings();
         scene.setRoot(playOnlineScreen);
     }
-    
+
     public ProtagonistOnlineClient getLocalProt() {
         return localProt;
     }

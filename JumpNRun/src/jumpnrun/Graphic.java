@@ -42,6 +42,7 @@ public class Graphic extends Pane {
 
     public static Font lblFont = new Font("Cooper Black", 30);
     public final static double lblXDist = 50;
+    public final static boolean SHOW_FPS = true;
 
     private static Vector<Vector<Block>> worldVector;
     private static Group worldGroup;
@@ -129,22 +130,24 @@ public class Graphic extends Pane {
 
     public void updateScrolling() {
         updateWholeWorld();
+        
         /*
-         for (int i = (int) (xScroll / blockSize) - 2; (i < worldVector.size()) && (i <= (int) ((xScroll + JumpNRun.getWidth()) / blockSize)+1); i++) {
-         if ((i >= 0)) {
-         for (int j = (int) (yScroll / blockSize) - 2; (j < worldVector.get(i).size()) && (j <= (int) ((yScroll + JumpNRun.getHeight()) / blockSize)+1); j++) {
-         if (j >= 0) {
-         block = worldVector.get(i).get(j);
-         if (block != null) {
-         // block.relocate((blockSize * i) - xScroll, (blockSize * j) - yScroll);
-         block.setTranslateX(-1 * xScroll);
-         block.setTranslateY(-1 * yScroll);
-         }
-         }
-         }
-         }
-         }
-         */
+        for (int i = (int) (xScroll / blockSize) - 2; (i < worldVector.size()) && (i <= (int) ((xScroll + JumpNRun.getWidth()) / blockSize) + 1); i++) {
+            if ((i >= 0)) {
+                for (int j = (int) (yScroll / blockSize) - 2; (j < worldVector.get(i).size()) && (j <= (int) ((yScroll + JumpNRun.getHeight()) / blockSize) + 1); j++) {
+                    if (j >= 0) {
+                        block = worldVector.get(i).get(j);
+                        if (block != null) {
+                            // block.relocate((blockSize * i) - xScroll, (blockSize * j) - yScroll);
+                            block.setTranslateX(-1 * xScroll);
+                            block.setTranslateY(-1 * yScroll);
+                        }
+                    }
+                }
+            }
+        }
+        */
+
         //worldGroup.relocate(xScroll*(-1), yScroll*(-1));
         /*
          worldGroup.setLayoutX(xScroll * (-1));
@@ -181,7 +184,10 @@ public class Graphic extends Pane {
         HBox fpsBox = new HBox(graphicFPS, serverFPS, averageScrollDelay, scrollChangedRatio);
         fpsBox.setLayoutY(300);
         fpsBox.setSpacing(50);
-        getChildren().addAll(worldGroup, fpsBox);
+        getChildren().addAll(worldGroup);
+        if(SHOW_FPS) {
+            getChildren().add(fpsBox);
+        }
         blockSize = worldVec.get(0).get(0).getFitHeight();
         serverFPSCounter = 0;
         graphicFPSCounter = 0;
@@ -441,7 +447,7 @@ public class Graphic extends Pane {
                 scrollDelayCounter++;
                 scrollDelayChangedCounter++;
             }
-            
+
         } else {
             scrollDelayNotChangedCounter++;
 
@@ -453,7 +459,7 @@ public class Graphic extends Pane {
         serverFPS.setText("Server(FPS): " + ((int) (serverFPSCounter / fpsTimer)));
         graphicFPS.setText("Graphic(FPS): " + ((int) (graphicFPSCounter / fpsTimer)));
         averageScrollDelay.setText("Last scroll delay: " + (scrollDelayAll));
-        scrollChangedRatio.setText("Percentage of frames scroll changed: " + (100 * scrollDelayChangedCounter / (scrollDelayChangedCounter+scrollDelayNotChangedCounter)) + "%");
+        scrollChangedRatio.setText("Percentage of frames scroll changed: " + (100 * scrollDelayChangedCounter / (scrollDelayChangedCounter + scrollDelayNotChangedCounter)) + "%");
         if (fpsTimer > 2) {
             fpsTimer = 0;
             serverFPSCounter = 0;
