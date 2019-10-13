@@ -455,7 +455,6 @@ public class RemotePlayer extends Protagonist implements Runnable, OnlineGameObj
     }
 
     void handleKeyPress(String action) {
-        System.out.println("Keypress!"); /////!!!!!!!!!!!!!!!!!!!!
         switch (action.toUpperCase()) {
             case "LEFT":
                 doLeft();
