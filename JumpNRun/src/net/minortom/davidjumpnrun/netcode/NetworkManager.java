@@ -242,6 +242,10 @@ public class NetworkManager extends VBox {
         getChildren().addAll(loginBt, leaderboardBt, backBt);
     }
 
+    public void updateCreateGameNickName(String name) {     //LOCAL GAME
+        createGameScreenLocal.setNickname(name);
+    }
+    
     public void shutdown() {
         try {
             serverConnection.end();

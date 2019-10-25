@@ -61,7 +61,7 @@ public class PlayLocalScreen extends VBox {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 setButtonsDisabled(newValue.equals("") || (newValue == null));
-                
+                game.networkManager.updateCreateGameNickName(newValue);
             }
 
         });

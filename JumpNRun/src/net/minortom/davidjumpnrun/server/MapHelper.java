@@ -92,4 +92,26 @@ public class MapHelper {
         
         return everything;
     }
+    
+    public static String getMapAbsPath(String mapPath) {
+        String everything = "";
+        
+        try(BufferedReader br = new BufferedReader(new FileReader(mapPath))) {
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+            
+            
+            
+            while (line != null) {
+                sb.append(line);
+                sb.append(System.lineSeparator());
+                line = br.readLine();
+            }
+            everything = sb.toString();
+        } catch (Exception e) {
+            
+        }
+        
+        return everything;
+    }
 }

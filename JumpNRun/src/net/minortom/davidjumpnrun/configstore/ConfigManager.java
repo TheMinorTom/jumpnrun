@@ -177,6 +177,31 @@ public class ConfigManager {
 
                 return in;
             }
+        } else if (((game != null)) && ((Server.server != null))) {
+            String appdataUri = game.config.customPath;
+            if (appdataUri.isEmpty()) {
+                appdataUri = JumpNRun.sourcePath;
+            }
+            try {
+                InputStream in = new FileInputStream(appdataUri + spezUri);
+                return in;
+            } catch (FileNotFoundException e) {
+                System.err.println("File at " + appdataUri + spezUri + " not found.");
+                error("World not Found!", "File at " + appdataUri + spezUri + " not found.");
+                DirectoryChooser dirChooser = new DirectoryChooser();
+                dirChooser.setTitle("Select a file source path, the default one didn't work");
+                File file = dirChooser.showDialog(game.getPrimStage());
+                game.config.customPath = file.getPath() + "/";
+                saveConfiguration(game.config);
+                InputStream in;
+                try {
+                    in = new FileInputStream(game.config.customPath + spezUri);
+                } catch (FileNotFoundException ex) {
+                    return null;
+                }
+
+                return in;
+            }
         } else {
             throw new UnsupportedOperationException("Invalid configuration");
         }

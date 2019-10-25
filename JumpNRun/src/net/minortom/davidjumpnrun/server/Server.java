@@ -71,6 +71,7 @@ public class Server {
             }
         } else {
             isLocal = true;
+            isDatabaseBlocked = true;
         }
         System.out.println("Now starting");
 

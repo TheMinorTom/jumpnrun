@@ -122,7 +122,12 @@ public class OnlGame implements Runnable {
         }
         counterLabels.add(gameTimer);
 
-        mapText = MapHelper.getMap(MapHelper.getMapCfgFile().get(mapName).fileName);
+        if (server.isLocal) {
+            mapText = MapHelper.getMapAbsPath(mapName);
+        } else {
+
+            mapText = MapHelper.getMap(MapHelper.getMapCfgFile().get(mapName).fileName);
+        }
         worldVector = IO.openWorldForServer(mapText, Server.getBlocksFolder());
         worldWidth = worldVector.size() * worldVector.get(0).get(0).getFitWidth();
         blockSize = worldVector.get(0).get(0).getFitWidth();
@@ -297,7 +302,6 @@ public class OnlGame implements Runnable {
                 oldTime = now;
                 timeElapsedSeconds = timeElapsed / (1000.0d * 1000.0d * 1000.0d);
 
-               
                 if (timeElapsedSeconds > 0.1) {
                     System.out.println("Lagging: " + timeElapsedSeconds);
                     timeElapsedSeconds = 0.1;
@@ -374,9 +378,9 @@ public class OnlGame implements Runnable {
                 }
                 //System.out.println("Time elapsed seconds: " + timeElapsedSeconds);
                 try {
-                Thread.sleep(5);
+                    Thread.sleep(5);
                 } catch (InterruptedException e) {
-                    
+
                 }
 
             } catch (Exception e) {

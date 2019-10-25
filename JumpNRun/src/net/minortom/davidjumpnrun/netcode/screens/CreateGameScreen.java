@@ -292,7 +292,7 @@ public class CreateGameScreen extends VBox {
                 game.launchLocalSever();
 
                 game.networkManager.connectToLocalHost(nickname);
-                game.networkManager.serverConnection.getCommandHandler().sendCommand(ServerCommand.OGAME_CREATE, new String[]{nameTF.getText(), playersTF.getText(), gameMode, limit, mapNameLbl.getText(), skin});
+                game.networkManager.serverConnection.getCommandHandler().sendCommand(ServerCommand.OGAME_CREATE, new String[]{nameTF.getText(), playersTF.getText(), gameMode, limit, worldPath, skin});
             } else {
                 game.networkManager.openWaitScreen();
                 game.networkManager.setWaitScreenText(game.language.WaitServerAnswer, WaitAnimation.LOADING);
