@@ -52,6 +52,7 @@ import net.minortom.davidjumpnrun.i18n.LanguageGerman;
 import net.minortom.davidjumpnrun.netcode.GameObjectType;
 import net.minortom.davidjumpnrun.netcode.NetworkManager;
 import net.minortom.davidjumpnrun.netcode.screens.OnlineEndScreen;
+import net.minortom.davidjumpnrun.netcode.screens.PlayLocalScreen;
 import net.minortom.davidjumpnrun.netcode.screens.PlayOnlineScreen;
 import net.minortom.davidjumpnrun.server.OnlineGameObject;
 import net.minortom.davidjumpnrun.server.Server;
@@ -93,7 +94,7 @@ public class JumpNRun extends Application {
     public static GUI worldEditGUI;
     private static double summonTimer, summonTime;
     private static Vector<Updatable> updatables;
-    private static Parent mainMenu, gameScene, chooseGamemodeScreen, winScreen, offlineSkinChooseScreen1, offlineSkinChooseScreen2, onlineSkinChooseCreateGame, onlineSkinChooseJoinGameLoggedIn, onlineSkinChooseJoinGameNotLoggedIn, worldEditorScreen, onlineEndScreen, playOnlineScreen;
+    private static Parent mainMenu, gameScene, chooseGamemodeScreen, winScreen, offlineSkinChooseScreen1, offlineSkinChooseScreen2, onlineSkinChooseCreateGame, onlineSkinChooseJoinGameLoggedIn, onlineSkinChooseJoinGameNotLoggedIn, localSkinChooseCreateGame, worldEditorScreen, onlineEndScreen, playOnlineScreen, playLocalScreen;
     private static CreditsScreen creditsScreen;
     private Gamemode currGamemode;
     private static int deathLimit;
@@ -119,6 +120,8 @@ public class JumpNRun extends Application {
     private boolean[] keysDown;
 
     private double xScroll, yScroll;
+
+    public static String[] rArgs;
 
     @Override
     public void start(Stage primaryStage) throws IOException {
@@ -184,9 +187,11 @@ public class JumpNRun extends Application {
             onlineSkinChooseCreateGame = new SkinChooseMenu(this, SkinChooseMenu.SkinChooseMode.ONLINE_CREATE_GAME);
             onlineSkinChooseJoinGameLoggedIn = new SkinChooseMenu(this, SkinChooseMenu.SkinChooseMode.ONLINE_JOIN_GAME_LOGGED_IN);
             onlineSkinChooseJoinGameNotLoggedIn = new SkinChooseMenu(this, SkinChooseMenu.SkinChooseMode.ONLINE_JOIN_GAME_NOT_LOGGED_IN);
+            localSkinChooseCreateGame = new SkinChooseMenu(this, SkinChooseMenu.SkinChooseMode.LOCAL_CREATE_GAME);
             creditsScreen = new CreditsScreen(this);
             onlineEndScreen = new OnlineEndScreen(this);
             playOnlineScreen = new PlayOnlineScreen(this);
+            playLocalScreen = new PlayLocalScreen(this);
 
             scene = new Scene(mainMenu);
             primaryStage.setScene(scene);
@@ -231,7 +236,7 @@ public class JumpNRun extends Application {
          String[] rArgs = (String[]) templeft.toArray();
          */
         // TODO: Fix shift left
-        String[] rArgs = new String[]{};
+        rArgs = new String[]{};
         if (args.length > 0) {
             rArgs = new String[args.length - 1];
             for (int i = 1; i < args.length; i++) {
@@ -255,6 +260,21 @@ public class JumpNRun extends Application {
                 launch(rArgs);
                 break;
         }
+    }
+
+    public void launchLocalSever() {
+        String[] serverArgs = new String[rArgs.length + 1];
+        for (int i = 0; i < rArgs.length; i++) {
+            serverArgs[i] = rArgs[i];
+        }
+        serverArgs[serverArgs.length - 1] = "local";
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Server.main(rArgs);
+            }
+        }).start();
+
     }
 
     public void initGame() {
@@ -824,6 +844,11 @@ public class JumpNRun extends Application {
         ((SkinChooseMenu) onlineSkinChooseJoinGameNotLoggedIn).updateStrings();
     }
 
+    public void openLocalSkinChooseCreateGame() {
+        scene.setRoot(localSkinChooseCreateGame);
+        ((SkinChooseMenu) localSkinChooseCreateGame).updateStrings();
+    }
+
     // The following function is licensed under the MIT License. You should have already received a copy located at ../net/minortom/LICENSE.txt
     // Copyright 2019 MinorTom <mail in license file>
     public void openNetworkScreen() {
@@ -977,6 +1002,11 @@ public class JumpNRun extends Application {
     public void openPlayOnlineScreen() {
         ((PlayOnlineScreen) playOnlineScreen).updateStrings();
         scene.setRoot(playOnlineScreen);
+    }
+
+    public void openPlayLocalScreen() {
+        ((PlayLocalScreen) playLocalScreen).updateStrings();
+        scene.setRoot(playLocalScreen);
     }
 
     public ProtagonistOnlineClient getLocalProt() {

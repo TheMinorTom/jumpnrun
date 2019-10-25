@@ -36,6 +36,7 @@ public class LanguageEnglish extends Language{
         // Main Menu
         this.MainMenuPlayBt = "Play Offline";
         this.MainMenuNetworkBt = "Play Online";
+        this.MainMenuPlayLocalBt = "Play Local";
         this.MainMenuExitBt = "Exit Game";
         this.MainMenuFontSizeLabel = "Font Size";
         this.MainMenuFontSizeMBt = "A-";
@@ -161,6 +162,11 @@ public class LanguageEnglish extends Language{
         this.EndGameKills = "Kills";
         this.EndGameName = "Name";
         this.EndGamePlacement = "Placement";
+        
+        //Local game screen
+        this.LocalEnterNameErr = "Please enter your nickname!";
+        this.LocalEnterNameInfo = "Your nickname...";
+        this.LocalEnterNameLabel = "Your nickname:";
     }
     
     @Override

@@ -114,6 +114,9 @@ public class SkinChooseMenu extends VBox {
                 case ONLINE_JOIN_GAME_NOT_LOGGED_IN:
                     game.networkManager.openJoinGameNotLoggedInScreen();
                     break;
+                case LOCAL_CREATE_GAME:
+                    game.networkManager.openCreateGameScreenLocal();
+                    break;
             }
         });
         okBt = new Button(game.language.okBt);
@@ -139,6 +142,10 @@ public class SkinChooseMenu extends VBox {
                 case ONLINE_JOIN_GAME_NOT_LOGGED_IN:
                     game.networkManager.joinGameScreenNotLoggedIn.setSkinChosen(true, getSkin(), ((RadioButton) toggle.getSelectedToggle()).getText());
                     game.networkManager.openJoinGameNotLoggedInScreen();
+                    break;
+                case LOCAL_CREATE_GAME:
+                    game.networkManager.createGameScreenLocal.setSkinChosen(true, getSkin(), ((RadioButton) toggle.getSelectedToggle()).getText());
+                    game.networkManager.openCreateGameScreenLocal();
                     break;
             }
         });
@@ -208,6 +215,9 @@ public class SkinChooseMenu extends VBox {
                 game.networkManager.joinGameScreenNotLoggedIn.setSkinChosen(true, getSkin(), ((RadioButton) toggle.getSelectedToggle()).getText());
                 //game.networkManager.openJoinGameNotLoggedInScreen();
                 break;
+            case LOCAL_CREATE_GAME:
+                game.networkManager.createGameScreenLocal.setSkinChosen(true, getSkin(), ((RadioButton) toggle.getSelectedToggle()).getText());
+                break;
             default:
                 headingLbl.setText(game.language.SkinChooseDefaultHeading);
         }
@@ -223,7 +233,8 @@ public class SkinChooseMenu extends VBox {
         OFFLINE_PLAYER_2,
         ONLINE_CREATE_GAME,
         ONLINE_JOIN_GAME_LOGGED_IN,
-        ONLINE_JOIN_GAME_NOT_LOGGED_IN;
+        ONLINE_JOIN_GAME_NOT_LOGGED_IN,
+        LOCAL_CREATE_GAME;
     }
 
     public enum Skin {

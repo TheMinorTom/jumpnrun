@@ -30,63 +30,64 @@ import net.minortom.davidjumpnrun.netcode.screens.WaitScreen;
 import net.minortom.davidjumpnrun.netcode.screens.WaitScreen.WaitAnimation;
 
 public class NetworkManager extends VBox {
-    
+
     public static final String infoSeperator = "!";//Character.toString((char) 31);
     public static final String differentObjectsSeperator = "|";
     public static final String subArgsSeperator = "/";
     public static final String keyword = "JUMPNRUN";
-    
-    public java.util.Map<String,String> onlineWaitScreenPlayers; // PubID, name
+
+    public java.util.Map<String, String> onlineWaitScreenPlayers; // PubID, name
     public int onlineWaitScreenPlayersNeeded;
-    
+
     JumpNRun game;
-    
+
     LoginScreen loginScreen;
     public JoinGameScreen joinGameScreenLoggedIn, joinGameScreenNotLoggedIn;
-    public CreateGameScreen createGameScreen;
+    public CreateGameScreen createGameScreen, createGameScreenLocal;
     WaitScreen waitScreen;
     public ChooseMapScreen mapSelectionScreen;
     public ServerConnection serverConnection;
-    
+
     HBox userBox;
     Button backBt, loginBt, joinGameBt, createGameBt, leaderboardBt;
     Image avatarImg;
     ImageView avatar;
     Label userName;
     Font defaultFont;
-    
-    public NetworkManager(JumpNRun gamearg){
+
+    public NetworkManager(JumpNRun gamearg) {
         game = gamearg;
-        
+
         loginScreen = new LoginScreen(game);
         joinGameScreenLoggedIn = new JoinGameScreen(game, true);
         joinGameScreenNotLoggedIn = new JoinGameScreen(game, false);
-        createGameScreen = new CreateGameScreen(game);
+        createGameScreen = new CreateGameScreen(game, false);
+        createGameScreenLocal = new CreateGameScreen(game, true);
         waitScreen = new WaitScreen(game);
         mapSelectionScreen = new ChooseMapScreen(game);
-        
+
         backBt = new Button("ERR");
         backBt.setOnAction((ActionEvent e) -> {
             game.openPlayOnlineScreen();
         });
-        
+
         loginBt = new Button("ERR");
         loginBt.setOnAction((ActionEvent e) -> {
             this.openLoginScreen();
         });
-        
+
         joinGameBt = new Button("ERR");
         joinGameBt.setOnAction((ActionEvent e) -> {
             this.openJoinGameLoggedInScreen();
         });
         joinGameBt.setDisable(true);
-        
+
         createGameBt = new Button("ERR");
         createGameBt.setOnAction((ActionEvent e) -> {
             this.openCreateGameScreen();
         });
         createGameBt.setDisable(true);
-        
+
         leaderboardBt = new Button("ERR");
         leaderboardBt.setOnAction((ActionEvent e) -> {
             try {
@@ -95,32 +96,30 @@ public class NetworkManager extends VBox {
                 ex.printStackTrace();
             }
         });
-        
+
         userBox = new HBox();
         userBox.setAlignment(Pos.CENTER);
         userBox.setSpacing(50);
         userBox.setPadding(new Insets(0, 0, 0, 0));
-        
+
         //avatarImg = new Image("");
-        
         avatar = new ImageView();
         avatar.setImage(avatarImg);
-        avatar.setFitWidth(game.language.getFontSize()*4);
+        avatar.setFitWidth(game.language.getFontSize() * 4);
         avatar.setPreserveRatio(true);
         avatar.setSmooth(true);
-        
+
         userName = new Label("Please wait");
-        
+
         userBox.getChildren().addAll(avatar, userName);
-        
+
         //updateStrings();
-        
         setAlignment(Pos.CENTER);
         setSpacing(50);
         setPadding(new Insets(0, 0, 0, 0));
     }
-    
-    public void updateStrings(){
+
+    public void updateStrings() {
         defaultFont = game.language.getFont();
         backBt.setText(game.language.backBt);
         backBt.setFont(defaultFont);
@@ -135,46 +134,51 @@ public class NetworkManager extends VBox {
         userName.setFont(defaultFont);
         userBox.setSpacing(game.language.getFontSize());
         setSpacing(game.language.getFontSize());
-        
-        if(game.config.networkLoggedIn) {
+
+        if (game.config.networkLoggedIn) {
             updateBtnsLoggedIn();
         } else {
             updateBtnsLoggedOut();
         }
     }
-    
-    public void openLoginScreen(){
+
+    public void openLoginScreen() {
         shutdown();
         JumpNRun.scene.setRoot(loginScreen);
         loginScreen.updateStrings();
     }
-    
-    public void openWaitScreen(){
+
+    public void openWaitScreen() {
         JumpNRun.scene.setRoot(waitScreen);
         waitScreen.updateStrings();
     }
-    
-    public void openJoinGameLoggedInScreen(){
+
+    public void openJoinGameLoggedInScreen() {
         JumpNRun.scene.setRoot(joinGameScreenLoggedIn);
         joinGameScreenLoggedIn.updateStrings();
     }
-    
-    public void openJoinGameNotLoggedInScreen(){
+
+    public void openJoinGameNotLoggedInScreen() {
         JumpNRun.scene.setRoot(joinGameScreenNotLoggedIn);
         joinGameScreenNotLoggedIn.updateStrings();
     }
-    
-    public void openCreateGameScreen(){
+
+    public void openCreateGameScreen() {
         JumpNRun.scene.setRoot(createGameScreen);
         createGameScreen.updateStrings();
     }
-    
-    public void openMapSelection(){
+
+    public void openCreateGameScreenLocal() {
+        JumpNRun.scene.setRoot(createGameScreenLocal);
+        createGameScreenLocal.updateStrings();
+    }
+
+    public void openMapSelection() {
         openWaitScreen();
         setWaitScreenText(game.language.WaitServerAnswer, WaitAnimation.LOADING);
     }
-    
-    public void mapSelectionDone(String[] maps){
+
+    public void mapSelectionDone(String[] maps) {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -183,35 +187,43 @@ public class NetworkManager extends VBox {
             }
         });
     }
-    
-    public void setWaitScreenText(String text){
+
+    public void setWaitScreenText(String text) {
         waitScreen.setText(text);
     }
-    
-    public void setWaitScreenText(String text, WaitAnimation waitanim){
+
+    public void setWaitScreenText(String text, WaitAnimation waitanim) {
         waitScreen.setText(text, waitanim);
     }
-    
-    public void updateBtnsLoggedIn(){
+
+    public void updateBtnsLoggedIn() {
         joinGameBt.setDisable(false);
         createGameBt.setDisable(false);
         loginBt.setText(game.language.NetworManagerLoginBtLoggedIn);
         getChildren().clear();
         getChildren().addAll(userBox, loginBt, createGameBt, joinGameBt, leaderboardBt, backBt);
-        if(game.networkManager.serverConnection==null){
+        if (game.networkManager.serverConnection == null) {
             game.networkManager.serverConnection = new ServerConnection(game.config.networkUserId, game.config.networkUserToken, game.config.networkHost, game);
             game.networkManager.serverConnection.connect();
-            if(null != game.networkManager.serverConnection.currentConnState) switch (game.networkManager.serverConnection.currentConnState) {
-                case CONNECTED:
-                    loadAvatar();
-                    break;
-                default:
-                    updateBtnsLoggedOut();
-                    break;
+            if (null != game.networkManager.serverConnection.currentConnState) {
+                switch (game.networkManager.serverConnection.currentConnState) {
+                    case CONNECTED:
+                        loadAvatar();
+                        break;
+                    default:
+                        updateBtnsLoggedOut();
+                        break;
+                }
             }
         }
     }
-    
+
+    public void connectToLocalHost(String nickname) {
+        
+        game.networkManager.serverConnection = new ServerConnection(nickname, "", "127.0.0.1:26656", game);
+        game.networkManager.serverConnection.connect();
+    }
+
     public void loadAvatar() {
         Platform.runLater(new Runnable() {
             @Override
@@ -221,38 +233,39 @@ public class NetworkManager extends VBox {
             }
         });
     }
-    
-    public void updateBtnsLoggedOut(){
+
+    public void updateBtnsLoggedOut() {
         joinGameBt.setDisable(true);
         createGameBt.setDisable(true);
         loginBt.setText(game.language.NetworManagerLoginBt);
         getChildren().clear();
         getChildren().addAll(loginBt, leaderboardBt, backBt);
     }
-    
+
     public void shutdown() {
         try {
             serverConnection.end();
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
     }
 
     public void createGameScreenSetMap(String name) {
         createGameScreen.setMapName(name);
     }
-    
+
     public void setUserName(String name) {
         userName.setText(name);
     }
-    
+
     public void sendKeyPress(String id, String gameName, String action) {
         serverConnection.getCommandHandler().sendCommand(ServerCommand.OGAME_KEYPRESS, new String[]{id, gameName, action});
         //serverConnection.out.println(keyword + infoSeperator + "OGAME-KEYPRESS" + infoSeperator + id + infoSeperator + gameName + infoSeperator + action);
-        
+
     }
-    
-    public void sendKeyRelease (String id, String gameName, String action) {
+
+    public void sendKeyRelease(String id, String gameName, String action) {
         serverConnection.getCommandHandler().sendCommand(ServerCommand.OGAME_KEYRELEASE, new String[]{id, gameName, action});
         // serverConnection.out.println(keyword + infoSeperator + "OGAME-KEYRELEASE" + infoSeperator + id + infoSeperator + gameName + infoSeperator + action);
-        
+
     }
 }

@@ -31,6 +31,8 @@ public class Server {
     public HashMap<String, TCPServer> tcpServer;
     public int tcpPort;
     public boolean isDatabaseBlocked;
+    
+    public final boolean isLocal;
 
     public Server(String[] args) {
         /* try{
@@ -40,7 +42,7 @@ public class Server {
          System.exit(1);
          } */
         // TODO: Remove before release
-        System.out.println("This is newest lool ----------------------------------------------------------------------------------");
+
         if (false) {
             storageLocation = "H:\\Eigene Dateien\\Informatik1819\\meine_programme\\JumpNRun\\jumpnrun-master\\jumpnrun-master\\JumpNRun\\appdata\\";
         } else {
@@ -50,23 +52,28 @@ public class Server {
         Server.server = this;
         System.out.println("Server Hello World");
 
-        Scanner in = new Scanner(System.in);
-        System.out.println("Please enter the DB Connection String");
-        String dbString = in.nextLine();
-        String[] dbCreds = dbString.split("!");
-        try {
-            if (true) {
-                int i = 1 / 0;
+        if (args.length != 0 && (!args[args.length - 1].equals("local"))) {     //Is local??
+            isLocal = false;
+            Scanner in = new Scanner(System.in);
+            System.out.println("Please enter the DB Connection String");
+            String dbString = in.nextLine();
+            String[] dbCreds = dbString.split("!");
+            try {
+                if (true) {
+                    int i = 1 / 0;
+                }
+                dbConn = new ServerMysqlConnection(dbCreds[0], dbCreds[1], dbCreds[2], dbCreds[3]);
+                isDatabaseBlocked = false;
+            } catch (Exception e) {
+                isDatabaseBlocked = true;
+                e.printStackTrace();
+                System.err.println("No database-connection");
             }
-            dbConn = new ServerMysqlConnection(dbCreds[0], dbCreds[1], dbCreds[2], dbCreds[3]);
-            isDatabaseBlocked = false;
-        } catch (Exception e) {
-            isDatabaseBlocked = true;
-            e.printStackTrace();
-            System.err.println("No database-connection");
+        } else {
+            isLocal = true;
         }
-
         System.out.println("Now starting");
+
         tcpPort = 26656;
         tcpServer = new HashMap<>();
         TCPServer.init(tcpPort);

@@ -46,6 +46,7 @@ public class Language implements Serializable {
     // Main Menu
     public transient String MainMenuPlayBt;
     public transient String MainMenuNetworkBt;
+    public transient String MainMenuPlayLocalBt;
     public transient String MainMenuExitBt;
     public transient String MainMenuFontSizeLabel;
     public transient String MainMenuFontSizePBt;
@@ -68,7 +69,7 @@ public class Language implements Serializable {
     public transient String LoginScreenOpenInWebBt;
     public transient String LoginScreenHeading;
     
-    // Network Play Screen
+    // Network Play Screen // Also used for playLocalScreen
     public transient String NetworManagerLoginBt;
     public transient String NetworManagerLoginBtLoggedIn;
     public transient String NetworManagerJoinGameBt;
@@ -173,6 +174,13 @@ public class Language implements Serializable {
     public transient String EndGameName;
     public transient String EndGameKills;
     public transient String EndGameDeaths;
+    
+    // Play local screen
+    public transient String LocalEnterNameErr;
+    public transient String LocalEnterNameInfo;
+    public transient String LocalEnterNameLabel;
+    
+
     
     
     public transient int changeB;

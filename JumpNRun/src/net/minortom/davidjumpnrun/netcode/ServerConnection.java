@@ -50,22 +50,26 @@ public class ServerConnection {
         
         currentConnState = ConnState.CONNECTING;
         try{
+            System.out.println("Trying to connect");
             socket = new Socket(hostName, hostPort);
             commandHandler = new OnlineCommandHandler(
                 new PrintWriter(socket.getOutputStream(), true));
             in =
                 new BufferedReader(
                     new InputStreamReader(socket.getInputStream()));
+            System.out.println("Command handler generated");
         } catch (UnknownHostException e) {
+            e.printStackTrace();
             currentConnState = ConnState.ERROR_INVALID_HOST;
             return;
         } catch (IOException e) {
+            e.printStackTrace();
             currentConnState = ConnState.ERROR_INVALID_HOST;
             return;
         }
         tcpreceiver = new NetworkTCPReceiverClient(game, this);
         tcpreceiver.start();
-        
+        System.out.println("AUTH_REQ sent");
         commandHandler.sendCommand(ServerCommand.AUTH_REQ, new String[]{userId, userToken});
         //out.println(NetworkManager.keyword + NetworkManager.infoSeperator + "AUTH-REQ" + NetworkManager.infoSeperator + userName + NetworkManager.infoSeperator + pass);
         
@@ -82,6 +86,7 @@ public class ServerConnection {
             //    currentConnState = ConnState.ERROR_INTERNAL;
             //}
         }
+        System.out.println("CONNECTED!!!");
     }
     
     public enum ConnState{
