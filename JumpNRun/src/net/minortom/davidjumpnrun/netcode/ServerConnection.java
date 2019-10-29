@@ -30,7 +30,9 @@ public class ServerConnection {
     public BufferedReader in;
     JumpNRun game;
     
-    public ServerConnection(String setUser, String setToken, String setHost, JumpNRun setGame){
+    private boolean isLoggedIn;
+    
+    public ServerConnection(String setUser, String setToken, String setHost, JumpNRun setGame, boolean loggedIn){
         currentConnState = ConnState.WAITING;
         
         userId = setUser;
@@ -38,6 +40,8 @@ public class ServerConnection {
         hostName = setHost.split(":")[0];
         
         game = setGame;
+        
+        isLoggedIn = loggedIn;
         
         try{
             hostPort = new Integer(setHost.split(":")[1]);
@@ -70,7 +74,11 @@ public class ServerConnection {
         tcpreceiver = new NetworkTCPReceiverClient(game, this);
         tcpreceiver.start();
         System.out.println("AUTH_REQ sent");
-        commandHandler.sendCommand(ServerCommand.AUTH_REQ, new String[]{userId, userToken});
+        if(isLoggedIn) {
+        commandHandler.sendCommand(ServerCommand.AUTH_REQ, new String[]{userId, userToken, "1"});
+        } else {
+            commandHandler.sendCommand(ServerCommand.AUTH_REQ, new String[]{userId, userToken, "0"});
+        }
         //out.println(NetworkManager.keyword + NetworkManager.infoSeperator + "AUTH-REQ" + NetworkManager.infoSeperator + userName + NetworkManager.infoSeperator + pass);
         
         

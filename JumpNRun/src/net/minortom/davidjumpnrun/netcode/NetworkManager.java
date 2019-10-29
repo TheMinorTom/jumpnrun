@@ -203,7 +203,7 @@ public class NetworkManager extends VBox {
         getChildren().clear();
         getChildren().addAll(userBox, loginBt, createGameBt, joinGameBt, leaderboardBt, backBt);
         if (game.networkManager.serverConnection == null) {
-            game.networkManager.serverConnection = new ServerConnection(game.config.networkUserId, game.config.networkUserToken, game.config.networkHost, game);
+            game.networkManager.serverConnection = new ServerConnection(game.config.networkUserId, game.config.networkUserToken, game.config.networkHost, game, true);
             game.networkManager.serverConnection.connect();
             if (null != game.networkManager.serverConnection.currentConnState) {
                 switch (game.networkManager.serverConnection.currentConnState) {
@@ -220,7 +220,7 @@ public class NetworkManager extends VBox {
 
     public void connectToLocalHost(String nickname) {
         
-        game.networkManager.serverConnection = new ServerConnection(nickname, "", "127.0.0.1:26656", game);
+        game.networkManager.serverConnection = new ServerConnection(nickname, "", "127.0.0.1:26656", game, false);
         game.networkManager.serverConnection.connect();
     }
 
@@ -242,8 +242,9 @@ public class NetworkManager extends VBox {
         getChildren().addAll(loginBt, leaderboardBt, backBt);
     }
 
-    public void updateCreateGameNickName(String name) {     //LOCAL GAME
+    public void updateNickName(String name) {     //LOCAL GAME
         createGameScreenLocal.setNickname(name);
+        joinGameScreenNotLoggedIn.updateUserNickname(name);
     }
     
     public void shutdown() {

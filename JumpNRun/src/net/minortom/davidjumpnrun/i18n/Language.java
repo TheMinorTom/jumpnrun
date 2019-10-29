@@ -85,7 +85,7 @@ public class Language implements Serializable {
     public transient String JoinGNameLabel;
     public transient String JoinGOkBt;
     public transient String GSkinBt;
-    public transient String PlayerNameLabel;
+    public transient String JoinGPlayerNameLabel;
     public transient String JoinGameServerName;
     
     

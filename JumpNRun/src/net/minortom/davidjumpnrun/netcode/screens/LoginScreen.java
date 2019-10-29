@@ -97,7 +97,7 @@ public class LoginScreen extends VBox {
         userTokenTmp = params[1];
         serverTmp = params[2];
         connectingLabel.setText(game.language.LoginScreenConnecting);
-        game.networkManager.serverConnection = new ServerConnection(userIdTmp, userTokenTmp, serverTmp, game);
+        game.networkManager.serverConnection = new ServerConnection(userIdTmp, userTokenTmp, serverTmp, game, true);
         game.networkManager.serverConnection.connect();
         if (null != game.networkManager.serverConnection.currentConnState) {
             switch (game.networkManager.serverConnection.currentConnState) {

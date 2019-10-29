@@ -12,7 +12,7 @@ package net.minortom.davidjumpnrun.netcode;
 public enum ServerCommand {
                         //ISSUED BY       ARGS
     
-    AUTH_REQ,           //client          user name, password
+    AUTH_REQ,           //client          user name, password, boolean(isLoggedIn?1:0)
     AUTH_OK,            //server          user id, user token
     AUTH_LOGOUT,        //client          pubId(, gameId)
     AUTH_WRONGCREDS,     //server          -

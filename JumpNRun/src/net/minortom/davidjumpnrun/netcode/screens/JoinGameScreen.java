@@ -25,16 +25,19 @@ public class JoinGameScreen extends VBox {
     JumpNRun game;
     Label nameLabel, skinLbl, headingLbl, playerNameLbl, serverNameLbl, kantConnectsToServerLbl;
     Button okBt, backBt, skinBt;
-    TextField nameField, playerNameTF, serverNameTF;
+    TextField nameField, serverNameTF;
     HBox btBox;
     VBox skinBox;
     SkinChooseMenu.Skin skin;
     String skinUrl;
     private boolean isLoggedIn;
+    private String playerNickname;  // LOCAL
 
     public JoinGameScreen(JumpNRun game, boolean isLoggedIn) {
         this.game = game;
         this.isLoggedIn = isLoggedIn;
+
+        playerNickname = "Unnamed";
 
         nameLabel = new Label("ERR");
         skinLbl = new Label();
@@ -58,8 +61,7 @@ public class JoinGameScreen extends VBox {
         skinBox.setSpacing(15);
         skinBox.setPadding(new Insets(0, 0, 0, 0));
 
-        playerNameLbl = new Label(game.language.PlayerNameLabel);
-        playerNameTF = new TextField();
+        playerNameLbl = new Label("ERR");
         serverNameLbl = new Label();
         serverNameTF = new TextField();
         kantConnectsToServerLbl = new Label();
@@ -94,21 +96,22 @@ public class JoinGameScreen extends VBox {
             getChildren().addAll(headingLbl, new Separator(), nameLabel, nameField, new Separator(), skinBox, new Separator(), btBox);
         } else {
 
-            getChildren().addAll(headingLbl, new Separator(), serverNameLbl, serverNameTF, kantConnectsToServerLbl, new Separator(), playerNameLbl, playerNameTF, new Separator(), nameLabel, nameField, new Separator(), skinBox, new Separator(), btBox);
+            playerNameLbl.setText(game.language.JoinGPlayerNameLabel + " " +  playerNickname);
+            getChildren().addAll(headingLbl, new Separator(), playerNameLbl, new Separator(), serverNameLbl, serverNameTF, kantConnectsToServerLbl,  new Separator(), nameLabel, nameField, new Separator(), skinBox, new Separator(), btBox);
 
             backBt.setOnAction((ActionEvent e) -> {
-                game.openPlayOnlineScreen();
+                game.openPlayLocalScreen();
 
             });
 
             skinBt.setOnAction((ActionEvent e) -> {
-               game.openOnlineSkinChooseJoinGameNotMenuLoggedIn();
+                game.openOnlineSkinChooseJoinGameNotMenuLoggedIn();
             });
 
             okBt.setOnAction((ActionEvent e) -> {
 
                 if (game.networkManager.serverConnection == null) {
-                    game.networkManager.serverConnection = new ServerConnection("-1", playerNameTF.getText(), serverNameTF.getText(), game);
+                    game.networkManager.serverConnection = new ServerConnection(playerNickname, "-1", serverNameTF.getText(), game, false);
                     game.networkManager.serverConnection.connect();
                     if (null != game.networkManager.serverConnection.currentConnState) {
                         switch (game.networkManager.serverConnection.currentConnState) {
@@ -136,9 +139,6 @@ public class JoinGameScreen extends VBox {
 
         }
         playerNameLbl.setFont(game.language.getFont());
-        playerNameLbl.setText(game.language.PlayerNameLabel);
-
-        playerNameTF.setFont(game.language.getFont());
 
         nameLabel.setText(game.language.JoinGNameLabel);
         nameLabel.setFont(game.language.getFont());
@@ -177,5 +177,10 @@ public class JoinGameScreen extends VBox {
         skinUrl = skin.path;
         skinLbl.setText(text);
 
+    }
+
+    public void updateUserNickname(String s) {
+        playerNickname = s;
+        playerNameLbl.setText(game.language.JoinGNameLabel + " " + s);
     }
 }

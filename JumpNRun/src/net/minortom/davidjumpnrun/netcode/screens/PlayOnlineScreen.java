@@ -25,7 +25,6 @@ public class PlayOnlineScreen extends VBox {
 
     private static JumpNRun game;
     private Button loginBt;
-    private Button playWithoutLoginBt;
     private Button backBt;
     private Button playAs;
     private Separator sep;
@@ -38,10 +37,6 @@ public class PlayOnlineScreen extends VBox {
             game.networkManager.openLoginScreen();
         });
 
-        playWithoutLoginBt = new Button();
-        playWithoutLoginBt.setOnAction((ActionEvent e) -> {
-            game.networkManager.openJoinGameNotLoggedInScreen();
-        });
 
         playAs = new Button();
         playAs.setOnAction((ActionEvent e) -> {
@@ -63,9 +58,6 @@ public class PlayOnlineScreen extends VBox {
 
     public void updateStrings() {
         Font defaultFont = game.language.getFont();
-        playWithoutLoginBt.setText(game.language.plOnlMnPlayWithoutLogin);
-        playWithoutLoginBt.setFont(defaultFont);
-
         loginBt.setText(game.language.NetworManagerLoginBt);
         loginBt.setFont(defaultFont);
 
@@ -87,9 +79,9 @@ public class PlayOnlineScreen extends VBox {
 
         loginBt.setText(game.language.NetworManagerLoginBtLoggedIn);
         getChildren().clear();
-        getChildren().addAll(playWithoutLoginBt, playAs, loginBt, new Separator(), backBt);
+        getChildren().addAll(playAs, loginBt, new Separator(), backBt);
         if (game.networkManager.serverConnection == null) {
-            game.networkManager.serverConnection = new ServerConnection(game.config.networkUserId, game.config.networkUserToken, game.config.networkHost, game);
+            game.networkManager.serverConnection = new ServerConnection(game.config.networkUserId, game.config.networkUserToken, game.config.networkHost, game, true);
             game.networkManager.serverConnection.connect();
             if (null != game.networkManager.serverConnection.currentConnState) {
                 switch (game.networkManager.serverConnection.currentConnState) {
@@ -109,6 +101,6 @@ public class PlayOnlineScreen extends VBox {
 
     public void updateButtonsLoggedOut() {
         getChildren().clear();
-        getChildren().addAll(playWithoutLoginBt, loginBt, new Separator(), backBt);
+        getChildren().addAll(loginBt, new Separator(), backBt);
     }
 }

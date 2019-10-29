@@ -74,7 +74,7 @@ public class LanguageEnglish extends Language{
         this.JoinGNameLabel = "Game Name";
         this.JoinGOkBt = "Go!";
         this.GSkinBt = "Choose a Skin";
-        this.PlayerNameLabel = "Choose a nickname you want to temporary play with:";
+        this.JoinGPlayerNameLabel = "Playing as:";
         this.JoinGameServerName = "Serveradress:";
         
         // Choose Game Mode Menu
