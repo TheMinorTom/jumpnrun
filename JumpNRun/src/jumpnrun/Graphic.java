@@ -130,24 +130,23 @@ public class Graphic extends Pane {
 
     public void updateScrolling() {
         updateWholeWorld();
-        
-        /*
-        for (int i = (int) (xScroll / blockSize) - 2; (i < worldVector.size()) && (i <= (int) ((xScroll + JumpNRun.getWidth()) / blockSize) + 1); i++) {
-            if ((i >= 0)) {
-                for (int j = (int) (yScroll / blockSize) - 2; (j < worldVector.get(i).size()) && (j <= (int) ((yScroll + JumpNRun.getHeight()) / blockSize) + 1); j++) {
-                    if (j >= 0) {
-                        block = worldVector.get(i).get(j);
-                        if (block != null) {
-                            // block.relocate((blockSize * i) - xScroll, (blockSize * j) - yScroll);
-                            block.setTranslateX(-1 * xScroll);
-                            block.setTranslateY(-1 * yScroll);
-                        }
-                    }
-                }
-            }
-        }
-        */
 
+        /*
+         for (int i = (int) (xScroll / blockSize) - 2; (i < worldVector.size()) && (i <= (int) ((xScroll + JumpNRun.getWidth()) / blockSize) + 1); i++) {
+         if ((i >= 0)) {
+         for (int j = (int) (yScroll / blockSize) - 2; (j < worldVector.get(i).size()) && (j <= (int) ((yScroll + JumpNRun.getHeight()) / blockSize) + 1); j++) {
+         if (j >= 0) {
+         block = worldVector.get(i).get(j);
+         if (block != null) {
+         // block.relocate((blockSize * i) - xScroll, (blockSize * j) - yScroll);
+         block.setTranslateX(-1 * xScroll);
+         block.setTranslateY(-1 * yScroll);
+         }
+         }
+         }
+         }
+         }
+         */
         //worldGroup.relocate(xScroll*(-1), yScroll*(-1));
         /*
          worldGroup.setLayoutX(xScroll * (-1));
@@ -185,7 +184,7 @@ public class Graphic extends Pane {
         fpsBox.setLayoutY(300);
         fpsBox.setSpacing(50);
         getChildren().addAll(worldGroup);
-        if(SHOW_FPS) {
+        if (SHOW_FPS) {
             getChildren().add(fpsBox);
         }
         blockSize = worldVec.get(0).get(0).getFitHeight();
@@ -221,10 +220,12 @@ public class Graphic extends Pane {
         Label scoreLbl = new Label("Score: " + score);
         scoreLbl.setFont(JumpNRun.game.language.getFont());
         ImageView avatar = new ImageView();
-        avatar.setImage(new Image("https://v1.api.minortom.net/do/avatar.php?user=" + addProt.userId));
-        avatar.setFitWidth(JumpNRun.game.language.getFontSize() * 3);
-        avatar.setPreserveRatio(true);
-        avatar.setSmooth(true);
+        if (!jumpnrun.JumpNRun.getIsLocal()) {
+            avatar.setImage(new Image("https://v1.api.minortom.net/do/avatar.php?user=" + addProt.userId));
+            avatar.setFitWidth(JumpNRun.game.language.getFontSize() * 3);
+            avatar.setPreserveRatio(true);
+            avatar.setSmooth(true);
+        }
         playerName.setFont(JumpNRun.game.language.getFont());
         varLbl.setFont(JumpNRun.game.language.getFont());
         onlinePlayersVarLabels.put(addProt.pubId, varLbl);
@@ -262,10 +263,12 @@ public class Graphic extends Pane {
         Label scoreLbl = new Label("Score: " + score);
         scoreLbl.setFont(JumpNRun.game.language.getFont());
         ImageView avatar = new ImageView();
-        avatar.setImage(new Image("https://v1.api.minortom.net/do/avatar.php?user=" + addProt.userId));
-        avatar.setFitWidth(JumpNRun.game.language.getFontSize() * 3);
-        avatar.setPreserveRatio(true);
-        avatar.setSmooth(true);
+        if (!JumpNRun.getIsLocal()) {
+            avatar.setImage(new Image("https://v1.api.minortom.net/do/avatar.php?user=" + addProt.userId));
+            avatar.setFitWidth(JumpNRun.game.language.getFontSize() * 3);
+            avatar.setPreserveRatio(true);
+            avatar.setSmooth(true);
+        }
         playerName.setFont(JumpNRun.game.language.getFont());
         varLbl.setFont(JumpNRun.game.language.getFont());
         onlinePlayersVarLabels.put(addProt.pubId, varLbl);

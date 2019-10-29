@@ -219,7 +219,7 @@ public class NetworkManager extends VBox {
     }
 
     public void connectToLocalHost(String nickname) {
-        
+
         game.networkManager.serverConnection = new ServerConnection(nickname, "", "127.0.0.1:26656", game, false);
         game.networkManager.serverConnection.connect();
     }
@@ -246,7 +246,7 @@ public class NetworkManager extends VBox {
         createGameScreenLocal.setNickname(name);
         joinGameScreenNotLoggedIn.updateUserNickname(name);
     }
-    
+
     public void shutdown() {
         try {
             serverConnection.end();

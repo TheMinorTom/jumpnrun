@@ -65,6 +65,8 @@ import worldeditor.WorldEditor;
  * @author Norbert
  */
 public class JumpNRun extends Application {
+    
+    private static boolean isLocal;
 
     public static JumpNRun game;
 
@@ -1000,17 +1002,27 @@ public class JumpNRun extends Application {
     }
 
     public void openPlayOnlineScreen() {
+        isLocal = false;
         ((PlayOnlineScreen) playOnlineScreen).updateStrings();
         scene.setRoot(playOnlineScreen);
     }
 
     public void openPlayLocalScreen() {
+        isLocal = true;
         ((PlayLocalScreen) playLocalScreen).updateStrings();
         scene.setRoot(playLocalScreen);
     }
 
     public ProtagonistOnlineClient getLocalProt() {
         return localProt;
+    }
+    
+    public static boolean getIsLocal() {
+        return isLocal;
+    }
+    
+    public static void setIsLocal(boolean b) {
+        isLocal = b;
     }
 
 }
