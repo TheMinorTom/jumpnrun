@@ -65,7 +65,7 @@ import worldeditor.WorldEditor;
  * @author Norbert
  */
 public class JumpNRun extends Application {
-    
+
     private static boolean isLocal;
 
     public static JumpNRun game;
@@ -165,8 +165,9 @@ public class JumpNRun extends Application {
                 config.gameLanguage = language;
                 ConfigManager.saveConfiguration(config);
             }
-
-            sourcePath = ConfigManager.getStorageLocation();
+            if (sourcePath == null) {
+                sourcePath = ConfigManager.getStorageLocation();
+            }
 
             worldAbsPath = ConfigManager.getStorageLocation() + "worlds/world.david";
             blocksDirPath = ConfigManager.getStorageLocation() + "sprites/blocks/";
@@ -243,6 +244,12 @@ public class JumpNRun extends Application {
             rArgs = new String[args.length - 1];
             for (int i = 1; i < args.length; i++) {
                 rArgs[i - 1] = args[i];
+            }
+        }
+
+        if (args.length >= 2) {
+            if (args[1].startsWith("--appdata-location=")) {
+                sourcePath = args[1].split("=")[1];
             }
         }
 
@@ -1016,11 +1023,11 @@ public class JumpNRun extends Application {
     public ProtagonistOnlineClient getLocalProt() {
         return localProt;
     }
-    
+
     public static boolean getIsLocal() {
         return isLocal;
     }
-    
+
     public static void setIsLocal(boolean b) {
         isLocal = b;
     }
