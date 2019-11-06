@@ -134,6 +134,7 @@ public class JumpNRun extends Application {
         primStage = primaryStage;
         try {
             game = this;
+            
             // The following sections are licensed under the MIT License. You should have already received a copy located at ../net/minortom/LICENSE.txt
             // Copyright 2019 MinorTom <mail in license file>
             //Language Selection default
@@ -165,8 +166,10 @@ public class JumpNRun extends Application {
                 config.gameLanguage = language;
                 ConfigManager.saveConfiguration(config);
             }
-            if (sourcePath == null) {
+            if (sourcePath == null || sourcePath.equals("")) {
                 sourcePath = ConfigManager.getStorageLocation();
+            } else {
+                config.customPath = sourcePath;
             }
 
             worldAbsPath = ConfigManager.getStorageLocation() + "worlds/world.david";
@@ -247,9 +250,13 @@ public class JumpNRun extends Application {
             }
         }
 
-        if (args.length >= 2) {
-            if (args[1].startsWith("--appdata-location=")) {
-                sourcePath = args[1].split("=")[1];
+        for(String currArg:args) {
+            if (currArg.startsWith("--appdata-location=")) {
+                sourcePath = currArg.split("=")[1];
+                if(!sourcePath.endsWith("\\")) {
+                    sourcePath += "\\";
+                }
+                
             }
         }
 
